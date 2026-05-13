@@ -1,164 +1,131 @@
+/* styles.css */
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   THEME VARIABLES
+───────────────────────────────────────────── */
+@theme inline {
+  /* --- Colors --- */
+  --color-canvas: #faf9f5;
+  --color-ink: #141413;
+  --color-primary: #259E01;
+  --color-primary-active: #1d7d01;
+  --color-brand-navy: #014065;
+
+  --color-surface-card: #efe9de;
+  --color-surface-soft: #f5f0e8;
+  --color-surface-dark: #014065;
+  --color-hairline: #e6dfd8;
+
+  /* --- Spacing & Radius --- */
+  --spacing-section: 96px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+
+  /* --- Shadcn mapping --- */
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-border: var(--color-hairline);
+  --color-primary-foreground: #ffffff;
+}
+
+/* ─────────────────────────────────────────────
+   ROOT FALLBACKS (safe defaults)
+───────────────────────────────────────────── */
 :root {
-  --font-mono: 'Roboto Mono', monospace;
+  --background: #faf9f5;
+  --foreground: #141413;
+  --primary: #259E01;
+  --radius: 0.625rem;
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ─────────────────────────────────────────────
+   BASE STYLES
+───────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-html {
-  font-size: 18px;
-  line-height: 32px;
+  body {
+    @apply bg-canvas text-ink antialiased font-sans;
+    text-rendering: optimizeLegibility;
+  }
 
-  background: rgb(0, 0, 0);
-  -webkit-font-smoothing: antialiased;
-}
+  h1, h2, h3, h4 {
+    @apply font-serif font-normal tracking-[-0.02em];
+  }
 
-html,
-body,
-#app {
-  height: 100%;
-}
-
-body {
-  font-family: system-ui;
-  font-size: 18px;
-  line-height: 32px;
-
-  margin: 0;
-  color: rgb(1000, 1000, 1000);
-
-  @media (max-width: 1024px) {
-    font-size: 15px;
-    line-height: 24px;
+  p {
+    @apply font-sans leading-relaxed;
   }
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-h1 {
-  margin: 40px 0;
-  font-size: 64px;
-  line-height: 70px;
-  font-weight: bold;
-
-  @media (max-width: 1024px) {
-    margin: 24px 0;
-    font-size: 42px;
-    line-height: 42px;
+/* ─────────────────────────────────────────────
+   COMPONENTS
+───────────────────────────────────────────── */
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-sans font-medium px-5 py-2.5
+           rounded-md transition-colors duration-200
+           hover:bg-primary-active active:scale-[0.98];
   }
 
-  @media (max-width: 768px) {
-    font-size: 38px;
-    line-height: 38px;
+  .audit-card {
+    @apply bg-surface-card border border-hairline rounded-lg p-8
+           transition-shadow duration-300;
   }
 
-  @media (max-width: 400px) {
-    font-size: 32px;
-    line-height: 32px;
+  /* Hero override (intentional design choice) */
+  .hero-section * {
+    border-radius: 0 !important;
   }
 }
 
-p {
-  margin: 24px 0;
-
-  @media (max-width: 1024px) {
-    margin: calc(var(--base) * 0.75) 0;
-  }
-}
-
-a {
-  color: currentColor;
-
-  &:focus {
-    opacity: 0.8;
-    outline: none;
+/* ─────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────── */
+@layer utilities {
+  .py-section {
+    padding-block: var(--spacing-section);
   }
 
-  &:active {
-    opacity: 0.7;
-    outline: none;
-  }
-}
-
-svg {
-  vertical-align: middle;
-}
-
-.home {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100vh;
-  padding: 45px;
-  max-width: 1024px;
-  margin: 0 auto;
-  overflow: hidden;
-
-  @media (max-width: 400px) {
-    padding: 24px;
+  /* Navy dot grid — used in hero sections */
+  .bg-grid-navy {
+    background-image: radial-gradient(
+      rgba(1, 64, 101, 0.05) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
   }
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-
-    h1 {
-      text-align: center;
-    }
+  /* Subtle dot texture — used in dropdown, mobile menu, cards */
+  .bg-texture-dots {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(0, 0, 0, 0.025) 1px,
+      transparent 0
+    );
+    background-size: 24px 24px;
   }
 
-  .links {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    a {
-      text-decoration: none;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .admin {
-      color: rgb(0, 0, 0);
-      background: rgb(1000, 1000, 1000);
-      border: 1px solid rgb(0, 0, 0);
-    }
-
-    .docs {
-      color: rgb(1000, 1000, 1000);
-      background: rgb(0, 0, 0);
-      border: 1px solid rgb(1000, 1000, 1000);
-    }
+  /* Lighter variant — for white backgrounds */
+  .bg-texture-dots-light {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(0, 0, 0, 0.02) 1px,
+      transparent 0
+    );
+    background-size: 20px 20px;
   }
 
-  .footer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    @media (max-width: 1024px) {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    .codeLink {
-      text-decoration: none;
-      padding: 0 0.5rem;
-      background: rgb(60, 60, 60);
-      border-radius: 4px;
-    }
+  /* Warm variant — aligns with canvas color (#faf9f5) */
+  .bg-texture-dots-warm {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(20, 20, 19, 0.04) 1px,
+      transparent 0
+    );
+    background-size: 24px 24px;
   }
 }

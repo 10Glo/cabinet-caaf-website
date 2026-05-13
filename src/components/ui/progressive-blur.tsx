@@ -1,0 +1,38 @@
+// src/components/ui/progressive-blur.tsx
+"use client"
+
+interface ProgressiveBlurProps {
+  className?: string
+  backgroundColor?: string
+  position?: "top" | "bottom"
+  height?: string
+  blurAmount?: string
+}
+
+export function ProgressiveBlur({
+  className = "",
+  backgroundColor = "var(--color-canvas, #f8f7f6)",
+  position = "top",
+  height = "120px",
+  blurAmount = "4px",
+}: ProgressiveBlurProps) {
+  const isTop = position === "top"
+
+  return (
+    <div
+      className={`pointer-events-none absolute left-0 z-20 w-full select-none ${className}`}
+      style={{
+        [isTop ? "top" : "bottom"]: 0,
+        height,
+        background: isTop
+          ? `linear-gradient(to top, transparent, ${backgroundColor})`
+          : `linear-gradient(to bottom, transparent, ${backgroundColor})`,
+        maskImage: isTop
+          ? `linear-gradient(to bottom, ${backgroundColor} 50%, transparent)`
+          : `linear-gradient(to top, ${backgroundColor} 50%, transparent)`,
+        WebkitBackdropFilter: `blur(${blurAmount})`,
+        backdropFilter: `blur(${blurAmount})`,
+      }}
+    />
+  )
+}
