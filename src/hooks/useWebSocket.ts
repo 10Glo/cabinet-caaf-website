@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import ws from 'ws'
+// import ws from 'ws'
 
 interface UseWebSocketProps {
   url: string
