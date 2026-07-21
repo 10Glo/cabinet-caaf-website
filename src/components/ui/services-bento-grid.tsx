@@ -1,380 +1,291 @@
 // src/components/ui/services-bento-grid.tsx
 "use client"
 
+import { useRef, useState } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import {
-  ArrowRight,
-  ShieldCheck,
-  FileCheck2,
-  MonitorCheck,
-  Landmark,
-  SearchCheck,
-  BarChart3,
-  Handshake,
-  ChevronRight,
-  Shield,
-  Scale,
-  TrendingUp,
-  BadgeCheck,
-} from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
-function ServiceTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="border border-hairline bg-canvas px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-ink/40">
-      {children}
-    </span>
-  )
-}
+// ─── Data ────────────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
-function ServiceLink({
-  href,
-  children,
-  dark = false,
+const SERVICE_CATEGORIES = [
+  {
+    number: "01",
+    heading: "Audit & Assurance",
+    tag: "Fondation",
+    description:
+      "Notre approche d'audit repose sur l'excellence technique, la compréhension du cadre réglementaire congolais et l'application rigoureuse des standards internationaux.",
+    links: [
+      { title: "Audit Financier", href: "/expertise/audit-financier", desc: "Certification selon les normes ISA" },
+      { title: "Commissariat aux Comptes", href: "/services#commissariat", desc: "Mission légale de contrôle et attestation" },
+      { title: "Audit Interne", href: "/services#audit-interne", desc: "Évaluation périodique du contrôle interne" },
+      { title: "Audit Informatique", href: "/services#audit-informatique", desc: "Sécurité et gouvernance des SI" },
+    ],
+    size: "large" as const,
+  },
+  {
+    number: "02",
+    heading: "Risk Assurance",
+    tag: "Protection",
+    description:
+      "Nous aidons les organisations à identifier, cartographier et maîtriser leurs risques opérationnels, financiers et de conformité.",
+    links: [
+      { title: "Contrôle Interne", href: "/services#controle-interne", desc: "Conception et optimisation des processus" },
+      { title: "Gestion des Risques", href: "/services#gestion-risques", desc: "Cartographie et atténuation des risques" },
+      { title: "Maîtrise des Risques", href: "/services#maitrise-risques", desc: "Conformité et contrôle permanent" },
+    ],
+    size: "medium" as const,
+  },
+  {
+    number: "03",
+    heading: "Conseil & Advisory",
+    tag: "Stratégie",
+    description:
+      "Un conseil financier fiable dans les situations sensibles : opérations de croissance, restructurations, transactions et investigations.",
+    links: [
+      { title: "Conseil Fiscal", href: "/services#conseil-fiscal", desc: "Optimisation et conformité réglementaire" },
+      { title: "Due Diligence", href: "/services#due-diligence", desc: "Analyse pour opérations M&A" },
+      { title: "Restructuration", href: "/services#restructuration", desc: "Transformations structurelles et financières" },
+    ],
+    size: "medium" as const,
+  },
+  {
+    number: "04",
+    heading: "Services Comptables",
+    tag: "Opérationnel",
+    description:
+      "Externalisation et supervision des fonctions comptables, paie et commerciales pour libérer vos équipes de la charge opérationnelle.",
+    links: [
+      { title: "Assistance Comptable", href: "/services#assistance-comptable", desc: "Tenue, révision et supervision" },
+      { title: "Gestion de Paie", href: "/services#gestion-paie", desc: "Administration et conformité salariale" },
+      { title: "Gestion Commerciale", href: "/services#gestion-commerciale", desc: "Facturation, suivi client et reporting" },
+    ],
+    size: "medium" as const,
+  },
+  {
+    number: "05",
+    heading: "Support Opérationnel",
+    tag: "Execution",
+    description:
+      "Formalisation et fiabilisation de vos processus internes pour renforcer la cohérence opérationnelle de votre organisation.",
+    links: [
+      { title: "Manuels de Procédure", href: "/services#manuels-procedure", desc: "Formalisation des processus internes" },
+      { title: "Support aux Logiciels", href: "/services#support-logiciels", desc: "Paramétrage et accompagnement ERP" },
+    ],
+    size: "small" as const,
+  },
+]
+
+// ─── Service Card ────────────────────────────────────────
+
+function ServiceCard({
+  category,
+  index,
+  isInView,
 }: {
-  href: string
-  children: React.ReactNode
-  dark?: boolean
+  category: (typeof SERVICE_CATEGORIES)[number]
+  index: number
+  isInView: boolean
 }) {
+  const [hoveredLink, setHoveredLink] = useState<number | null>(null)
+
+  const colSpan =
+    category.size === "large"
+      ? "md:col-span-2"
+      : category.size === "small"
+        ? "md:col-span-1"
+        : "md:col-span-1"
+
   return (
-    <Link
-      href={href}
-      className={`group inline-flex items-center gap-2 text-sm font-medium transition-all hover:gap-3 ${
-        dark ? "text-white/75 hover:text-white" : "text-primary"
-      }`}
+    <motion.article
+      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+      animate={
+        isInView
+          ? {
+              opacity: [0, 1, 1],
+              y: [20, 0, 0],
+              filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
+            }
+          : {}
+      }
+      transition={{
+        duration: 1.5,
+        delay: 0.3 + index * 0.1,
+        ease: EASE_OUT,
+      }}
+      className={`group flex flex-col border border-[#111A4A]/[0.06] bg-white ${colSpan}`}
     >
-      {children}
-      <ArrowRight
-        size={15}
-        className="transition-transform group-hover:translate-x-0.5"
-      />
-    </Link>
+      {/* Top section */}
+      <div className="flex-1 p-8 lg:p-10">
+        {/* Number + Tag */}
+        <div className="mb-5 flex items-center gap-3">
+          <span className="font-mono text-[11px] text-[#7C7F88]/40">
+            {category.number}
+          </span>
+          <span className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.02] px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#7C7F88]/60">
+            {category.tag}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="mb-4 font-serif text-2xl text-[#111A4A] transition-transform duration-500 group-hover:translate-x-1 lg:text-[28px]">
+          {category.heading}
+        </h3>
+
+        {/* Description */}
+        <p className="mb-8 text-sm leading-7 text-[#7C7F88]">
+          {category.description}
+        </p>
+
+        {/* Services list */}
+        <div className="space-y-0">
+          {category.links.map((link, i) => (
+            <Link
+              key={link.title}
+              href={link.href}
+              onMouseEnter={() => setHoveredLink(i)}
+              onMouseLeave={() => setHoveredLink(null)}
+              className="group/link flex items-start justify-between gap-3 border-t border-[#111A4A]/[0.06] py-4 transition-all duration-300 first:border-t-0"
+            >
+              <div className="flex-1">
+                <p
+                  className={`text-sm font-medium transition-colors duration-300 ${
+                    hoveredLink === i ? "text-primary" : "text-[#111A4A]"
+                  }`}
+                >
+                  {link.title}
+                </p>
+                <p className="mt-0.5 text-xs leading-relaxed text-[#7C7F88]/60">
+                  {link.desc}
+                </p>
+              </div>
+
+              <ArrowRight
+                size={12}
+                className={`mt-1 shrink-0 transition-all duration-300 ${
+                  hoveredLink === i
+                    ? "translate-x-0.5 text-primary"
+                    : "text-[#7C7F88]/20"
+                }`}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom accent bar */}
+      <div className="h-px w-0 bg-primary/40 transition-all duration-700 group-hover:w-full" />
+    </motion.article>
   )
 }
+
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
 
 export function ServicesBentoGrid() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+
+  const totalServices = SERVICE_CATEGORIES.reduce(
+    (acc, cat) => acc + cat.links.length,
+    0
+  )
+
   return (
-    <section id="services-grid" className="bg-canvas px-10 py-section">
-      <div className="w-full">
-        {/* Header */}
-        <div className="mb-14 grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="h-px w-10 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Vue d’ensemble
-              </span>
-            </div>
+    <section
+      ref={sectionRef}
+      id="services-grid"
+      className="bg-white px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
+    >
+      <div className="mx-auto max-w-7xl">
+        {/* ── Header ── */}
+        <div className="mb-14 max-w-3xl lg:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-5 inline-flex items-center"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Vue d&apos;ensemble
+            </span>
+          </motion.div>
 
-            <h2 className="font-serif text-4xl leading-tight text-brand-navy md:text-5xl">
-              Une offre structurée
-              <br />
-              <span className="text-ink/40">
-                autour des enjeux les plus critiques.
-              </span>
-            </h2>
-          </div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
+          >
+            Une offre structurée{" "}
+            <span className="opacity-40">
+              autour des enjeux les plus critiques.
+            </span>
+          </motion.h2>
 
-          <p className="max-w-xl text-base leading-relaxed text-ink/60">
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
+          >
             Nos services couvrent les besoins essentiels des organisations :
-            fiabilité de l’information financière, maîtrise des risques,
-            transformation des fonctions support et accompagnement des décisions
-            stratégiques.
-          </p>
+            fiabilité de l&apos;information financière, maîtrise des risques,
+            transformation des fonctions support et accompagnement des
+            décisions stratégiques.
+          </motion.p>
         </div>
 
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
-          {/* ── 1. AUDIT & ASSURANCE — featured large card */}
-          <section className="group border border-hairline bg-white p-8 md:col-span-8 md:p-10">
-            <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-              {/* Left content */}
-              <div>
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/5">
-                    <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={1.7} />
-                  </div>
-                  <h3 className="font-serif text-3xl text-brand-navy">
-                    Audit & Assurance
-                  </h3>
-                </div>
-
-                <p className="mb-8 max-w-2xl text-base leading-7 text-ink/60">
-                  Notre approche d’audit repose sur l’excellence technique, la
-                  compréhension du cadre réglementaire congolais et
-                  l’application rigoureuse des standards internationaux. Nous
-                  apportons une assurance indépendante qui renforce la fiabilité
-                  de l’information financière et la confiance des parties
-                  prenantes.
-                </p>
-
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {[
-                    {
-                      title: "Audit légal & commissariat",
-                      description:
-                        "Conformité aux normes OHADA et aux obligations locales.",
-                      icon: Landmark,
-                    },
-                    {
-                      title: "Audit interne",
-                      description:
-                        "Renforcement de la gouvernance, des contrôles et de la gestion des risques.",
-                      icon: FileCheck2,
-                    },
-                    {
-                      title: "Audit IT",
-                      description:
-                        "Évaluation de l’intégrité, de la sécurité et de la fiabilité des systèmes financiers.",
-                      icon: MonitorCheck,
-                    },
-                    {
-                      title: "Conversion & reporting IFRS",
-                      description:
-                        "Préparation de reportings consolidés pour groupes et investisseurs.",
-                      icon: BadgeCheck,
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3">
-                      <item.icon
-                        className="mt-1 h-4 w-4 shrink-0 text-primary"
-                        strokeWidth={1.7}
-                      />
-                      <div>
-                        <h4 className="text-sm font-semibold text-brand-navy">
-                          {item.title}
-                        </h4>
-                        <p className="mt-1 text-sm leading-6 text-ink/50">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right visual/info panel */}
-              <div className="flex flex-col justify-between border border-hairline bg-surface-card/40 p-6">
-                <div>
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="h-px w-6 bg-primary" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
-                      Points forts
-                    </span>
-                  </div>
-
-                  <div className="space-y-3">
-                    {[
-                      "Rigueur documentaire",
-                      "Indépendance de jugement",
-                      "Référentiels OHADA / IFRS / ISA",
-                      "Livrables exploitables par les directions",
-                    ].map((point) => (
-                      <div
-                        key={point}
-                        className="flex items-center gap-3 border border-hairline bg-white px-4 py-3"
-                      >
-                        <Shield className="h-4 w-4 text-primary" strokeWidth={1.7} />
-                        <span className="text-sm text-ink/60">{point}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-8 border-t border-hairline pt-6">
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    <ServiceTag>OHADA</ServiceTag>
-                    <ServiceTag>IFRS</ServiceTag>
-                    <ServiceTag>ISA</ServiceTag>
-                    <ServiceTag>Conformité</ServiceTag>
-                  </div>
-
-                  <ServiceLink href="#audit-assurance">
-                    Explorer le service d’audit
-                  </ServiceLink>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── 2. INTERNAL CONTROL & RISKS — side card */}
-          <section className="border border-hairline bg-surface-card p-8 md:col-span-4 md:p-10">
-            <div className="mb-6 flex h-12 w-12 items-center justify-center border border-primary/20 bg-white/70">
-              <SearchCheck className="h-6 w-6 text-primary" strokeWidth={1.7} />
-            </div>
-
-            <h3 className="font-serif text-2xl text-brand-navy">
-              Contrôle Interne & Risques
-            </h3>
-
-            <p className="mt-4 text-sm leading-7 text-ink/55">
-              Nous aidons les organisations à identifier, cartographier et
-              maîtriser leurs risques opérationnels, financiers et de
-              conformité, avec une attention particulière à la robustesse des
-              processus internes.
-            </p>
-
-            <div className="mt-6 space-y-3">
-              {[
-                "Cartographie des risques",
-                "Dispositifs de contrôle",
-                "Audit de conformité",
-                "Prévention fraude & anomalies",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3 border border-hairline bg-white px-4 py-3"
-                >
-                  <BadgeCheck className="h-4 w-4 text-primary" strokeWidth={1.7} />
-                  <span className="text-sm text-ink/60">{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 border-t border-hairline pt-6">
-              <ServiceLink href="#controle-risques">
-                Demander un diagnostic
-              </ServiceLink>
-            </div>
-          </section>
-
-          {/* ── 3. CONSULTING — dark card */}
-          <section className="border border-white/10 bg-surface-dark p-8 md:col-span-6 md:p-10">
-            <div className="mb-6 flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center border border-white/10 bg-white/5">
-                <BarChart3 className="h-6 w-6 text-primary" strokeWidth={1.7} />
-              </div>
-              <h3 className="font-serif text-3xl text-white">
-                Consulting
-              </h3>
-            </div>
-
-            <p className="mb-8 max-w-xl text-sm leading-7 text-white/55">
-              Nous accompagnons les entreprises dans leurs projets de
-              transformation, d’optimisation des fonctions financières et
-              d’amélioration de la performance, avec une approche fondée sur les
-              données et l’exécution.
-            </p>
-
-            <div className="space-y-6">
-              {[
-                {
-                  title: "Stratégie & pilotage",
-                  description:
-                    "Études de marché, structuration de croissance et accompagnement des décisions.",
-                },
-                {
-                  title: "Transformation financière",
-                  description:
-                    "Optimisation des fonctions finance, reporting et fiabilisation des processus.",
-                },
-              ].map((item) => (
-                <div key={item.title} className="border-l-2 border-primary pl-4">
-                  <h4 className="text-base font-semibold text-white">
-                    {item.title}
-                  </h4>
-                  <p className="mt-1 text-sm leading-6 text-white/50">
-                    {item.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 border-t border-white/[0.06] pt-6">
-              <ServiceLink href="#consulting" dark>
-                Découvrir notre approche consulting
-              </ServiceLink>
-            </div>
-          </section>
-
-          {/* ── 4. ADVISORY — bottom right */}
-          <section className="group relative overflow-hidden border border-hairline bg-white p-8 md:col-span-6 md:p-10">
-            {/* Decorative bg icon */}
-            <div className="pointer-events-none absolute -bottom-10 -right-10 opacity-[0.03] transition-opacity duration-300 group-hover:opacity-[0.06]">
-              <Handshake className="h-56 w-56 text-brand-navy" strokeWidth={0.5} />
-            </div>
-
-            <div className="relative z-10">
-              <div className="mb-6 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/5">
-                  <Handshake className="h-6 w-6 text-primary" strokeWidth={1.7} />
-                </div>
-                <h3 className="font-serif text-3xl text-brand-navy">
-                  Advisory
-                </h3>
-              </div>
-
-              <p className="mb-8 max-w-xl text-sm leading-7 text-ink/55">
-                Nous apportons un conseil financier fiable dans les situations
-                sensibles : opérations de croissance, restructurations,
-                transactions, investigations ou réorganisations stratégiques.
-              </p>
-
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {[
-                  {
-                    title: "M&A Support",
-                    description:
-                      "Due diligence, valorisation et accompagnement des acquisitions.",
-                  },
-                  {
-                    title: "Risk Advisory",
-                    description:
-                      "Investigations ciblées, dispositifs anti-fraude et gestion des risques.",
-                  },
-                  {
-                    title: "Restructuration",
-                    description:
-                      "Accompagnement des transformations et rééquilibrages financiers.",
-                  },
-                  {
-                    title: "ESG & Gouvernance",
-                    description:
-                      "Lecture des obligations de durabilité et structuration du reporting.",
-                  },
-                ].map((item) => (
-                  <div key={item.title}>
-                    <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
-                      {item.title}
-                    </span>
-                    <p className="mt-2 text-sm font-medium leading-6 text-ink/70">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 border-t border-hairline pt-6">
-                <ServiceLink href="#advisory">
-                  Échanger sur un besoin spécifique
-                </ServiceLink>
-              </div>
-            </div>
-          </section>
+        {/* ── Bento Grid ── */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {SERVICE_CATEGORIES.map((category, i) => (
+            <ServiceCard
+              key={category.heading}
+              category={category}
+              index={i}
+              isInView={isInView}
+            />
+          ))}
         </div>
 
-        {/* Bottom strip */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border border-hairline bg-white px-8 py-5 md:flex-row">
+        {/* ── Bottom strip ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          animate={
+            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+          }
+          transition={{ duration: 1.5, delay: 0.9, ease: EASE_OUT }}
+          className="mt-10 flex flex-col items-center justify-between gap-4 border border-[#111A4A]/[0.06] bg-white px-8 py-5 md:flex-row"
+        >
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-5 w-5 text-primary" strokeWidth={1.7} />
-            <p className="text-sm text-ink/60">
-              Une intervention peut mobiliser plusieurs expertises à la fois.{" "}
-              <span className="font-medium text-ink/80">
-                Nous construisons toujours l’approche la plus adaptée à votre contexte.
+            <span className="font-mono text-xs text-[#7C7F88]/50">
+              {totalServices}
+            </span>
+            <p className="text-sm text-[#7C7F88]">
+              Une intervention peut mobiliser plusieurs expertises.{" "}
+              <span className="font-medium text-[#111A4A]/70">
+                Nous construisons l&apos;approche la plus adaptée.
               </span>
             </p>
           </div>
 
           <Link
             href="#contact"
-            className="group inline-flex shrink-0 items-center gap-2 text-sm font-medium text-primary transition-all hover:gap-3"
+            className="group/link inline-flex shrink-0 items-center gap-2 text-[13px] font-medium text-primary transition-all hover:gap-2.5"
           >
             Nous consulter
-            <ChevronRight
-              size={15}
-              className="transition-transform group-hover:translate-x-0.5"
+            <ArrowRight
+              size={13}
+              className="transition-transform group-hover/link:translate-x-0.5"
             />
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

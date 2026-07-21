@@ -1,250 +1,207 @@
-// src/components/ui/leadership-section.tsx
 "use client"
 
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import Image from "next/image"
-import type { StaticImageData } from "next/image"
-import {
-  ArrowRight,
-  Briefcase,
-  ShieldCheck,
-  Users,
-  Globe2,
-} from "lucide-react"
-import Link from "next/link"
 
-type Leader = {
-  name: string
-  role: string
-  bio: string
-  image?: string | StaticImageData
-  highlights?: string[]
-  location?: string
-}
+// ─── Data ────────────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
-type LeadershipSectionProps = {
-  title?: string
-  eyebrow?: string
-  description?: string
-  leaders: [Leader, Leader] | Leader[]
-}
+const LEADERS = [
+  {
+    name: "Jean-Pierre Kabongo",
+    role: "Managing Partner",
+    bio: "Avec plus de deux décennies d'expérience dans l'audit, la fiscalité stratégique et l'accompagnement des groupes opérant en RDC, il pilote la vision du cabinet avec une exigence constante de qualité, d'indépendance et de fiabilité.",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop&crop=face",
+    location: "Kinshasa",
+    highlights: ["Audit stratégique", "Fiscalité minière", "Gouvernance"],
+    badge: "Leadership",
+  },
+  {
+    name: "Patrick Mutombo",
+    role: "Directeur",
+    bio: "Il supervise l'exécution des missions, le suivi méthodologique et la coordination des équipes, avec une forte expertise en conformité réglementaire, structuration financière et accompagnement opérationnel.",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop&crop=face",
+    location: "Lubumbashi",
+    highlights: ["Conformité", "OHADA / IFRS", "Pilotage mission"],
+    badge: "Direction",
+  },
+]
 
-function isStaticImageData(img: string | StaticImageData): img is StaticImageData {
-  return typeof img === "object" && "src" in img
-}
+// ─── Leader Card ─────────────────────────────────────────
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
-}
-
-function LeaderPortrait({
+function LeaderCard({
   leader,
-  priority = false,
+  index,
+  isInView,
 }: {
-  leader: Leader
-  priority?: boolean
+  leader: (typeof LEADERS)[number]
+  index: number
+  isInView: boolean
 }) {
-  if (leader.image) {
-    return (
-      <div className="relative h-full min-h-[340px] w-full bg-surface-card">
-        <Image
-          src={leader.image}
-          alt={leader.name}
-          fill
-          priority={priority}
-          sizes="(max-width: 768px) 100vw, 40vw"
-          className="object-cover grayscale transition-all duration-500 hover:grayscale-0"
-        />
-      </div>
-    )
-  }
-
   return (
-    <div className="flex h-full min-h-[340px] w-full items-center justify-center bg-surface-card">
-      <div className="text-center">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center border border-hairline bg-white">
-          <span className="font-serif text-3xl text-brand-navy">
-            {getInitials(leader.name)}
-          </span>
+    <motion.article
+      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+      animate={
+        isInView
+          ? {
+              opacity: [0, 1, 1],
+              y: [20, 0, 0],
+              filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
+            }
+          : {}
+      }
+      transition={{
+        duration: 1.5,
+        delay: 0.3 + index * 0.15,
+        ease: EASE_OUT,
+      }}
+      className="group border border-[#111A4A]/[0.06] bg-white w-full"
+    >
+      {/* Modification de la proportion de la grille pour allonger l'espace du texte (40% photo / 60% contenu) */}
+      <div className="grid h-full grid-cols-1 md:grid-cols-[4fr_6fr]">
+        {/* Portrait */}
+        <div className="relative h-full min-h-[720px] w-full overflow-hidden bg-[#111A4A]/[0.03]">
+          <Image
+            src={leader.image}
+            alt={leader.name}
+            fill
+            priority={index === 0}
+            sizes="(max-width: 768px) 100vw, 40vw"
+            className="object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
+          />
         </div>
-        <p className="mt-4 text-sm uppercase tracking-[0.14em] text-ink/35">
-          Portrait à ajouter
-        </p>
-      </div>
-    </div>
-  )
-}
 
-function HighlightTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="border border-hairline bg-canvas px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-ink/40">
-      {children}
-    </span>
-  )
-}
-
-export function LeadershipSection({
-  title = "Notre leadership",
-  eyebrow = "Direction",
-  description = "Une direction engagée, expérimentée et proche des enjeux des décideurs. Notre gouvernance s’appuie sur la compétence technique, la discrétion professionnelle et la continuité dans la relation client.",
-  leaders,
-}: LeadershipSectionProps) {
-  const [leaderOne, leaderTwo] = leaders
-
-  return (
-    <section className="bg-canvas px-10 py-section">
-      <div className="w-full">
-        {/* Header */}
-        <div className="mb-14 grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        {/* Content */}
+        <div className="flex flex-col justify-between p-8 md:p-10">
           <div>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="h-px w-10 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                {eyebrow}
+            {/* Badge */}
+            <div className="mb-5">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
+                {leader.badge}
+              </span>
+              <span className="mx-2 text-[#111A4A]/10">—</span>
+              <span className="text-[10px] uppercase tracking-[0.15em] text-[#7C7F88]">
+                {leader.location}
               </span>
             </div>
 
-            <h2 className="font-serif text-4xl leading-tight text-brand-navy md:text-5xl">
-              {title}
-            </h2>
+            {/* Name + Role */}
+            <h3 className="font-serif text-2xl text-[#111A4A] md:text-3xl">
+              {leader.name}
+            </h3>
+            <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-primary">
+              {leader.role}
+            </p>
+
+            {/* Bio */}
+            <p className="mt-6 text-sm leading-7 text-[#7C7F88]">
+              {leader.bio}
+            </p>
+
+            {/* Highlights */}
+            {leader.highlights.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {leader.highlights.map((item) => (
+                  <span
+                    key={item}
+                    className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.02] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#7C7F88]/70"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
-          <p className="max-w-xl text-base leading-relaxed text-ink/60">
-            {description}
+          {/* Footer — aligné à gauche grâce à text-left */}
+          <div className="mt-8 border-t border-[#111A4A]/[0.06] pt-6 text-left">
+            <p className="text-xs leading-relaxed text-[#7C7F88]/70">
+              Vision stratégique · Standards internationaux
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
+
+export function LeadershipSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+
+  return (
+    <section ref={sectionRef} className="bg-canvas px-10 py-section">
+      <div className="w-full">
+        {/* ── Header ── */}
+        <div className="mb-14 max-w-3xl lg:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-5 inline-flex items-center"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Direction
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
+          >
+            Une direction engagée,{" "}
+            <span className="opacity-40">proche de vos enjeux.</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
+          >
+            Notre gouvernance s&apos;appuie sur la compétence technique, la
+            discrétion professionnelle et la continuité dans la relation client.
+          </motion.p>
+        </div>
+
+        {/* ── Two cards — layout étiré à 100% ── */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 w-full">
+          {LEADERS.map((leader, i) => (
+            <LeaderCard
+              key={leader.name}
+              leader={leader}
+              index={i}
+              isInView={isInView}
+            />
+          ))}
+        </div>
+
+        {/* ── Team quote — italic ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+          animate={
+            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+          }
+          transition={{ duration: 1.5, delay: 0.6, ease: EASE_OUT }}
+          className="mt-10 flex justify-left lg:mt-14"
+        >
+          <p className="max-w-2xl text-left text-sm italic leading-relaxed text-[#7C7F88]/70">
+            Derrière chaque mission, une équipe de professionnels engagés qui
+            partagent la même exigence : celle de servir nos clients avec
+            rigueur, indépendance et constance dans la durée.
           </p>
-        </div>
-
-        {/* Asymmetrical leadership layout */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-          {/* Managing Partner — featured */}
-          <article className="border border-hairline bg-white lg:col-span-7">
-            <div className="grid h-full grid-cols-1 md:grid-cols-[0.95fr_1.05fr]">
-              <LeaderPortrait leader={leaderOne} priority />
-
-              <div className="flex flex-col justify-between p-8 md:p-10">
-                <div>
-                  <div className="mb-5 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center border border-primary/20 bg-primary/5">
-                      <ShieldCheck
-                        className="h-5 w-5 text-primary"
-                        strokeWidth={1.7}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.14em] text-primary">
-                        Leadership
-                      </p>
-                      <p className="text-xs uppercase tracking-[0.14em] text-ink/35">
-                        {leaderOne.location ?? "Kinshasa"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <h3 className="font-serif text-3xl text-brand-navy">
-                    {leaderOne.name}
-                  </h3>
-
-                  <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-primary">
-                    {leaderOne.role}
-                  </p>
-
-                  <p className="mt-6 text-sm leading-7 text-ink/60">
-                    {leaderOne.bio}
-                  </p>
-
-                  {leaderOne.highlights && leaderOne.highlights.length > 0 && (
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {leaderOne.highlights.map((item) => (
-                        <HighlightTag key={item}>{item}</HighlightTag>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-8 border-t border-hairline pt-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3">
-                      <Briefcase
-                        className="h-4 w-4 text-primary"
-                        strokeWidth={1.7}
-                      />
-                      <span className="text-xs uppercase tracking-[0.14em] text-ink/40">
-                        Vision stratégique
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Globe2
-                        className="h-4 w-4 text-primary"
-                        strokeWidth={1.7}
-                      />
-                      <span className="text-xs uppercase tracking-[0.14em] text-ink/40">
-                        Standards internationaux
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          {/* Directeur — secondary but premium */}
-          <article className="border border-hairline bg-white lg:col-span-5">
-            <LeaderPortrait leader={leaderTwo} />
-
-            <div className="p-8 md:p-10">
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center border border-primary/20 bg-primary/5">
-                  <Users className="h-5 w-5 text-primary" strokeWidth={1.7} />
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.14em] text-primary">
-                    Direction
-                  </p>
-                  <p className="text-xs uppercase tracking-[0.14em] text-ink/35">
-                    {leaderTwo.location ?? "Lubumbashi"}
-                  </p>
-                </div>
-              </div>
-
-              <h3 className="font-serif text-2xl text-brand-navy md:text-3xl">
-                {leaderTwo.name}
-              </h3>
-
-              <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-primary">
-                {leaderTwo.role}
-              </p>
-
-              <p className="mt-6 text-sm leading-7 text-ink/60">
-                {leaderTwo.bio}
-              </p>
-
-              {leaderTwo.highlights && leaderTwo.highlights.length > 0 && (
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {leaderTwo.highlights.map((item) => (
-                    <HighlightTag key={item}>{item}</HighlightTag>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-8 border-t border-hairline pt-6">
-                <Link
-                  href="#contact"
-                  className="group inline-flex items-center gap-2 text-sm font-medium text-primary transition-all hover:gap-3"
-                >
-                  Prendre contact avec la direction
-                  <ArrowRight
-                    size={15}
-                    className="transition-transform group-hover:translate-x-0.5"
-                  />
-                </Link>
-              </div>
-            </div>
-          </article>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

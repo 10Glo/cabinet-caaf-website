@@ -40,7 +40,7 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Notre Histoire",
-            href: "/about",
+            href: "/history",
             description: "30 ans d'expertise en RDC et en Afrique",
           },
           {

@@ -1,90 +1,171 @@
 // src/components/ui/publications-cta.tsx
 "use client"
 
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import {
-  ArrowRight,
-  FileDown,
-  BookOpen,
-  CheckCircle2,
-  Mail,
-} from "lucide-react"
+import Image from "next/image"
+import ctaImage from "@/assets/3.png"
+
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
+
+const TYPES = [
+  "Rapports sectoriels",
+  "Notes réglementaires",
+  "Guides pratiques",
+  "Analyses sur mesure",
+]
+
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
 
 export function PublicationsCta() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+
   return (
-    <section className="relative overflow-hidden border-t border-hairline bg-surface-dark px-10 py-section">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-brand-navy"
+    >
+      {/* ── Grain texture ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.03]"
         style={{
-          opacity: 0.02,
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: "72px 72px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
         }}
       />
 
-      <div className="pointer-events-none absolute -right-40 top-20 z-0 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[150px]" />
-      <div className="absolute left-10 top-0 z-0 hidden h-full w-px bg-gradient-to-b from-transparent via-white/[0.06] to-transparent lg:block" />
-
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
-        <div className="mb-6 flex items-center justify-center gap-3">
-          <div className="h-px w-8 bg-primary" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-            Besoin d&apos;un contenu spécifique ?
-          </span>
-          <div className="h-px w-8 bg-primary" />
-        </div>
-
-        <h2 className="font-serif text-4xl leading-tight text-white md:text-5xl">
-          Une question technique ?
-          <br />
-          <span className="bg-gradient-to-r from-primary via-emerald-300 to-primary bg-clip-text text-transparent">
-            Nous publions aussi sur demande.
-          </span>
-        </h2>
-
-        <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-[1.8] text-white/50">
-          Si vous recherchez une analyse sectorielle spécifique, une note
-          technique sur un sujet réglementaire ou un guide adapté à votre
-          contexte, notre équipe peut produire un contenu sur mesure.
-        </p>
-
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            href="/contact"
-            className="group inline-flex items-center justify-center gap-3 bg-primary px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-primary-active"
+      {/* ── Grid + image layout ── */}
+      <div className="relative z-10 grid min-h-[600px] grid-cols-1 lg:min-h-[700px] lg:grid-cols-2">
+        {/* ═══════════════════════════════════════════════
+            LEFT — Text content
+            ═══════════════════════════════════════════════ */}
+        <div className="flex flex-col justify-center px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-6 inline-flex items-center"
           >
-            <Mail className="h-4 w-4" />
-            Demander un contenu
-            <ArrowRight
-              size={16}
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </Link>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Besoin d&apos;un contenu spécifique ?
+            </span>
+          </motion.div>
 
-          <a
-            href="/firm-profile.pdf"
-            className="group inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-lg text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white"
           >
-            <FileDown className="h-4 w-4" />
-            Profil du cabinet
-          </a>
+            Nous publions aussi
+            <br />
+            <span className="opacity-40">sur demande.</span>
+          </motion.h2>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="mb-10 max-w-md text-lg leading-6 text-white/45"
+          >
+            Si vous recherchez une analyse sectorielle spécifique, une note
+            technique sur un sujet réglementaire ou un guide adapté à votre
+            contexte, notre équipe peut produire un contenu sur mesure.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.4, ease: EASE_OUT }}
+            className="flex flex-col gap-4 sm:flex-row"
+          >
+            <Link
+              href="/contact"
+              className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+            >
+              <span className="relative z-10">Demander un contenu</span>
+              <span className="relative z-10 text-[14px] leading-none transition-transform duration-200 group-hover:translate-x-0.5">
+                &rarr;
+              </span>
+            </Link>
+
+            <a
+              href="/firm-profile.pdf"
+              className="btn-secondary-hero group inline-flex items-center justify-center gap-3 rounded-sm border border-white/20 bg-white/[0.04] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/85 backdrop-blur-sm hover:text-white"
+            >
+              Profil du cabinet
+            </a>
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="my-10 h-px w-24 bg-white/[0.08]"
+          />
+
+          {/* Types strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.55, ease: EASE_OUT }}
+            className="flex flex-wrap gap-x-6 gap-y-2"
+          >
+            {TYPES.map((type) => (
+              <span
+                key={type}
+                className="text-xs text-white/30"
+              >
+                {type}
+              </span>
+            ))}
+          </motion.div>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-          {["Rapports sectoriels", "Notes réglementaires", "Guides pratiques", "Analyses sur mesure"].map(
-            (item) => (
-              <div key={item} className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary/70" strokeWidth={1.7} />
-                <span className="text-xs uppercase tracking-[0.14em] text-white/40">
-                  {item}
-                </span>
-              </div>
-            )
-          )}
-        </div>
+        {/* ═══════════════════════════════════════════════
+            RIGHT — Full-height image
+            ═══════════════════════════════════════════════ */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          className="relative h-[350px] sm:h-[400px] lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-1/2"
+        >
+          <Image
+            src={ctaImage}
+            alt="Publications CAAF SAS — Ressources professionnelles"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/50 via-brand-navy/10 to-transparent lg:bg-gradient-to-r lg:from-brand-navy lg:via-brand-navy/40 lg:to-transparent" />
+
+          {/* Bottom fade on mobile */}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent lg:hidden" />
+        </motion.div>
       </div>
     </section>
   )

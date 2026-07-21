@@ -1,98 +1,140 @@
 // src/components/actualites/actualites-featured.tsx
 "use client"
 
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import { ArrowRight, Clock, CalendarDays, User } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import type { Article } from "@/content/actualites/types"
 import { formatDate } from "@/content/actualites/articles"
 
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
+
+// ─── Props ───────────────────────────────────────────────
 interface Props {
   article: Article
 }
 
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
+
 export function ActualitesFeatured({ article }: Props) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+
   return (
-    <section className="bg-canvas px-10 py-section">
+    <section
+      ref={sectionRef}
+      className="bg-canvas px-10 py-section"
+    >
       <div className="w-full">
-        {/* Heading */}
-        <div className="mb-10 flex items-center gap-3">
-          <div className="h-px w-10 bg-primary" />
+        {/* ── Eyebrow ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+          className="mb-10 inline-flex items-center"
+        >
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
             À la une
           </span>
-        </div>
+        </motion.div>
 
-        {/* Card */}
-        <Link
-          href={`/actualites/${article.slug}`}
-          className="group grid grid-cols-1 gap-0 border border-hairline bg-white transition-colors md:grid-cols-12"
+        {/* ── Featured card ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          animate={
+            isInView
+              ? {
+                  opacity: [0, 1, 1],
+                  y: [20, 0, 0],
+                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
+                }
+              : {}
+          }
+          transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
         >
-          {/* Image */}
-          <div className="relative overflow-hidden md:col-span-7">
-            <img
-              src={article.image}
-              alt={article.title}
-              className="h-64 w-full object-cover transition-transform duration-500 group-hover:scale-105 md:h-full md:min-h-105"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent md:bg-linear-to-r" />
+          <Link
+            href={`/actualites/${article.slug}`}
+            className="group relative block overflow-hidden border border-[#111A4A]/[0.06] bg-white"
+          >
+            {/* Full-bleed image */}
+            <div className="relative h-125 w-full md:h-145 lg:h-155">
+              <img
+                src={article.image}
+                alt={article.title}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
 
-            {/* Category badge */}
-            <div className="absolute left-6 top-6">
-              <span className="inline-flex items-center border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-white backdrop-blur-sm">
-                {article.category}
-              </span>
-            </div>
-          </div>
+              {/* Gradient overlay from bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/90 via-brand-navy/50 to-transparent" />
 
-          {/* Content */}
-          <div className="flex flex-col justify-center p-8 md:col-span-5 md:p-10 lg:p-14">
-            {/* Meta */}
-            <div className="mb-6 flex flex-wrap items-center gap-4 text-[12px] text-ink/40">
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarDays size={13} strokeWidth={1.5} />
-                {formatDate(article.date)}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Clock size={13} strokeWidth={1.5} />
-                {article.readTime} de lecture
-              </span>
-            </div>
+              {/* Content overlay */}
+              <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 lg:p-14">
+                {/* Category badge */}
+                <span className="mb-5 inline-block border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/90 backdrop-blur-sm">
+                  {article.category}
+                </span>
 
-            {/* Title */}
-            <h2 className="font-serif text-2xl leading-snug text-brand-navy transition-colors group-hover:text-primary md:text-3xl">
-              {article.title}
-            </h2>
+                {/* Title */}
+                <h2 className="max-w-3xl font-serif text-2xl leading-snug text-white transition-colors duration-300 group-hover:text-primary md:text-3xl lg:text-4xl">
+                  {article.title}
+                </h2>
 
-            {/* Excerpt */}
-            <p className="mt-4 text-sm leading-7 text-ink/60 md:text-base">
-              {article.excerpt}
-            </p>
-
-            {/* Author */}
-            <div className="mt-8 flex items-center gap-3 border-t border-hairline pt-6">
-              <div className="inline-flex h-10 w-10 items-center justify-center border border-primary/20 bg-primary/5 text-primary">
-                <User size={18} strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-brand-navy">
-                  {article.author.name}
+                {/* Excerpt */}
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60 md:text-base">
+                  {article.excerpt}
                 </p>
-                <p className="text-[12px] text-ink/40">{article.author.role}</p>
+
+                {/* Bottom row */}
+                <div className="mt-8 flex flex-col gap-4 border-t border-white/[0.08] pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-wrap items-center gap-6">
+                    {/* Author */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
+                        Auteur
+                      </p>
+                      <p className="mt-1 text-sm font-medium text-white/80">
+                        {article.author.name}
+                      </p>
+                    </div>
+
+                    {/* Date */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
+                        Publié le
+                      </p>
+                      <p className="mt-1 text-sm text-white/60">
+                        {formatDate(article.date)}
+                      </p>
+                    </div>
+
+                    {/* Read time */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
+                        Lecture
+                      </p>
+                      <p className="mt-1 text-sm text-white/60">
+                        {article.readTime}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <span className="inline-flex shrink-0 items-center gap-2 text-[13px] font-medium text-primary transition-all group-hover:gap-2.5">
+                    Lire l&apos;article
+                    <ArrowRight
+                      size={13}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
+                  </span>
+                </div>
               </div>
             </div>
-
-            {/* CTA */}
-            <div className="mt-8">
-              <span className="inline-flex items-center gap-2 text-sm font-medium text-primary transition-all group-hover:gap-3">
-                Lire l&apos;article complet
-                <ArrowRight
-                  size={15}
-                  className="transition-transform group-hover:translate-x-0.5"
-                />
-              </span>
-            </div>
-          </div>
-        </Link>
+          </Link>
+        </motion.div>
       </div>
     </section>
   )

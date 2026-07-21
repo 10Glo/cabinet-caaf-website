@@ -1,91 +1,82 @@
 // src/components/ui/featured-quote-section.tsx
 "use client"
 
-import { Quote, ShieldCheck } from "lucide-react"
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 
-type FeaturedQuoteSectionProps = {
-  quote?: string
-  author?: string
-  role?: string
-  note?: string
-}
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
-export function FeaturedQuoteSection({
-  quote = "Notre cabinet existe pour apporter la clarté, la sécurité et la confiance nécessaires aux projets les plus ambitieux de la RDC, afin qu’ils puissent atteindre une maturité conforme aux standards internationaux.",
-  author = "Managing Partner",
-  role = "CAAF SAS",
-  note = "Vision stratégique · Indépendance · Rigueur",
-}: FeaturedQuoteSectionProps) {
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
+
+export function FeaturedQuoteSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+
   return (
-    <section className="border-y border-hairline bg-surface-soft/40 px-10 py-section">
+    <section ref={sectionRef} className="bg-brand-navy px-10 py-section">
       <div className="w-full">
-        <div className="grid grid-cols-1 border border-hairline bg-white lg:grid-cols-[260px_1fr]">
-          {/* Left rail */}
-          <div className="flex flex-col justify-between border-b border-hairline bg-surface-dark p-8 text-white lg:border-b-0 lg:border-r lg:border-r-white/10">
-            <div>
-              <div className="mb-6 flex items-center gap-3">
-                <div className="h-px w-8 bg-primary" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          animate={
+            isInView
+              ? {
+                  opacity: [0, 1, 1],
+                  y: [20, 0, 0],
+                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
+                }
+              : {}
+          }
+          transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+          className="border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr]">
+            {/* ── Left rail ── */}
+            <div className="flex flex-col justify-between border-b border-white/[0.06] p-8 lg:border-b-0 lg:border-r lg:border-white/[0.06] lg:p-10">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
                   Parole de direction
                 </span>
-              </div>
 
-              <div className="flex h-12 w-12 items-center justify-center border border-white/10 bg-white/5">
-                <Quote className="h-6 w-6 text-primary" strokeWidth={1.7} />
-              </div>
-            </div>
-
-            <div className="mt-10 space-y-4">
-              <div className="flex items-start gap-3">
-                <ShieldCheck
-                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                  strokeWidth={1.7}
-                />
-                <p className="text-sm leading-7 text-white/60">
-                  Une vision fondée sur la qualité d’exécution, la conformité et
-                  la confiance.
-                </p>
-              </div>
-
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
-                  Signature
-                </p>
-                <p className="mt-2 text-sm font-medium text-white">{author}</p>
-                <p className="text-xs uppercase tracking-[0.14em] text-white/40">
-                  {role}
+                <p className="mt-6 text-sm leading-7 text-white/40">
+                  Une vision fondée sur la qualité d&apos;exécution, la
+                  conformité et la confiance.
                 </p>
               </div>
             </div>
-          </div>
 
-          {/* Main quote */}
-          <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="h-px w-10 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+            {/* ── Main quote ── */}
+            <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
+              <span className="mb-8 text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
                 Conviction du cabinet
               </span>
-            </div>
 
-            <blockquote className="max-w-4xl font-serif text-3xl italic leading-relaxed text-brand-navy md:text-4xl">
-              “{quote}”
-            </blockquote>
+              <blockquote className="max-w-3xl font-serif text-[clamp(1.5rem,2.5vw,2.5rem)] italic leading-[1.35] text-white/90">
+                &ldquo;Notre cabinet existe pour apporter la clarté, la
+                sécurité et la confiance nécessaires aux projets les plus
+                ambitieux de la RDC, afin qu&apos;ils puissent atteindre une
+                maturité conforme aux standards internationaux.&rdquo;
+              </blockquote>
 
-            <div className="mt-10 flex flex-col gap-4 border-t border-hairline pt-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm font-semibold text-brand-navy">{author}</p>
-                <p className="text-xs uppercase tracking-[0.14em] text-ink/40">
-                  {role}
+              <div className="mt-10 flex flex-col gap-4 border-t border-white/[0.06] pt-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-white/80">
+                    Jean-Pierre Kabongo
+                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-white/30">
+                    Managing Partner — CAAF SAS
+                  </p>
+                </div>
+
+                <p className="text-[10px] uppercase tracking-[0.14em] text-white/20">
+                  Clarté · Conformité · Confiance
                 </p>
               </div>
-
-              <p className="text-xs uppercase tracking-[0.14em] text-ink/35">
-                {note}
-              </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

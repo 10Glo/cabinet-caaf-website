@@ -1,4 +1,7 @@
 // src/components/ui/about-hero.tsx
+"use client"
+
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -8,196 +11,182 @@ import {
   Landmark,
   BadgeCheck,
 } from "lucide-react"
+import hero_img from "@/assets/1.png"
+
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
 
 export function AboutHero() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const a = (delay: string) => (mounted ? `hero-up ${delay}` : "opacity-0")
+  const fadeIn = (delay: string) =>
+    mounted ? `hero-in ${delay}` : "opacity-0"
+
   return (
-    <section className="relative overflow-hidden bg-brand-navy text-white">
-      {/* Background image */}
+    <section className="hero-section relative w-full overflow-hidden bg-brand-navy">
+      {/* ═══════════════════════════════════════════════════
+          BACKGROUND
+          ═══════════════════════════════════════════════════ */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=1920&auto=format&fit=crop"
+          src={hero_img}
           alt="Architecture moderne symbolisant stabilité et rigueur"
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-[0.12]"
+          className={`h-full w-full object-cover transition-opacity duration-1000 ${
+            mounted ? "hero-image-reveal d6" : "opacity-0"
+          }`}
+          quality={90}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/70 to-brand-navy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/85 to-transparent" />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/70 via-brand-navy/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/30 via-transparent to-brand-navy/80" />
+        <div className="absolute inset-0 hero-radial-accent" />
       </div>
 
-      {/* Grid overlay */}
+      <div className="absolute inset-0 z-[1] bg-brand-navy/20 lg:hidden" />
+
+      {/* ── Glow accents ── */}
+      <div className="hero-glow hero-glow-primary absolute -right-40 top-40 z-0 h-[600px] w-[600px] rounded-full bg-primary/[0.08] blur-[160px]" />
+      <div className="hero-glow hero-glow-secondary absolute -left-48 bottom-16 z-0 h-[500px] w-[500px] rounded-full bg-emerald-400/[0.06] blur-[140px]" />
+
+      {/* ── Grain overlay ── */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.25) 1px, transparent 1px)",
-          backgroundSize: "72px 72px",
-        }}
+        aria-hidden
+        className="hero-grain pointer-events-none absolute inset-0 z-[2]"
       />
 
-      {/* Content */}
-      <div className="relative z-10 px-10 pb-20 pt-32 md:pt-40 lg:pb-28">
-        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:items-end">
-          {/* Left column */}
-          <div className="lg:col-span-7">
-            <div className="mb-6 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Établi en RDC · Standards internationaux
-              </span>
-            </div>
+      {/* ── Precision grid ── */}
+      <div className="hero-grid absolute inset-0 z-[2]" />
 
-            <h1 className="max-w-4xl font-serif text-[clamp(2.8rem,6vw,5.6rem)] font-bold leading-[0.95] tracking-[-0.03em]">
-              Intégrité sans compromis.
-              <br />
-              <span className="text-white/75">Vision stratégique durable.</span>
-            </h1>
+      {/* ── Vertical accent line ── */}
+      <div className="absolute left-8 top-0 z-[2] hidden h-full w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent lg:block" />
 
-            <p className="mt-8 max-w-2xl text-[17px] leading-[1.8] text-white/60 md:text-lg">
-              CAAF SAS accompagne les entreprises, institutions et groupes
-              stratégiques en conciliant la réalité du marché congolais avec les
-              exigences des standards financiers internationaux. Notre rôle :
-              éclairer la décision, sécuriser la conformité et renforcer la
-              confiance.
-            </p>
-
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="#notre-histoire"
-                className="group inline-flex items-center justify-center gap-3 bg-primary px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-primary-active"
-              >
-                Découvrir notre histoire
-                <ArrowRight
-                  size={16}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
-
-              <Link
-                href="#valeurs"
-                className="inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
-              >
-                Nos valeurs
-              </Link>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="lg:col-span-5">
-            <div className="border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/10">
-                  <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={1.7} />
-                </div>
-                <div>
-                  <p className="font-serif text-2xl text-white">CAAF SAS</p>
-                  <p className="text-xs uppercase tracking-[0.15em] text-white/35">
-                    Cabinet d’Audit & Conseil
-                  </p>
+      {/* ═══════════════════════════════════════════════════
+          CONTENT
+          ═══════════════════════════════════════════════════ */}
+      <div className="relative z-10 w-full">
+        <div className="px-6 pb-20 pt-36 sm:px-10 md:pt-44 lg:pb-28">
+          <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-12 lg:gap-14">
+            {/* ─── LEFT — Text content ─── */}
+            <div className="flex flex-col justify-center lg:col-span-7">
+              {/* Eyebrow badge */}
+              <div className="mb-11 inline-flex items-center">
+                <div className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-white/20 bg-white/[0.06] px-5 py-2.5 backdrop-blur-md transition-all duration-300 hover:border-emerald-400/40 hover:bg-white/[0.08]">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/85">
+                    Établi en RDC · Connecté aux exigences mondiales.
+                  </span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-emerald-400/[0.08] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
               </div>
 
-              <div className="space-y-5">
-                <div className="flex items-start gap-4 border-b border-white/[0.06] pb-5">
-                  <Globe2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.7} />
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      Lecture locale, exigence globale
-                    </p>
-                    <p className="mt-1 text-sm leading-7 text-white/50">
-                      Une approche enracinée dans le contexte congolais, alignée
-                      sur les attentes des groupes, investisseurs et sièges
-                      internationaux.
-                    </p>
-                  </div>
-                </div>
+              {/* Headline */}
+              <div className={a("d2")}>
+                <h1 className="font-serif text-[clamp(2.8rem,5.2vw,5.5rem)] font-black leading-[0.90] tracking-[-0.02em]">
+                  <span className="text-white/95">
+                    Intégrité sans
+                    <br />
+                    compromis.
+                  </span>
+                  <br />
+                  <span className="relative inline-block mt-1">
+                    <span className="bg-gradient-to-r from-emerald-300 via-primary to-emerald-300 bg-clip-text text-transparent bg-[length:200%_auto] animate-[shimmer_3s_ease-in-out_infinite]">
+                      Vision durable.
+                    </span>
+                    <span
+                      className={
+                        mounted
+                          ? "hero-line d5 absolute -bottom-2.5 left-0 h-[2px] w-full bg-gradient-to-r from-emerald-400/60 to-transparent"
+                          : "opacity-0"
+                      }
+                    />
+                  </span>
+                </h1>
+              </div>
 
-                <div className="flex items-start gap-4 border-b border-white/[0.06] pb-5">
-                  <Landmark className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.7} />
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      Gouvernance, conformité, confiance
-                    </p>
-                    <p className="mt-1 text-sm leading-7 text-white/50">
-                      Nous intervenons là où la rigueur comptable, la
-                      transparence et la maîtrise réglementaire deviennent
-                      décisives.
-                    </p>
-                  </div>
-                </div>
+              {/* Subheadline */}
+              <div className={a("d3")}>
+                <p className="mt-11 max-w-xl text-[17px] leading-[1.8] text-white/65">
+                  CAAF SAS accompagne les entreprises, institutions et groupes
+                  stratégiques en conciliant la réalité du marché congolais avec
+                  les exigences des standards financiers{" "}
+                  <span className="font-medium text-white/90">
+                    internationaux
+                  </span>
+                  . Notre rôle : éclairer la décision, sécuriser la conformité
+                  et renforcer la confiance.
+                </p>
+              </div>
 
-                <div className="flex items-start gap-4">
-                  <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.7} />
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      Relation durable avec les décideurs
-                    </p>
-                    <p className="mt-1 text-sm leading-7 text-white/50">
-                      Notre accompagnement est fondé sur la confidentialité,
-                      l’indépendance et la qualité d’exécution.
-                    </p>
-                  </div>
+              {/* CTAs */}
+              <div className={a("d4")}>
+                <div className="mt-14 flex flex-col gap-4 sm:flex-row">
+                  <Link
+                    href="#notre-histoire"
+                    className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+                  >
+                    <span className="relative z-10">
+                      Découvrir notre histoire
+                    </span>
+                    <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
+
+                  <Link
+                    href="#valeurs"
+                    className="btn-secondary-hero group inline-flex items-center justify-center gap-3 rounded-sm border border-white/20 bg-white/[0.04] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/85 backdrop-blur-sm hover:text-white"
+                  >
+                    Nos valeurs
+                  </Link>
                 </div>
               </div>
 
-              {/* mini stats */}
-              <div className="mt-8 grid grid-cols-3 border-t border-white/[0.06] pt-6">
-                <div className="pr-4">
-                  <p className="font-serif text-3xl text-white">30+</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/35">
-                    années
-                  </p>
-                </div>
-                <div className="border-l border-white/[0.06] px-4">
-                  <p className="font-serif text-3xl text-white">RDC</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/35">
-                    ancrage
-                  </p>
-                </div>
-                <div className="border-l border-white/[0.06] pl-4">
-                  <p className="font-serif text-3xl text-white">OHADA</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/35">
-                    expertise
-                  </p>
+              {/* Divider */}
+              <div className={a("d5")}>
+                <div className="mt-12 h-px w-28 bg-gradient-to-r from-white/20 to-transparent" />
+              </div>
+
+              {/* Bottom strip */}
+              <div className={fadeIn("d6")}>
+                <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-3">
+                  {[
+                    {
+                      label: "Positionnement",
+                      text: "Un cabinet indépendant au service des organisations exigeantes.",
+                    },
+                    {
+                      label: "Mission",
+                      text: "Apporter clarté, sécurité et fiabilité à la décision financière.",
+                    },
+                    {
+                      label: "Engagement",
+                      text: "Servir avec rigueur, discrétion et constance dans la durée.",
+                    },
+                  ].map((item) => (
+                    <div key={item.label}>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25">
+                        {item.label}
+                      </span>
+                      <p className="mt-2 text-sm leading-7 text-white/45">
+                        {item.text}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom strip */}
-        <div className="mt-16 border-t border-white/[0.06] pt-6">
-          <div className="grid grid-cols-1 gap-6 text-sm text-white/45 md:grid-cols-3">
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25">
-                Positionnement
-              </span>
-              <p className="mt-2 leading-7">
-                Un cabinet indépendant au service des organisations exigeantes.
-              </p>
-            </div>
-
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25">
-                Mission
-              </span>
-              <p className="mt-2 leading-7">
-                Apporter clarté, sécurité et fiabilité à la décision financière.
-              </p>
-            </div>
-
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25">
-                Engagement
-              </span>
-              <p className="mt-2 leading-7">
-                Servir avec rigueur, discrétion et constance dans la durée.
-              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ── Bottom transition ── */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </section>
   )
 }

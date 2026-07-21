@@ -6,17 +6,19 @@ import { SectorsFinalCta } from "@/components/ui/sectors-final-cta";
 import { SectorsHero } from "@/components/ui/sectors-hero";
 import { SectorsQuote } from "@/components/ui/sectors-quote";
 import { SectorsTechnicalExpertise } from "@/components/ui/sectors-technical-expertise";
+import UnderConstruction from "../underConstruction";
 
 export default function SectorsPage() {
   return (
     <>
       <SectorsHero />
-      <SectorsBentoGrid />
+      <UnderConstruction />
+      {/* <SectorsBentoGrid />
       <SectorsQuote />
       <SectorsTechnicalExpertise />
       <SectorApproachDifference />
       <SectorCaseStudies />
-      <SectorsFinalCta />
+      <SectorsFinalCta /> */}
     </>
   )
 }

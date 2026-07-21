@@ -1,15 +1,15 @@
 // src/components/ui/final-cta.tsx
 "use client"
 
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import {
-  ArrowRight,
-  Shield,
-  Phone,
-  Mail,
-  MapPin,
-  CheckCircle2,
-} from "lucide-react"
+import Image from "next/image"
+import { ArrowRight, Phone } from "lucide-react"
+import ctaImage from "@/assets/3.png"
+
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
 const TRUST_POINTS = [
   "Réponse sous 24h",
@@ -18,182 +18,156 @@ const TRUST_POINTS = [
   "Confidentialité garantie",
 ]
 
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
+
 export function FinalCta() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+
   return (
-    <section className="relative overflow-hidden border-t border-hairline bg-surface-dark px-10 py-section">
-      {/* Decorative grid */}
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-brand-navy"
+    >
+      {/* ── Grain texture ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.03]"
         style={{
-          opacity: 0.02,
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: "80px 80px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
         }}
       />
 
-      {/* Decorative glow */}
-      <div className="pointer-events-none absolute -right-40 top-1/4 z-0 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[150px]" />
-      <div className="pointer-events-none absolute -left-40 bottom-1/4 z-0 h-[400px] w-[400px] rounded-full bg-primary/[0.04] blur-[120px]" />
+      {/* ── Grid + image layout ── */}
+      <div className="relative z-10 grid min-h-[600px] grid-cols-1 lg:min-h-[700px] lg:grid-cols-2">
+        {/* ═══════════════════════════════════════════════
+            LEFT — Text content
+            ═══════════════════════════════════════════════ */}
+        <div className="flex flex-col justify-center px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-6 inline-flex items-center"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Contact
+            </span>
+          </motion.div>
 
-      <div className="relative z-10 w-full">
-        <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2 lg:gap-20">
-          {/* Left */}
-          <div>
-            <div className="mb-5 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Contact
-              </span>
-            </div>
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-lg text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white"
+          >
+            Vous avez un besoin
+            <br />
+            <span className="opacity-40">d&apos;accompagnement ?</span>
+          </motion.h2>
 
-            <h2 className="font-serif text-4xl leading-tight text-white md:text-5xl">
-              Parlons de votre
-              <br />
-              <span className="bg-gradient-to-r from-primary via-emerald-300 to-primary bg-clip-text text-transparent">
-                prochaine mission.
-              </span>
-            </h2>
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="mb-10 max-w-md text-lg leading-6 text-white/45"
+          >
+            Remplissez le formulaire de contact ci-dessous pour nous permettre
+            de répondre au mieux à votre besoin. Nos experts vous accompagnent
+            avec rigueur et discrétion.
+          </motion.p>
 
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-white/50">
-              Chaque entreprise fait face à des défis uniques. Que vous ayez
-              besoin d&apos;une certification de vos comptes, d&apos;un
-              accompagnement fiscal ou d&apos;une due diligence, nos experts
-              sont prêts à intervenir avec la rigueur et la discrétion que vous
-              attendez.
-            </p>
+          {/* Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.4, ease: EASE_OUT }}
+            className="flex flex-col gap-4 sm:flex-row"
+          >
+            <Link
+              href="/contact"
+              className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+            >
+              <span className="relative z-10">Contactez-nous</span>
+              <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="#contact"
-                className="group inline-flex items-center justify-center gap-3 bg-primary px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-primary-active"
+            <Link
+              href="tel:+243810000000"
+              className="group inline-flex items-center justify-center gap-3 rounded-sm border border-white/[0.12] bg-white/[0.03] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/75 backdrop-blur-sm transition-all duration-200 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+            >
+              <Phone className="h-4 w-4 text-primary/70 transition-colors group-hover:text-primary" />
+              Nous appeler
+            </Link>
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.55 }}
+            className="my-10 h-px w-24 bg-white/[0.08]"
+          />
+
+          {/* Trust points */}
+          <motion.div
+            initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.6, ease: EASE_OUT }}
+            className="flex flex-wrap gap-x-6 gap-y-2"
+          >
+            {TRUST_POINTS.map((point) => (
+              <span
+                key={point}
+                className="text-xs text-white/25"
               >
-                Demander une consultation
-                <ArrowRight
-                  size={16}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
-
-              <Link
-                href="tel:+243000000000"
-                className="group inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
-              >
-                <Phone className="h-4 w-4" />
-                Nous appeler
-              </Link>
-            </div>
-
-            {/* Trust points */}
-            <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {TRUST_POINTS.map((point) => (
-                <div key={point} className="flex items-center gap-2.5">
-                  <CheckCircle2
-                    className="h-4 w-4 shrink-0 text-primary/70"
-                    strokeWidth={1.7}
-                  />
-                  <span className="text-sm text-white/45">{point}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — Contact info card */}
-          <div className="border border-white/[0.08] bg-white/[0.02] p-10 backdrop-blur-xl">
-            <div className="mb-8 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/10">
-                <Shield className="h-6 w-6 text-primary" strokeWidth={1.7} />
-              </div>
-              <div>
-                <p className="font-serif text-xl text-white">CAAF SAS</p>
-                <p className="text-xs text-white/40">
-                  Cabinet d&apos;Audit & Conseil
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/[0.06] bg-white/[0.03]">
-                  <MapPin className="h-4 w-4 text-white/40" strokeWidth={1.6} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                    Siège
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">
-                    12 Avenue de la Paix, Commune de la Gombe
-                    <br />
-                    Kinshasa, RDC
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/[0.06] bg-white/[0.03]">
-                  <MapPin className="h-4 w-4 text-white/40" strokeWidth={1.6} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                    Bureau régional
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">
-                    Avenue Kasavubu
-                    <br />
-                    Lubumbashi, RDC
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/[0.06] bg-white/[0.03]">
-                  <Mail className="h-4 w-4 text-white/40" strokeWidth={1.6} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                    Email
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">
-                    contact@caaf-sas.com
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/[0.06] bg-white/[0.03]">
-                  <Phone className="h-4 w-4 text-white/40" strokeWidth={1.6} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                    Téléphone
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">
-                    +243 00 000 0000
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Hours */}
-            <div className="mt-8 border-t border-white/[0.06] pt-6">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-white/30">Lun — Ven</span>
-                <span className="font-medium text-white/60">
-                  08:00 — 17:30
-                </span>
-              </div>
-              <div className="mt-2 flex items-center justify-between text-sm">
-                <span className="text-white/30">Sam</span>
-                <span className="font-medium text-white/60">
-                  Sur rendez-vous
-                </span>
-              </div>
-            </div>
-          </div>
+                {point}
+              </span>
+            ))}
+          </motion.div>
         </div>
+
+        {/* ═══════════════════════════════════════════════
+            RIGHT — Full-height image
+            ═══════════════════════════════════════════════ */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          className="relative h-[350px] sm:h-[400px] lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-1/2"
+        >
+          <Image
+            src={ctaImage}
+            alt="Accompagnement et conseil CAAF SAS"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+
+          {/* Dark gradient overlay — blends image into navy background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/50 via-brand-navy/10 to-transparent lg:bg-gradient-to-r lg:from-brand-navy lg:via-brand-navy/40 lg:to-transparent" />
+
+          {/* Bottom fade on mobile */}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent lg:hidden" />
+        </motion.div>
       </div>
     </section>
   )
 }
+

@@ -1,131 +1,178 @@
 // src/components/ui/certifications-quality.tsx
 "use client"
 
-import {
-  ShieldCheck,
-  FileCheck2,
-  Users,
-  BookOpen,
-  CheckCircle2,
-  Quote,
-} from "lucide-react"
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
+
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
 const QUALITY_PILLARS = [
   {
+    number: "01",
     title: "Contrôle qualité interne",
     description:
-      "Chaque mission fait l'objet d'une revue indépendante par un associé non impliqué dans l'exécution.",
-    icon: FileCheck2,
+      "Chaque mission fait l'objet d'une revue indépendante par un associé non impliqué dans l'exécution. Ce dispositif garantit une objectivité totale dans l'évaluation de la qualité technique.",
   },
   {
+    number: "02",
     title: "Formation continue",
     description:
-      "Nos équipes suivent un programme annuel de mise à jour technique couvrant les évolutions normatives.",
-    icon: BookOpen,
+      "Nos équipes suivent un programme annuel de mise à jour technique couvrant les évolutions normatives ISA, IFRS et SYSCOHADA. Chaque professionnel cumule au minimum 40 heures de formation par an.",
   },
   {
+    number: "03",
     title: "Indépendance garantie",
     description:
-      "Nous appliquons des procédures strictes de vérification d'indépendance avant chaque acceptation de mission.",
-    icon: ShieldCheck,
+      "Nous appliquons des procédures strictes de vérification d'indépendance avant chaque acceptation de mission. Aucune mission n'est acceptée si un risque d'atteinte à l'indépendance est identifié.",
   },
   {
+    number: "04",
     title: "Supervision senior",
     description:
-      "Tout livrable est validé par un associé ou un directeur avant communication au client.",
-    icon: Users,
+      "Tout livrable est validé par un associé ou un directeur avant communication au client. La hiérarchie de validation est formalisée et documentée pour chaque mission.",
   },
 ]
 
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
+
 export function CertificationsQuality() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+
   return (
-    <section className="border-t border-hairline bg-white px-10 py-section">
-      <div className="w-full">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+    <section
+      ref={sectionRef}
+      className="bg-white px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* ═══════════════════════════════════════════════
+              LEFT — Editorial column
+              ═══════════════════════════════════════════════ */}
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-24">
-              <div className="mb-5 flex items-center gap-3">
-                <div className="h-px w-10 bg-primary" />
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+                className="mb-5 inline-flex items-center"
+              >
                 <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
                   Engagement qualité
                 </span>
-              </div>
+              </motion.div>
 
-              <h2 className="font-serif text-4xl leading-tight text-brand-navy md:text-5xl">
+              <motion.h2
+                initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                animate={
+                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+                }
+                transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+                className="mb-6 max-w-lg text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.05] tracking-tight text-[#111A4A]"
+              >
                 Au-delà des labels,
                 <br />
-                <span className="text-ink/40">une discipline quotidienne.</span>
-              </h2>
+                <span className="opacity-40">
+                  une discipline quotidienne.
+                </span>
+              </motion.h2>
 
-              <p className="mt-6 max-w-sm text-sm leading-7 text-ink/55">
+              <motion.p
+                initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                animate={
+                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+                }
+                transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+                className="mb-10 max-w-sm text-sm leading-7 text-[#7C7F88]"
+              >
                 Nos certifications ne sont pas des acquis statiques. Elles
                 s&apos;accompagnent de mécanismes internes de contrôle, de
                 formation et de supervision qui garantissent leur application
                 effective à chaque mission.
-              </p>
+              </motion.p>
 
-              <div className="mt-10 border border-hairline bg-surface-card/40 p-8">
-                <Quote className="mb-4 h-8 w-8 text-primary/50" strokeWidth={1.5} />
+              {/* Divider */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 0.4 }}
+                className="mb-8 h-px w-16 bg-[#111A4A]/[0.06]"
+              />
 
-                <blockquote className="font-serif text-xl italic leading-relaxed text-brand-navy">
-                  &ldquo;La qualité n&apos;est pas un objectif. C&apos;est une
-                  habitude, un réflexe, une exigence constante.&rdquo;
+              {/* Quote card */}
+              <motion.div
+                initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+                animate={
+                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+                }
+                transition={{ duration: 1.5, delay: 0.45, ease: EASE_OUT }}
+                className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.01] p-8"
+              >
+                <span className="mb-4 block font-serif text-[48px] leading-none text-primary/20">
+                  &ldquo;
+                </span>
+
+                <blockquote className="font-serif text-xl italic leading-relaxed text-[#111A4A]">
+                  La qualité n&apos;est pas un objectif. C&apos;est une
+                  habitude, un réflexe, une exigence constante.
                 </blockquote>
 
-                <div className="mt-6 border-t border-hairline pt-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-ink/35">
+                <div className="mt-6 border-t border-[#111A4A]/[0.06] pt-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#7C7F88]/40">
                     Politique qualité CAAF SAS
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
+          {/* ═══════════════════════════════════════════════
+              RIGHT — Pillar cards
+              ═══════════════════════════════════════════════ */}
           <div className="space-y-5 lg:col-span-7">
             {QUALITY_PILLARS.map((pillar, index) => (
-              <article
+              <motion.div
                 key={pillar.title}
-                className={
-                  index === 2
-                    ? "group border border-white/10 bg-surface-dark p-8 md:p-10"
-                    : "group border border-hairline bg-canvas p-8 transition-colors hover:bg-surface-soft/40 md:p-10"
+                initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+                animate={
+                  isInView
+                    ? {
+                        opacity: [0, 1, 1],
+                        y: [16, 0, 0],
+                        filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
+                      }
+                    : {}
                 }
+                transition={{
+                  duration: 1.2,
+                  delay: 0.25 + index * 0.08,
+                  ease: EASE_OUT,
+                }}
               >
-                <div className="flex items-start gap-5">
-                  <div
-                    className={
-                      index === 2
-                        ? "flex h-12 w-12 shrink-0 items-center justify-center border border-white/10 bg-white/5"
-                        : "flex h-12 w-12 shrink-0 items-center justify-center border border-primary/20 bg-primary/5"
-                    }
-                  >
-                    <pillar.icon className="h-6 w-6 text-primary" strokeWidth={1.7} />
+                <article className="group border border-[#111A4A]/[0.06] bg-white p-8 transition-all duration-300 hover:border-[#111A4A]/12 md:p-10">
+                  <div className="flex items-start gap-5">
+                    {/* Number */}
+                    <span className="mt-1 shrink-0 font-mono text-[11px] text-[#7C7F88]/30">
+                      {pillar.number}
+                    </span>
+
+                    <div className="flex-1">
+                      <h3 className="mb-3 font-serif text-[22px] text-[#111A4A] transition-colors duration-300 group-hover:text-primary">
+                        {pillar.title}
+                      </h3>
+                      <p className="text-sm leading-7 text-[#7C7F88]">
+                        {pillar.description}
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3
-                      className={
-                        index === 2
-                          ? "font-serif text-2xl text-white"
-                          : "font-serif text-2xl text-brand-navy"
-                      }
-                    >
-                      {pillar.title}
-                    </h3>
-                    <p
-                      className={
-                        index === 2
-                          ? "mt-3 text-sm leading-7 text-white/55"
-                          : "mt-3 text-sm leading-7 text-ink/55"
-                      }
-                    >
-                      {pillar.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-5 h-[2px] w-0 bg-primary/40 transition-all duration-300 group-hover:w-full" />
-              </article>
+                  {/* Bottom accent */}
+                  <div className="mt-6 h-[2px] w-0 bg-primary/40 transition-all duration-700 group-hover:w-full" />
+                </article>
+              </motion.div>
             ))}
           </div>
         </div>

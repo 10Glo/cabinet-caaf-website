@@ -1,155 +1,319 @@
 // src/components/ui/client-mandates-section.tsx
 "use client"
 
-import React from "react"
+import { useRef, useState } from "react"
+import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import type { StaticImageData } from "next/image"
-import {
-  ArrowRight,
-  Building2,
-  Landmark,
-  Factory,
-  Briefcase,
-  Globe2,
-  type LucideIcon,
-} from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 
+import crdb_logo from "@/assets/CRDB_BANK_logo.svg"
+import midema_logo from "@/assets/ACG-LOGO-MIDEMA.png"
+import cilu_logo from "@/assets/cilu.png"
+import ppc_logo from "@/assets/ppc.png"
+import enge_logo from "@/assets/engen_logo.png"
+import metalkol from "@/assets/Metakol-banner.png"
+import Chemaf from "@/assets/chemaf.png"
+import ABM from "@/assets/alphamin-logo-primary.png"
+import frontier from "@/assets/horizontal-black.png"
+import weir_minerals from "@/assets/weir minerals.png"
+import ivanhoe from "@/assets/ivanhoe.png"
+import sek from "@/assets/kipoi.webp"
+
+// ─── Types ───────────────────────────────────────────────
 type ClientItem = {
   name: string
   sector?: string
   img?: string | StaticImageData
-  icon?: LucideIcon
+  active?: boolean
 }
 
-type ClientMandatesSectionProps = {
-  title?: string
-  eyebrow?: string
-  description?: string
-  clients: ClientItem[]
-  ctaHref?: string
-  ctaLabel?: string
-}
+// ─── Data ────────────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
+const ITEMS_PER_PAGE = 8
 
-function isStaticImageData(img: string | StaticImageData): img is StaticImageData {
+const CLIENTS: ClientItem[] = [
+  { name: "CRDB Bank", img: crdb_logo, sector: "Institution financière" },
+  { name: "MIDEMA R.D Congo", img: midema_logo, sector: "Industrie" },
+  { name: "CILU", img: cilu_logo, sector: "Production" },
+  { name: "PPC", img: ppc_logo, sector: "Matériaux" },
+  { name: "Engen", img: enge_logo, sector: "Énergie" },
+  { name: "Metalkol", img: metalkol, sector: "Mines" },
+  { name: "Frontier", img: frontier, sector: "Mines" },
+  { name: "Chemaf", img: Chemaf, sector: "Mines" },
+  { name: "ABM", img: ABM, sector: "Ressources" },
+  { name: "Weir Minerals", img: weir_minerals, sector: "Industrie minière" },
+  { name: "Ivanhoe", img: ivanhoe, sector: "Mines" },
+  { name: "SEK", img: sek, sector: "Industrie" },
+]
+
+// ─── Helpers ─────────────────────────────────────────────
+function isStaticImageData(
+  img: string | StaticImageData
+): img is StaticImageData {
   return typeof img === "object" && "src" in img
 }
 
-function ClientTile({ client }: { client: ClientItem }) {
+// ─── Client Card ─────────────────────────────────────────
+function ClientCard({
+  client,
+  index,
+  isVisible,
+}: {
+  client: ClientItem
+  index: number
+  isVisible: boolean
+}) {
+  const [hovered, setHovered] = useState(false)
+  const isActive = client.active ?? true
+
   return (
-    <div className="group flex min-h-[110px] flex-col justify-between border border-hairline bg-white p-5 transition-colors hover:bg-surface-soft/40">
-      <div className="flex min-h-[36px] items-center">
+    <div
+      className={`group relative cursor-default overflow-hidden border p-6 transition-all duration-500 lg:p-8 ${
+        hovered
+          ? "border-[#111A4A]/20 bg-[#111A4A]/[0.02]"
+          : "border-[#111A4A]/[0.06]"
+      } ${isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}
+      style={{
+        transitionDelay: `${index * 40 + 200}ms`,
+        opacity: isVisible ? (isActive ? 1 : 0.65) : 0,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Sector tag + status indicator */}
+      <div className="mb-6 flex items-center gap-2">
+        <span
+          className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${
+            isActive
+              ? hovered
+                ? "bg-primary"
+                : "bg-primary/50"
+              : "bg-[#7C7F88]/25"
+          }`}
+        />
+        <span
+          className={`inline-block px-2 py-0.5 font-semibold text-[10px] transition-colors duration-300 ${
+            hovered
+              ? "bg-[#111A4A] text-white"
+              : "bg-[#111A4A]/[0.05] text-[#7C7F88]"
+          }`}
+        >
+          {client.sector ?? "Mission"}
+        </span>
+      </div>
+
+      {/* Logo + Name — justified extremes */}
+      <div className="flex min-h-[36px] items-center justify-between gap-3">
         {client.img ? (
           <Image
             src={client.img}
             alt={client.name}
             width={isStaticImageData(client.img) ? client.img.width : 160}
             height={isStaticImageData(client.img) ? client.img.height : 40}
-            className="h-8 w-auto max-w-[150px] object-contain opacity-70 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
-            style={{ width: "auto", height: "32px" }}
+            className={`h-7 w-auto max-w-[100px] shrink-0 object-contain transition-all duration-300 ${
+              hovered
+                ? "opacity-90 grayscale-0"
+                : "opacity-40 grayscale"
+            }`}
+            style={{ width: "auto", height: "28px" }}
             unoptimized
           />
-        ) : client.icon ? (
-          <div className="flex items-center gap-3">
-            <client.icon className="h-5 w-5 text-brand-navy/70" strokeWidth={1.6} />
-            <span className="text-base font-semibold tracking-tight text-brand-navy">
-              {client.name}
-            </span>
-          </div>
-        ) : (
-          <span className="text-base font-semibold tracking-tight text-brand-navy">
-            {client.name}
-          </span>
-        )}
+        ) : null}
+
+        <span
+          className={`text-right text-xs font-semibold transition-colors duration-300 ${
+            hovered ? "text-[#111A4A]" : "text-[#111A4A]/70"
+          }`}
+        >
+          {client.name}
+        </span>
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-hairline pt-3">
-        <span className="text-[11px] uppercase tracking-[0.14em] text-ink/35">
-          {client.sector ?? "Mission réalisée"}
-        </span>
-        <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+      {/* Animated underline */}
+      <div className="absolute bottom-0 left-0 right-0 h-px overflow-hidden bg-[#111A4A]/[0.06]">
+        <div
+          className={`h-full transition-all duration-500 ${
+            hovered ? "w-full" : "w-0"
+          } ${isActive ? "bg-primary/40" : "bg-[#111A4A]/20"}`}
+        />
       </div>
     </div>
   )
 }
 
-export function ClientMandatesSection({
-  title = "Ils nous ont confié leurs missions",
-  eyebrow = "Références",
-  description = "Des groupes industriels, institutions financières et entreprises de référence nous sollicitent pour des missions d’audit, d’assurance, de conseil fiscal et d’accompagnement stratégique.",
-  clients,
-  ctaHref = "#references",
-  ctaLabel = "Voir davantage de références",
-}: ClientMandatesSectionProps) {
-  return (
-    <section className="bg-white px-10 py-section">
-      <div className="w-full">
-        {/* Header */}
-        <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="h-px w-10 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                {eyebrow}
-              </span>
-            </div>
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
 
-            <h2 className="font-serif text-4xl leading-tight text-brand-navy md:text-5xl">
-              {title}
-            </h2>
+export function ClientMandatesSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
+  const [page, setPage] = useState(0)
+
+  const totalPages = Math.ceil(CLIENTS.length / ITEMS_PER_PAGE)
+  const start = page * ITEMS_PER_PAGE
+  const visibleClients = CLIENTS.slice(start, start + ITEMS_PER_PAGE)
+  const hasMore = totalPages > 1
+
+  return (
+    <section ref={sectionRef} className="bg-white px-10 py-section">
+      <div className="w-full">
+        {/* ── Header — left-aligned ── */}
+        <div className="mb-14 max-w-3xl lg:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-5 inline-flex items-center"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Références
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
+          >
+            Des missions conduites auprès d&apos;acteurs{" "}
+            <span className="opacity-40">de premier plan.</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
+          >
+            Nos équipes interviennent auprès d&apos;institutions financières,
+            de groupes miniers, d&apos;acteurs industriels et de sociétés
+            stratégiques opérant en RDC et dans la région.
+          </motion.p>
+        </div>
+
+        {/* ── Client Grid ── */}
+        <div className="mb-16 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {visibleClients.map((client, i) => (
+            <ClientCard
+              key={`${client.name}-${start + i}`}
+              client={client}
+              index={i}
+              isVisible={isInView}
+            />
+          ))}
+        </div>
+
+        {/* ── Bottom row: stats + pagination ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="h-px bg-[#111A4A]/[0.06]"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          animate={
+            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+          }
+          transition={{ duration: 1.5, delay: 0.7, ease: EASE_OUT }}
+          className="flex flex-wrap items-center justify-between gap-8 pt-10"
+        >
+          {/* Stats */}
+          <div className="flex flex-wrap gap-10">
+            {[
+              { value: `${CLIENTS.length}+`, label: "Références" },
+              { value: "Multi-sectoriel", label: "Banque, mines, industrie" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-baseline gap-3">
+                <span className="font-serif text-2xl text-[#111A4A]">
+                  {stat.value}
+                </span>
+                <span className="text-xs text-[#7C7F88]">{stat.label}</span>
+              </div>
+            ))}
           </div>
 
-          <div className="max-w-xl lg:ml-auto">
-            <p className="text-base leading-relaxed text-ink/60">
-              {description}
-            </p>
+          {/* Pagination */}
+          {hasMore && (
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center border border-[#111A4A]/[0.1] text-[#7C7F88] transition-all hover:border-primary/30 hover:text-primary disabled:opacity-30"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
 
+              <div className="flex items-center gap-2">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setPage(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === page
+                        ? "w-6 bg-primary"
+                        : "w-1.5 bg-[#111A4A]/15 hover:bg-[#111A4A]/30"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setPage((p) => Math.min(totalPages - 1, p + 1))
+                }
+                disabled={page === totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center border border-[#111A4A]/[0.1] text-[#7C7F88] transition-all hover:border-primary/30 hover:text-primary disabled:opacity-30"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </motion.div>
+
+        {/* ── CTAs — left-aligned ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          animate={
+            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+          }
+          transition={{ duration: 1.5, delay: 0.8, ease: EASE_OUT }}
+          className="mt-12 flex flex-col items-start gap-6"
+        >
+          <Link
+            href="#contact"
+            className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+          >
+            <span className="relative z-10">Demander des références sectorielles</span>
+            <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </Link>
+
+          <p className="text-sm text-[#7C7F88]">
+            Besoin d&apos;une référence dans votre secteur ?{" "}
             <Link
-              href={ctaHref}
-              className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary transition-all hover:gap-3"
+              href="#contact"
+              className="group/link inline-flex items-center gap-1.5 font-medium text-primary transition-all hover:gap-2.5"
             >
-              {ctaLabel}
+              Demandez-nous
               <ArrowRight
-                size={15}
-                className="transition-transform group-hover:translate-x-0.5"
+                size={13}
+                className="transition-transform group-hover/link:translate-x-0.5"
               />
             </Link>
-          </div>
-        </div>
-
-        {/* Summary Strip */}
-        <div className="mb-8 grid grid-cols-2 border border-hairline bg-canvas md:grid-cols-4">
-          {[
-            { value: `${clients.length}+`, label: "références actives", icon: Building2 },
-            { value: "Audit", label: "missions de certification", icon: Landmark },
-            { value: "Conseil", label: "interventions stratégiques", icon: Briefcase },
-            { value: "Multi-sectoriel", label: "banque, mines, industrie", icon: Factory },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="flex items-center gap-4 border-r border-hairline px-5 py-5 last:border-r-0"
-            >
-              <div className="flex h-10 w-10 items-center justify-center border border-primary/20 bg-primary/5">
-                <item.icon className="h-4 w-4 text-primary" strokeWidth={1.6} />
-              </div>
-              <div>
-                <div className="font-serif text-2xl leading-none text-brand-navy">
-                  {item.value}
-                </div>
-                <div className="mt-1 text-[11px] uppercase tracking-[0.14em] text-ink/35">
-                  {item.label}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Logo Wall */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {clients.map((client) => (
-            <ClientTile key={client.name} client={client} />
-          ))}
-        </div>
+          </p>
+        </motion.div>
       </div>
     </section>
   )

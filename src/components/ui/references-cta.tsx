@@ -1,145 +1,171 @@
 // src/components/ui/references-cta.tsx
 "use client"
 
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import {
-  ArrowRight,
-  FileDown,
-  ShieldCheck,
-  CheckCircle2,
-  Calendar,
-  Handshake,
-} from "lucide-react"
+import Image from "next/image"
+import ctaImage from "@/assets/3.png"
+
+// ─── Constants ───────────────────────────────────────────
+const EASE_OUT = [0.1, 0, 0.1, 1] as const
+
+const ENGAGEMENTS = [
+  "Réponse sous 24h",
+  "Références sectorielles sur demande",
+  "Confidentialité garantie",
+  "Interlocuteur senior dédié",
+]
+
+// ═══════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════
 
 export function ReferencesCta() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+
   return (
-    <section className="relative overflow-hidden border-t border-hairline bg-surface-dark px-10 py-section">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-brand-navy"
+    >
+      {/* ── Grain texture ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.03]"
         style={{
-          opacity: 0.02,
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: "72px 72px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
         }}
       />
 
-      <div className="pointer-events-none absolute -right-40 top-20 z-0 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[150px]" />
-      <div className="absolute left-10 top-0 z-0 hidden h-full w-px bg-gradient-to-b from-transparent via-white/[0.06] to-transparent lg:block" />
+      {/* ── Grid + image layout ── */}
+      <div className="relative z-10 grid min-h-[600px] grid-cols-1 lg:min-h-[700px] lg:grid-cols-2">
+        {/* ═══════════════════════════════════════════════
+            LEFT — Text content
+            ═══════════════════════════════════════════════ */}
+        <div className="flex flex-col justify-center px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+            className="mb-6 inline-flex items-center"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Rejoignez nos clients
+            </span>
+          </motion.div>
 
-      <div className="relative z-10 w-full">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
-          <div className="lg:col-span-7">
-            <div className="mb-5 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Rejoignez nos clients
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+            className="mb-6 max-w-lg text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white"
+          >
+            Construisons une relation
+            <br />
+            <span className="opacity-40">de confiance durable.</span>
+          </motion.h2>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+            className="mb-10 max-w-md text-lg leading-6 text-white/45"
+          >
+            Que vous soyez un groupe minier, une institution financière, une
+            ONG ou un opérateur industriel, un premier échange nous permettra
+            de comprendre vos enjeux et de vous présenter notre approche.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.4, ease: EASE_OUT }}
+            className="flex flex-col gap-4 sm:flex-row"
+          >
+            <Link
+              href="/contact"
+              className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+            >
+              <span className="relative z-10">Planifier un échange</span>
+              <span className="relative z-10 text-[14px] leading-none transition-transform duration-200 group-hover:translate-x-0.5">
+                &rarr;
               </span>
-            </div>
+            </Link>
 
-            <h2 className="max-w-2xl font-serif text-4xl leading-tight text-white md:text-5xl">
-              Faisons connaissance
-              <br />
-              <span className="bg-gradient-to-r from-primary via-emerald-300 to-primary bg-clip-text text-transparent">
-                et construisons une relation
+            <a
+              href="/firm-profile.pdf"
+              className="btn-secondary-hero group inline-flex items-center justify-center gap-3 rounded-sm border border-white/20 bg-white/[0.04] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/85 backdrop-blur-sm hover:text-white"
+            >
+              Profil du cabinet
+            </a>
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="my-10 h-px w-24 bg-white/[0.08]"
+          />
+
+          {/* Engagements */}
+          <motion.div
+            initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+            animate={
+              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 1.5, delay: 0.55, ease: EASE_OUT }}
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+          >
+            {ENGAGEMENTS.map((point) => (
+              <span
+                key={point}
+                className="text-xs text-white/30"
+              >
+                {point}
               </span>
-              <br />
-              <span className="text-white/75">de confiance durable.</span>
-            </h2>
-
-            <p className="mt-8 max-w-xl text-[17px] leading-[1.8] text-white/50">
-              Que vous soyez un groupe minier, une institution financière, une
-              ONG ou un opérateur industriel, un premier échange nous permettra
-              de comprendre vos enjeux et de vous présenter notre approche.
-            </p>
-
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/contact"
-                className="group inline-flex items-center justify-center gap-3 bg-primary px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-primary-active"
-              >
-                <Calendar className="h-4 w-4" />
-                Planifier un échange
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-              </Link>
-
-              <a
-                href="/firm-profile.pdf"
-                className="group inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
-              >
-                <FileDown className="h-4 w-4" />
-                Profil du cabinet
-              </a>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {[
-                "Réponse sous 24h",
-                "Références sectorielles sur demande",
-                "Confidentialité garantie",
-                "Interlocuteur senior dédié",
-              ].map((point) => (
-                <div key={point} className="flex items-center gap-2.5">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-primary/70" strokeWidth={1.7} />
-                  <span className="text-sm text-white/45">{point}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="lg:col-span-5">
-            <div className="border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/10">
-                  <Handshake className="h-6 w-6 text-primary" strokeWidth={1.7} />
-                </div>
-                <div>
-                  <p className="font-serif text-xl text-white">
-                    Pourquoi nous choisir
-                  </p>
-                  <p className="text-xs uppercase tracking-[0.15em] text-white/35">
-                    Nos engagements
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {[
-                  {
-                    title: "Indépendance totale",
-                    description: "Aucun conflit d'intérêt, aucune complaisance.",
-                  },
-                  {
-                    title: "Lecture sectorielle",
-                    description: "Une compréhension concrète de votre environnement.",
-                  },
-                  {
-                    title: "Qualité constante",
-                    description: "Contrôle qualité interne sur chaque mission.",
-                  },
-                  {
-                    title: "Relation durable",
-                    description: "Un accompagnement qui s'inscrit dans le temps.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="border border-white/[0.06] bg-white/[0.02] px-4 py-4"
-                  >
-                    <p className="text-sm font-semibold text-white">
-                      {item.title}
-                    </p>
-                    <p className="mt-1 text-sm leading-6 text-white/50">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
         </div>
+
+        {/* ═══════════════════════════════════════════════
+            RIGHT — Full-height image
+            ═══════════════════════════════════════════════ */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          className="relative h-[350px] sm:h-[400px] lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-1/2"
+        >
+          <Image
+            src={ctaImage}
+            alt="Références CAAF SAS — Clients et partenaires"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/50 via-brand-navy/10 to-transparent lg:bg-gradient-to-r lg:from-brand-navy lg:via-brand-navy/40 lg:to-transparent" />
+
+          {/* Bottom fade on mobile */}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent lg:hidden" />
+        </motion.div>
       </div>
     </section>
   )
