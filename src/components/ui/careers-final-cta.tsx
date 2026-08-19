@@ -20,6 +20,7 @@ import {
   CONTACT_PHONE_HREF,
   RECRUITMENT_EMAIL,
 } from "@/lib/contact"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 const RECRUITMENT_STEPS = [
   {
@@ -80,12 +81,9 @@ export function CareersFinalCta() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
           {/* ── Left column: Process ── */}
           <div className="lg:col-span-7">
-            <div className="mb-8 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Notre processus de recrutement
-              </span>
-            </div>
+            <SectionEyebrow className="mb-8 inline-flex">
+              Notre processus de recrutement
+            </SectionEyebrow>
 
             <h2 className="max-w-2xl font-serif text-4xl leading-tight text-white md:text-5xl">
               Une sélection exigeante,

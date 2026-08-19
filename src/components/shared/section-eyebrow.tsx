@@ -47,10 +47,11 @@ export function SectionEyebrow({
   className,
   tone = "primary",
 }: SectionEyebrowProps) {
-  const ruleTone = tone === "muted-dark" || tone === "muted-light" ? tone : "primary"
+  const ruleTone =
+    tone === "muted-dark" || tone === "muted-light" ? tone : "primary"
 
   return (
-    <div className={cn(className, "flex items-center gap-3")}>
+    <div className={cn("flex items-center gap-3", className)}>
       <div className={sectionEyebrowVariants({ tone: ruleTone })} />
       <span className={sectionEyebrowLabelVariants({ tone })}>{children}</span>
     </div>

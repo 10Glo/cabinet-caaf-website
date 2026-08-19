@@ -12,7 +12,8 @@ const config: CtaSectionConfig = {
   secondaryCta: {
     label: "Appeler directement",
     href: CONTACT_PHONE_HREF,
-    kind: "none",
+    element: "anchor",
+    variant: "default",
   },
   trailingArrow: "glyph",
   trustPoints: [
@@ -24,7 +25,7 @@ const config: CtaSectionConfig = {
   trustClassName: "text-xs text-white/30",
   trustLayout: "grid",
   image: { src: ctaImage, alt: "Secteurs CAAF SAS — Expertise multi-sectorielle" },
-  motionInitialY: 16,
+  motion: { initialY: 16, dividerDelay: 0.5, trustDelay: 0.55 },
 }
 
 export function SectorsFinalCta() {

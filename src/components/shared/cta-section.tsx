@@ -17,14 +17,19 @@ export interface CtaSectionConfig {
   secondaryCta: {
     label: string
     href: string
-    kind: "phone-icon" | "none"
+    element: "link" | "anchor"
+    variant: "phone-icon" | "default"
   }
   trailingArrow: "icon" | "glyph"
   trustPoints: string[]
   trustClassName?: string
   trustLayout?: "flex" | "grid"
   image: { src: StaticImageData; alt: string }
-  motionInitialY: 20 | 16
+  motion?: {
+    initialY?: number
+    dividerDelay?: number
+    trustDelay?: number
+  }
 }
 
 interface CtaSectionProps {
@@ -34,8 +39,13 @@ interface CtaSectionProps {
 export function CtaSection({ config }: CtaSectionProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+  const {
+    initialY = 20,
+    dividerDelay = 0.55,
+    trustDelay = 0.6,
+  } = config.motion ?? {}
   const secondaryClassName =
-    config.secondaryCta.kind === "phone-icon"
+    config.secondaryCta.variant === "phone-icon"
       ? "group inline-flex items-center justify-center gap-3 rounded-sm border border-white/[0.12] bg-white/[0.03] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/75 backdrop-blur-sm transition-all duration-200 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
       : "btn-secondary-hero group inline-flex items-center justify-center gap-3 rounded-sm border border-white/20 bg-white/[0.04] px-9 py-4 text-[14px] font-semibold tracking-wide text-white/85 backdrop-blur-sm hover:text-white"
 
@@ -94,7 +104,7 @@ export function CtaSection({ config }: CtaSectionProps) {
           <motion.div
             initial={{
               opacity: 0,
-              y: config.motionInitialY,
+              y: initialY,
               filter: "blur(4px)",
             }}
             animate={
@@ -117,13 +127,18 @@ export function CtaSection({ config }: CtaSectionProps) {
               )}
             </Link>
 
-            {config.secondaryCta.kind === "phone-icon" ? (
+            {config.secondaryCta.element === "link" ? (
               <Link href={config.secondaryCta.href} className={secondaryClassName}>
-                <Phone className="h-4 w-4 text-primary/70 transition-colors group-hover:text-primary" />
+                {config.secondaryCta.variant === "phone-icon" && (
+                  <Phone className="h-4 w-4 text-primary/70 transition-colors group-hover:text-primary" />
+                )}
                 {config.secondaryCta.label}
               </Link>
             ) : (
               <a href={config.secondaryCta.href} className={secondaryClassName}>
+                {config.secondaryCta.variant === "phone-icon" && (
+                  <Phone className="h-4 w-4 text-primary/70 transition-colors group-hover:text-primary" />
+                )}
                 {config.secondaryCta.label}
               </a>
             )}
@@ -134,7 +149,7 @@ export function CtaSection({ config }: CtaSectionProps) {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{
               duration: 1,
-              delay: config.trailingArrow === "icon" ? 0.55 : 0.5,
+              delay: dividerDelay,
             }}
             className="my-10 h-px w-24 bg-white/[0.08]"
           />
@@ -146,7 +161,7 @@ export function CtaSection({ config }: CtaSectionProps) {
             }
             transition={{
               duration: 1.5,
-              delay: config.trailingArrow === "icon" ? 0.6 : 0.55,
+              delay: trustDelay,
               ease: EASE_OUT,
             }}
             className={

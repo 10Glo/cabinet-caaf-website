@@ -11,7 +11,8 @@ const config: CtaSectionConfig = {
   secondaryCta: {
     label: "Profil du cabinet",
     href: "/firm-profile.pdf",
-    kind: "none",
+    element: "anchor",
+    variant: "default",
   },
   trailingArrow: "glyph",
   trustPoints: [
@@ -22,7 +23,7 @@ const config: CtaSectionConfig = {
   ],
   trustClassName: "text-xs text-white/30",
   image: { src: ctaImage, alt: "Publications CAAF SAS — Ressources professionnelles" },
-  motionInitialY: 16,
+  motion: { initialY: 16, dividerDelay: 0.5, trustDelay: 0.55 },
 }
 
 export function PublicationsCta() {

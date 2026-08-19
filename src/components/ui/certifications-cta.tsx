@@ -11,13 +11,14 @@ const config: CtaSectionConfig = {
   secondaryCta: {
     label: "Télécharger le profil",
     href: "/firm-profile.pdf",
-    kind: "none",
+    element: "anchor",
+    variant: "default",
   },
   trailingArrow: "glyph",
   trustPoints: ["IFAC", "ONEC", "OHADA", "ISA"],
   trustClassName: "font-mono text-[11px] uppercase tracking-[0.14em] text-white/20",
   image: { src: ctaImage, alt: "Certifications CAAF SAS — Accréditations et conformité" },
-  motionInitialY: 16,
+  motion: { initialY: 16, dividerDelay: 0.5, trustDelay: 0.55 },
 }
 
 export function CertificationsCta() {

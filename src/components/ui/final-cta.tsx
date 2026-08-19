@@ -12,7 +12,8 @@ const config: CtaSectionConfig = {
   secondaryCta: {
     label: "Nous appeler",
     href: FINAL_CTA_PHONE_HREF,
-    kind: "phone-icon",
+    element: "link",
+    variant: "phone-icon",
   },
   trailingArrow: "icon",
   trustPoints: [
@@ -22,7 +23,7 @@ const config: CtaSectionConfig = {
     "Confidentialité garantie",
   ],
   image: { src: ctaImage, alt: "Accompagnement et conseil CAAF SAS" },
-  motionInitialY: 20,
+  motion: { initialY: 20, dividerDelay: 0.55, trustDelay: 0.6 },
 }
 
 export function FinalCta() {

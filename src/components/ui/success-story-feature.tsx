@@ -4,6 +4,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import type { StaticImageData } from "next/image"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 import {
   ArrowRight,
   FileSearch,
@@ -50,12 +51,9 @@ export function SuccessStoryFeature({
           {/* Left */}
           <div className="p-8 md:p-12 lg:p-14">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <div className="inline-flex items-center gap-3">
-                <div className="h-px w-8 bg-primary" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-                  {eyebrow}
-                </span>
-              </div>
+              <SectionEyebrow className="inline-flex" tone="primary-tight">
+                {eyebrow}
+              </SectionEyebrow>
 
               <div className="inline-flex items-center gap-2 border border-hairline bg-canvas px-3 py-1.5">
                 <Landmark className="h-4 w-4 text-primary" strokeWidth={1.6} />

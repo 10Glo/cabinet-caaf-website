@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react"
 import { RECRUITMENT_EMAIL } from "@/lib/contact"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 const HIGHLIGHTS = [
   { label: "Kinshasa & Lubumbashi", icon: MapPin },
@@ -68,12 +69,9 @@ export function CareersHero() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:items-end lg:gap-16">
           {/* Left */}
           <div className="lg:col-span-7">
-            <div className="mb-6 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Carrières · Construire votre trajectoire
-              </span>
-            </div>
+            <SectionEyebrow className="mb-6 inline-flex">
+              Carrières · Construire votre trajectoire
+            </SectionEyebrow>
 
             <h1 className="max-w-4xl font-serif text-[clamp(2.8rem,6vw,5.6rem)] font-bold leading-[0.95] tracking-[-0.03em]">
               Rejoignez un cabinet
