@@ -1,10 +1,6 @@
-import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
-import { getPayload } from 'payload'
 import React from 'react'
-import { fileURLToPath } from 'url'
 
-import config from '@/payload.config'
 import Hero from '@/components/ui/hero'
 import { ActivitiesOverview } from '@/components/ui/activities-overview'
 import { Big4LocalExpertiseSection } from '@/components/ui/big4-local-expertise'
@@ -30,13 +26,6 @@ import { AuditStatsSection } from '@/components/ui/audit-stats-section'
 import StatsSection from '@/components/ui/stats-section'
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
-
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
-
   return (
     <>
       <Hero />

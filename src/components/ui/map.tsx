@@ -142,6 +142,11 @@ type MapProps = {
   onViewportChange?: (viewport: MapViewport) => void;
   /** Show a loading indicator on the map */
   loading?: boolean;
+  /**
+   * Called when MapLibre reports an error (style, tile or source failures).
+   * Errors are always logged; use this to surface them in the UI.
+   */
+  onError?: (error: Error) => void;
 } & Omit<MapLibreGL.MapOptions, "container" | "style">;
 
 function DefaultLoader() {
@@ -176,6 +181,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     viewport,
     onViewportChange,
     loading = false,
+    onError,
     ...props
   },
   ref,
@@ -193,6 +199,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
   const onViewportChangeRef = useRef(onViewportChange);
   onViewportChangeRef.current = onViewportChange;
+
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
 
   const mapStyles = useMemo(
     () => ({
@@ -245,6 +254,17 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     };
     const loadHandler = () => setIsLoaded(true);
 
+    // Without a listener MapLibre swallows style/tile failures into its own
+    // internal logging, so surface them to the caller.
+    const errorHandler = (event: MapLibreGL.ErrorEvent) => {
+      const error =
+        event.error instanceof Error
+          ? event.error
+          : new Error("MapLibre reported an unknown error");
+      console.error("[Map] MapLibre error", error);
+      onErrorRef.current?.(error);
+    };
+
     // Viewport change handler - skip if triggered by internal update
     const handleMove = () => {
       if (internalUpdateRef.current) return;
@@ -254,6 +274,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     map.on("load", loadHandler);
     map.on("styledata", styleDataHandler);
     map.on("move", handleMove);
+    map.on("error", errorHandler);
     setMapInstance(map);
 
     return () => {
@@ -261,6 +282,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       map.off("load", loadHandler);
       map.off("styledata", styleDataHandler);
       map.off("move", handleMove);
+      map.off("error", errorHandler);
       map.remove();
       setIsLoaded(false);
       setIsStyleLoaded(false);
@@ -801,38 +823,45 @@ function MapControls({
   }, [map]);
 
   const handleLocate = useCallback(() => {
-    setWaitingForLocation(true);
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const coords = {
-            longitude: pos.coords.longitude,
-            latitude: pos.coords.latitude,
-          };
-          map?.flyTo({
-            center: [coords.longitude, coords.latitude],
-            zoom: 14,
-            duration: 1500,
-          });
-          onLocate?.(coords);
-          setWaitingForLocation(false);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setWaitingForLocation(false);
-        },
-      );
+    if (!("geolocation" in navigator)) {
+      console.error("[MapControls] geolocation is not supported");
+      return;
     }
+
+    setWaitingForLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = {
+          longitude: pos.coords.longitude,
+          latitude: pos.coords.latitude,
+        };
+        map?.flyTo({
+          center: [coords.longitude, coords.latitude],
+          zoom: 14,
+          duration: 1500,
+        });
+        onLocate?.(coords);
+        setWaitingForLocation(false);
+      },
+      (error) => {
+        console.error("[MapControls] error getting location:", error);
+        setWaitingForLocation(false);
+      },
+    );
   }, [map, onLocate]);
 
   const handleFullscreen = useCallback(() => {
     const container = map?.getContainer();
     if (!container) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      container.requestFullscreen();
-    }
+
+    const request = document.fullscreenElement
+      ? document.exitFullscreen()
+      : container.requestFullscreen();
+
+    // Rejects when fullscreen is disallowed by the browser or the user.
+    request.catch((error: unknown) => {
+      console.error("[MapControls] fullscreen request failed", error);
+    });
   }, [map]);
 
   return (
@@ -1097,8 +1126,9 @@ function MapRoute({
       try {
         if (map.getLayer(layerId)) map.removeLayer(layerId);
         if (map.getSource(sourceId)) map.removeSource(sourceId);
-      } catch {
-        // ignore
+      } catch (error) {
+        // The style may already have been torn down; still worth logging.
+        console.warn("[Map] layer cleanup failed", error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1406,8 +1436,9 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
         if (map.getLayer(layerId)) map.removeLayer(layerId);
         if (map.getLayer(hitLayerId)) map.removeLayer(hitLayerId);
         if (map.getSource(sourceId)) map.removeSource(sourceId);
-      } catch {
-        // ignore
+      } catch (error) {
+        // The style may already have been torn down; still worth logging.
+        console.warn("[Map] layer cleanup failed", error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1658,8 +1689,9 @@ function MapClusterLayer<
           map.removeLayer(unclusteredLayerId);
         if (map.getLayer(clusterLayerId)) map.removeLayer(clusterLayerId);
         if (map.getSource(sourceId)) map.removeSource(sourceId);
-      } catch {
-        // ignore
+      } catch (error) {
+        // The style may already have been torn down; still worth logging.
+        console.warn("[Map] layer cleanup failed", error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
