@@ -11,6 +11,18 @@ import { Media } from './collections/Media'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const requireEnv = (name: string): string => {
+  const value = process.env[name]
+
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -20,13 +32,19 @@ export default buildConfig({
   },
   collections: [Users, Media],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: requireEnv('PAYLOAD_SECRET'),
+  serverURL,
+  cors: serverURL ? [serverURL] : [],
+  csrf: serverURL ? [serverURL] : [],
+  graphQL: {
+    disablePlaygroundInProduction: true,
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: requireEnv('DATABASE_URL'),
     },
   }),
   sharp,
