@@ -1,11 +1,11 @@
 // src/components/ui/services-hero.tsx
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, Phone } from "lucide-react"
 import hero_bg from '@/assets/9.png'
 import Image from "next/image"
+import { useMounted } from "@/hooks/use-mounted"
 
 // ─── Data ────────────────────────────────────────────────
 const SERVICES_PREVIEW = [
@@ -44,11 +44,7 @@ const SERVICES_PREVIEW = [
 // ═══════════════════════════════════════════════════════════
 
 export function ServicesHero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   const a = (delay: string) => (mounted ? `hero-up ${delay}` : "opacity-0")
   const fadeIn = (delay: string) =>

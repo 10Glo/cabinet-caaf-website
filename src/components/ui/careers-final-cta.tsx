@@ -16,6 +16,11 @@ import {
   Users,
   ChevronRight,
 } from "lucide-react"
+import {
+  CONTACT_PHONE_HREF,
+  RECRUITMENT_EMAIL,
+} from "@/lib/contact"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 const RECRUITMENT_STEPS = [
   {
@@ -76,12 +81,9 @@ export function CareersFinalCta() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
           {/* ── Left column: Process ── */}
           <div className="lg:col-span-7">
-            <div className="mb-8 inline-flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Notre processus de recrutement
-              </span>
-            </div>
+            <SectionEyebrow className="mb-8 inline-flex">
+              Notre processus de recrutement
+            </SectionEyebrow>
 
             <h2 className="max-w-2xl font-serif text-4xl leading-tight text-white md:text-5xl">
               Une sélection exigeante,
@@ -245,15 +247,15 @@ export function CareersFinalCta() {
 
               <div className="space-y-4">
                 <a
-                  href="mailto:recrutement@caaf-sas.com"
+                  href={`mailto:${RECRUITMENT_EMAIL}`}
                   className="block w-full border border-white/[0.06] bg-white/[0.03] px-4 py-3 text-left text-sm text-white/60 transition-colors hover:border-primary/25 hover:bg-white/[0.04]"
                 >
                   <p className="font-medium text-white">Email</p>
-                  <p className="truncate">recrutement@caaf-sas.com</p>
+                  <p className="truncate">{RECRUITMENT_EMAIL}</p>
                 </a>
 
                 <a
-                  href="tel:+243000000000"
+                  href={CONTACT_PHONE_HREF}
                   className="block w-full border border-white/[0.06] bg-white/[0.03] px-4 py-3 text-left text-sm text-white/60 transition-colors hover:border-primary/25 hover:bg-white/[0.04]"
                 >
                   <p className="font-medium text-white">Téléphone</p>
@@ -300,7 +302,7 @@ export function CareersFinalCta() {
               </Link>
 
               <a
-                href="mailto:recrutement@caaf-sas.com"
+                href={`mailto:${RECRUITMENT_EMAIL}`}
                 className="inline-flex items-center justify-center gap-2 border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/80 transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
               >
                 <Calendar className="h-4 w-4" />

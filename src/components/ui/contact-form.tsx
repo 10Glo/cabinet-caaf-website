@@ -15,6 +15,11 @@ import {
   Briefcase,
   ArrowRight,
 } from "lucide-react"
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_HREF,
+} from "@/lib/contact"
 
 // ─── Constants ───────────────────────────────────────────
 const EASE_OUT = [0.1, 0, 0.1, 1] as const
@@ -224,7 +229,7 @@ export function ContactForm() {
                   <FormField label="Téléphone" icon={Phone}>
                     <input
                       type="tel"
-                      placeholder="+243 000 000 000"
+                      placeholder={CONTACT_PHONE_DISPLAY}
                       onFocus={() => setFocusedField("phone")}
                       onBlur={() => setFocusedField(null)}
                       className="w-full border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.01] px-5 py-3.5 text-sm text-[#111A4A] outline-none transition-all duration-200 placeholder:text-[#7C7F88]/35 focus:border-primary/40 focus:bg-primary/[0.02] focus:ring-1 focus:ring-primary/10"
@@ -404,7 +409,7 @@ export function ContactForm() {
               {/* Contact links */}
               <div className="space-y-3">
                 <a
-                  href="mailto:contact@caaf-sas.com"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="group/link flex items-center gap-4 border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-all duration-200 hover:border-primary/20 hover:bg-white/[0.04]"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/[0.08] bg-white/[0.04] transition-colors group-hover/link:border-primary/20 group-hover/link:bg-primary/10">
@@ -418,13 +423,13 @@ export function ContactForm() {
                       Email
                     </p>
                     <p className="mt-0.5 text-sm text-white/60 transition-colors group-hover/link:text-white/90">
-                      contact@caaf-sas.com
+                      {CONTACT_EMAIL}
                     </p>
                   </div>
                 </a>
 
                 <a
-                  href="tel:+243000000000"
+                  href={CONTACT_PHONE_HREF}
                   className="group/link flex items-center gap-4 border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-all duration-200 hover:border-primary/20 hover:bg-white/[0.04]"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/[0.08] bg-white/[0.04] transition-colors group-hover/link:border-primary/20 group-hover/link:bg-primary/10">

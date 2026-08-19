@@ -4,6 +4,7 @@
 import Link from "next/link"
 import { ArrowRight, ChevronRight } from "lucide-react"
 import { ExpertiseHeroConfig } from "@/content/expertises/types"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 interface ExpertiseHeroProps {
   config: ExpertiseHeroConfig
@@ -54,12 +55,9 @@ export function ExpertiseHero({ config }: ExpertiseHeroProps) {
           </nav>
 
           {/* Eyebrow */}
-          <div className="mb-6 inline-flex items-center gap-3">
-            <div className="h-px w-8 bg-primary" />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-              {config.category}
-            </span>
-          </div>
+          <SectionEyebrow className="mb-6 inline-flex">
+            {config.category}
+          </SectionEyebrow>
 
           {/* Heading */}
           <h1 className="max-w-3xl font-serif text-[clamp(2.5rem,5.5vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.03em]">

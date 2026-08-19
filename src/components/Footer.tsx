@@ -14,6 +14,10 @@ import {
   Shield,
 } from "lucide-react"
 import logo from "@/assets/logo.png"
+import {
+  CONTACT_EMAIL,
+  FOOTER_PHONE_HREF,
+} from "@/lib/contact"
 
 const navigation = {
   sections: [
@@ -72,7 +76,7 @@ const navigation = {
 const socialLinks = [
   {
     label: "Email",
-    href: "mailto:contact@caaf-sas.com",
+    href: `mailto:${CONTACT_EMAIL}`,
     icon: Mail,
   },
   {
@@ -82,7 +86,7 @@ const socialLinks = [
   },
   {
     label: "Téléphone",
-    href: "tel:+33100000000",
+    href: FOOTER_PHONE_HREF,
     icon: Phone,
   },
 ]

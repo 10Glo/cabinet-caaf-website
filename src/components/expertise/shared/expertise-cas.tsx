@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { getIcon } from "@/content/expertises/icon-registry"
 import type { ExpertiseCasConfig } from "@/content/expertises/types"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 interface Props {
   config: ExpertiseCasConfig
@@ -85,24 +86,18 @@ export function ExpertiseCas({ config }: Props) {
               </h3>
 
               <div className="mt-8">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="h-px w-8 bg-primary/40" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/35">
-                    Contexte
-                  </span>
-                </div>
+                <SectionEyebrow className="mb-4" tone="muted-dark">
+                  Contexte
+                </SectionEyebrow>
                 <p className="text-sm leading-7 text-ink/60 md:text-base">
                   {activeCase.context}
                 </p>
               </div>
 
               <div className="mt-10">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="h-px w-8 bg-primary/40" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/35">
-                    Notre approche
-                  </span>
-                </div>
+                <SectionEyebrow className="mb-4" tone="muted-dark">
+                  Notre approche
+                </SectionEyebrow>
                 <ul className="grid gap-3">
                   {activeCase.approach.map((item) => (
                     <li
@@ -121,12 +116,9 @@ export function ExpertiseCas({ config }: Props) {
           {/* Right */}
           <div className="flex flex-col gap-5 md:col-span-5">
             <article className="flex-1 border border-white/10 bg-surface-dark p-8 md:p-10">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="h-px w-8 bg-primary/40" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/35">
-                  Résultats obtenus
-                </span>
-              </div>
+              <SectionEyebrow className="mb-6" tone="muted-light">
+                Résultats obtenus
+              </SectionEyebrow>
               <ul className="grid gap-4">
                 {activeCase.results.map((result) => {
                   const ResultIcon = getIcon(result.icon)   // ← résolution runtime

@@ -10,6 +10,7 @@ import { ChevronDown, ArrowRight } from "lucide-react"
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon"
 import { cn } from "@/lib/utils"
 import logo from "@/assets/logo.png"
+import { useMounted } from "@/hooks/use-mounted"
 
 // ─── Types ───────────────────────────────────────────────
 type LinkItem = {
@@ -389,11 +390,7 @@ type MobileMenuProps = React.ComponentProps<"div"> & {
 }
 
 function MobileMenu({ open, children, className, ...props }: MobileMenuProps) {
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   if (!mounted) return null
 

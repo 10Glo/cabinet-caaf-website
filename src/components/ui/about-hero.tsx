@@ -1,9 +1,9 @@
 // src/components/ui/about-hero.tsx
 "use client"
 
-import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useMounted } from "@/hooks/use-mounted"
 import {
   ArrowRight,
   ShieldCheck,
@@ -18,11 +18,7 @@ import hero_img from "@/assets/1.png"
 // ═══════════════════════════════════════════════════════════
 
 export function AboutHero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   const a = (delay: string) => (mounted ? `hero-up ${delay}` : "opacity-0")
   const fadeIn = (delay: string) =>

@@ -14,6 +14,7 @@ import {
   Filter,
   type LucideIcon,
 } from "lucide-react"
+import { RECRUITMENT_EMAIL } from "@/lib/contact"
 
 // ─── Types ───────────────────────────────────────────────
 type JobDepartment =
@@ -343,11 +344,11 @@ export function CareersOpenings() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <a
-                href="mailto:recrutement@caaf-sas.com"
+                href={`mailto:${RECRUITMENT_EMAIL}`}
                 className="group inline-flex items-center justify-center gap-2 border border-hairline bg-white px-6 py-3 text-sm font-medium text-ink/70 transition-colors hover:border-primary/30 hover:text-primary"
               >
                 <Mail className="h-4 w-4" strokeWidth={1.7} />
-                recrutement@caaf-sas.com
+                {RECRUITMENT_EMAIL}
               </a>
 
               <Link
