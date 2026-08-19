@@ -33,11 +33,24 @@ const cn = (...classes: Array<string | false | null | undefined>) =>
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
+  const [failed, setFailed] = useState(false)
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+  const handleCopy = async () => {
+    try {
+      if (!navigator.clipboard) {
+        throw new Error("Clipboard API unavailable")
+      }
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setFailed(false)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (error) {
+      // Denied permission or insecure context: never claim success.
+      console.error("[design-system] copy to clipboard failed", error)
+      setCopied(false)
+      setFailed(true)
+      setTimeout(() => setFailed(false), 1500)
+    }
   }
 
   return (
@@ -45,7 +58,12 @@ function CopyButton({ text }: { text: string }) {
       onClick={handleCopy}
       className="inline-flex items-center gap-1 rounded-md border border-hairline bg-canvas px-2 py-1 text-[11px] font-mono text-ink/50 transition-all hover:border-primary/40 hover:text-primary active:scale-95"
     >
-      {copied ? (
+      {failed ? (
+        <>
+          <Info size={10} />
+          Échec de la copie
+        </>
+      ) : copied ? (
         <>
           <Check size={10} />
           Copié

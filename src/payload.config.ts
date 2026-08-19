@@ -11,6 +11,23 @@ import { Media } from './collections/Media'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// During `next build` the config is imported to collect routes and generate the
+// import map, which does not require a database or a real secret.
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build'
+
+const requiredEnv = (name: string): string => {
+  const value = process.env[name]
+  if (value) return value
+
+  const message = `Missing required environment variable ${name}. Copy .env.example to .env and set it before starting the app.`
+  if (isBuildPhase) {
+    console.warn(`[payload.config] ${message}`)
+    return ''
+  }
+
+  throw new Error(message)
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -20,13 +37,13 @@ export default buildConfig({
   },
   collections: [Users, Media],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: requiredEnv('PAYLOAD_SECRET'),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: requiredEnv('DATABASE_URL'),
     },
   }),
   sharp,
