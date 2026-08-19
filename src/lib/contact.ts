@@ -1,0 +1,6 @@
+export const CONTACT_PHONE_HREF = "tel:+243000000000"
+export const CONTACT_PHONE_DISPLAY = "+243 000 000 000"
+export const FINAL_CTA_PHONE_HREF = "tel:+243810000000"
+export const FOOTER_PHONE_HREF = "tel:+33100000000"
+export const CONTACT_EMAIL = "contact@caaf-sas.com"
+export const RECRUITMENT_EMAIL = "recrutement@caaf-sas.com"

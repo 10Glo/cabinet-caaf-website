@@ -1,13 +1,5 @@
-// src/app/expertises/manuels-de-procedure/page.tsx
-
+import { ExpertisePage } from "@/components/expertise/shared/expertise-page"
 import { manuelsDeProcedureConfig } from "@/content/expertises/manuels-de-procedure"
-import { ExpertiseHero } from "@/components/expertise/shared/expertise-hero"
-import { ExpertiseSousServices } from "@/components/expertise/shared/expertise-sous-services"
-import { ExpertiseApproche } from "@/components/expertise/shared/expertise-approche"
-import { ExpertisePourquoi } from "@/components/expertise/shared/expertise-pourquoi"
-import { ExpertiseSecteurs } from "@/components/expertise/shared/expertise-secteurs"
-import { ExpertiseCas } from "@/components/expertise/shared/expertise-cas"
-import { ExpertiseCta } from "@/components/expertise/shared/expertise-cta"
 
 const BREADCRUMB = [
   { label: "Accueil", href: "/" },
@@ -17,15 +9,5 @@ const BREADCRUMB = [
 ]
 
 export default function ManuelsDeProcedurePage() {
-  return (
-    <main>
-      <ExpertiseHero config={manuelsDeProcedureConfig.hero} breadcrumb={BREADCRUMB} />
-      <ExpertiseSousServices config={manuelsDeProcedureConfig.sousServices} />
-      <ExpertiseApproche config={manuelsDeProcedureConfig.approche} />
-      <ExpertisePourquoi config={manuelsDeProcedureConfig.pourquoi} />
-      <ExpertiseSecteurs config={manuelsDeProcedureConfig.secteurs} />
-      <ExpertiseCas config={manuelsDeProcedureConfig.cas} />
-      <ExpertiseCta config={manuelsDeProcedureConfig.cta} />
-    </main>
-  )
+  return <ExpertisePage config={manuelsDeProcedureConfig} breadcrumb={BREADCRUMB} />
 }

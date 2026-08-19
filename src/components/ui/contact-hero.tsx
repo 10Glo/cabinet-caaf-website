@@ -1,9 +1,9 @@
 // src/components/ui/contact-hero.tsx
 "use client"
 
-import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useMounted } from "@/hooks/use-mounted"
 import { ArrowRight, Phone } from "lucide-react"
 import hero_img from "@/assets/8.png"
 
@@ -12,11 +12,7 @@ import hero_img from "@/assets/8.png"
 // ═══════════════════════════════════════════════════════════
 
 export function ContactHero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   const a = (delay: string) => (mounted ? `hero-up ${delay}` : "opacity-0")
   const fadeIn = (delay: string) =>

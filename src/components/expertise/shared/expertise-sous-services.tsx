@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { getIcon } from "@/content/expertises/icon-registry"
 import type { ExpertiseSousServicesConfig } from "@/content/expertises/types"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 interface Props {
   config: ExpertiseSousServicesConfig
@@ -119,12 +120,9 @@ export function ExpertiseSousServices({ config }: Props) {
                 {active.description}
               </p>
               <div className="mt-10">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="h-px w-8 bg-primary/40" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/35">
-                    Livrables clés
-                  </span>
-                </div>
+              <SectionEyebrow className="mb-4" tone="muted-dark">
+                Livrables clés
+              </SectionEyebrow>
                 <ul className="grid gap-3 lg:max-w-2xl">
                   {active.deliverables.map((item) => (
                     <li

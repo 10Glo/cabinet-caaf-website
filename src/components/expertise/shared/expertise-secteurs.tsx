@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { getIcon } from "@/content/expertises/icon-registry"
 import type { ExpertiseSecteursConfig } from "@/content/expertises/types"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 interface Props {
   config: ExpertiseSecteursConfig
@@ -74,12 +75,9 @@ export function ExpertiseSecteurs({ config }: Props) {
           {/* Others — Dark panel */}
           {others.length > 0 && (
             <div className="border border-hairline bg-surface-dark p-8 md:col-span-12 md:p-10">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="h-px w-8 bg-primary/40" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/35">
-                  Autres secteurs d'intervention
-                </span>
-              </div>
+              <SectionEyebrow className="mb-6" tone="muted-light">
+                Autres secteurs d'intervention
+              </SectionEyebrow>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {others.map((sector) => {
                   const Icon = getIcon(sector.icon)   // ← résolution runtime

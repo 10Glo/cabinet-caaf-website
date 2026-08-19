@@ -12,6 +12,7 @@ import {
   Briefcase,
   CheckCircle2,
 } from "lucide-react"
+import { RECRUITMENT_EMAIL } from "@/lib/contact"
 
 const HIGHLIGHTS = [
   { label: "Kinshasa & Lubumbashi", icon: MapPin },
@@ -164,10 +165,10 @@ export function CareersHero() {
 
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <a
-                    href="mailto:recrutement@caaf-sas.com"
+                    href={`mailto:${RECRUITMENT_EMAIL}`}
                     className="inline-flex items-center justify-center gap-2 border border-white/[0.08] bg-white/[0.02] px-5 py-3 text-sm font-medium text-white/70 transition-colors hover:border-primary/25 hover:text-white"
                   >
-                    recrutement@caaf-sas.com
+                    {RECRUITMENT_EMAIL}
                   </a>
 
                   <Link

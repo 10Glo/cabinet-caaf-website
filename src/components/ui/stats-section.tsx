@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   BarChart3,
 } from "lucide-react";
-import { Counter } from "../ui/animate-counter";
+import { Counter } from "../shared/animate-counter";
 import map from '@/assets/Carte-ANAT.svg'
 
 // --- CONFIGURATION DES DONNÉES ---

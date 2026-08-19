@@ -20,6 +20,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { SectionEyebrow } from "@/components/shared/section-eyebrow"
 
 // ─── Types ───────────────────────────────────────────────
 type SectorCard = {
@@ -408,12 +409,9 @@ export function SectorsBentoGrid() {
 
           {/* ═══ 6. Wide: Institutions + Holdings + Santé — 12 cols ═══ */}
           <article className="col-span-12 border border-hairline bg-white p-8 md:p-10">
-            <div className="mb-8 flex items-center gap-3">
-              <div className="h-px w-8 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Autres secteurs d&apos;intervention
-              </span>
-            </div>
+            <SectionEyebrow className="mb-8">
+              Autres secteurs d&apos;intervention
+            </SectionEyebrow>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {[

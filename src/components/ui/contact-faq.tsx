@@ -4,6 +4,10 @@
 import React, { useRef, useState } from "react"
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
+import {
+  CONTACT_PHONE_HREF,
+  RECRUITMENT_EMAIL,
+} from "@/lib/contact"
 
 // ─── Constants ───────────────────────────────────────────
 const EASE_OUT = [0.1, 0, 0.1, 1] as const
@@ -66,7 +70,7 @@ const FAQ_ITEMS: FaqItem[] = [
     category: "Carrières",
     question: "Comment postuler chez CAAF SAS ?",
     answer:
-      "Vous pouvez consulter nos postes ouverts sur la page Carrières ou envoyer une candidature spontanée à recrutement@caaf-sas.com. Nous recherchons des profils rigoureux, intègres et motivés par l'excellence professionnelle.",
+      `Vous pouvez consulter nos postes ouverts sur la page Carrières ou envoyer une candidature spontanée à ${RECRUITMENT_EMAIL}. Nous recherchons des profils rigoureux, intègres et motivés par l'excellence professionnelle.`,
   },
 ]
 
@@ -254,7 +258,7 @@ export function ContactFaq() {
                   </Link>
 
                   <Link
-                    href="tel:+243000000000"
+                    href={CONTACT_PHONE_HREF}
                     className="group flex items-center justify-between border border-white/[0.08] bg-white/[0.03] px-5 py-4 text-sm text-white/50 transition-all duration-200 hover:border-primary/20 hover:bg-white/[0.06] hover:text-white/80"
                   >
                     <span>Appeler directement</span>

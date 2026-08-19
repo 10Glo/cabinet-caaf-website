@@ -1,10 +1,11 @@
 // src/components/ui/hero.tsx
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { StaticImageData } from 'next/image'
+import { useMounted } from '@/hooks/use-mounted'
 import { ArrowRight, CheckCircle2, Phone, type LucideIcon } from 'lucide-react'
 import crdb_logo from '@/assets/CRDB_BANK_logo.svg'
 import midema_logo from '@/assets/ACG-LOGO-MIDEMA.png'
@@ -95,11 +96,7 @@ function ClientLogo({ client }: { client: Client }) {
 // HERO
 // ═══════════════════════════════════════════════════════════
 export default function Hero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   const a = (delay: string) => (mounted ? `hero-up ${delay}` : 'opacity-0')
   const fadeIn = (delay: string) => (mounted ? `hero-in ${delay}` : 'opacity-0')
