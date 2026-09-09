@@ -1,13 +1,8 @@
 // src/components/ui/about-story.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-
-// ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
 const STRENGTHS = [
   {
@@ -34,75 +29,33 @@ const FIGURES = [
   { value: "2", label: "Bureaux en RDC" },
 ]
 
-// ═══════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════
-
 export function AboutStory() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
-    <section
-      ref={sectionRef}
-      className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
-    >
+    <section className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20">
       <div className="mx-auto max-w-7xl">
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="mb-14 max-w-3xl lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
-            className="mb-5 inline-flex items-center"
-          >
+          <div className="mb-5 inline-flex items-center">
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Le Cabinet
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
-          >
+          <h2 className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]">
             Congo Auditing and Advisory
             <br />
             <span className="opacity-40">Firm SAS.</span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
-            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
-          >
+          <p className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60">
             CAAF SAS met à votre service une équipe d&apos;experts formés aux
             meilleures pratiques internationales et profondément ancrés dans la
             réalité congolaise.
-          </motion.p>
+          </p>
         </div>
 
-        {/* ── Main description card ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView
-              ? {
-                  opacity: [0, 1, 1],
-                  y: [20, 0, 0],
-                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                }
-              : {}
-          }
-          transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
-          className="border border-[#111A4A]/[0.06] bg-white"
-        >
+        {/* Main description card */}
+        <div className="border border-[#111A4A]/[0.06] bg-white">
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
             {/* Text */}
             <div className="p-8 md:p-10 lg:p-12">
@@ -128,12 +81,12 @@ export function AboutStory() {
               <div className="mt-8 border-t border-[#111A4A]/[0.06] pt-6">
                 <Link
                   href="/about"
-                  className="group/link inline-flex items-center gap-2 text-[13px] font-medium text-primary transition-all hover:gap-2.5"
+                  className="group/link inline-flex items-center gap-2 text-[13px] font-medium text-primary transition-colors duration-200 hover:text-primary-active"
                 >
                   Découvrir l&apos;histoire du cabinet
                   <ArrowRight
                     size={13}
-                    className="transition-transform group-hover/link:translate-x-0.5"
+                    className="transition-transform duration-200 group-hover/link:translate-x-0.5"
                   />
                 </Link>
               </div>
@@ -159,28 +112,13 @@ export function AboutStory() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── Three strengths ── */}
+        {/* Three strengths */}
         <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {STRENGTHS.map((item, i) => (
-            <motion.div
+          {STRENGTHS.map((item) => (
+            <div
               key={item.title}
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={
-                isInView
-                  ? {
-                      opacity: [0, 1, 1],
-                      y: [20, 0, 0],
-                      filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                    }
-                  : {}
-              }
-              transition={{
-                duration: 1.5,
-                delay: 0.45 + i * 0.1,
-                ease: EASE_OUT,
-              }}
               className="group border border-[#111A4A]/[0.06] bg-white p-8"
             >
               {/* Tag */}
@@ -188,14 +126,14 @@ export function AboutStory() {
                 {item.label}
               </span>
 
-              <h3 className="mb-3 font-serif text-xl text-[#111A4A] transition-transform duration-500 group-hover:translate-x-1">
+              <h3 className="mb-3 font-serif text-xl text-[#111A4A] transition-colors duration-200 group-hover:text-brand-navy">
                 {item.title}
               </h3>
 
               <p className="text-sm leading-7 text-[#7C7F88]">
                 {item.text}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

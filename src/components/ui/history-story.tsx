@@ -1,11 +1,7 @@
 // src/components/ui/about-story.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
-
 // ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
 const CHAPTERS = [
   {
@@ -37,68 +33,40 @@ const FIGURES = [
 // ═══════════════════════════════════════════════════════════
 
 export function HistoryStory() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
     <section
-      ref={sectionRef}
       className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
     >
       <div className="mx-auto max-w-7xl">
         {/* ── Header ── */}
         <div className="mb-14 max-w-3xl lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+          <div
             className="mb-5 inline-flex items-center"
           >
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Notre histoire
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+          <h2
             className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
           >
             Plus de 55 ans au service
             <br />
             <span className="opacity-40">de l&apos;excellence congolaise.</span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          <p
             className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
           >
             CAAF SAS — anciennement PwC RDC SAS — est un cabinet d&apos;audit,
             de conseil et d&apos;assistance comptable qui exerce ses activités
             en République Démocratique du Congo depuis 1970.
-          </motion.p>
+          </p>
         </div>
 
         {/* ── Main description card ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView
-              ? {
-                  opacity: [0, 1, 1],
-                  y: [20, 0, 0],
-                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                }
-              : {}
-          }
-          transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+        <div
           className="border border-[#111A4A]/[0.06] bg-white"
         >
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr]">
@@ -153,28 +121,13 @@ export function HistoryStory() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Three chapters ── */}
         <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {CHAPTERS.map((chapter, i) => (
-            <motion.div
+          {CHAPTERS.map((chapter) => (
+            <div
               key={chapter.title}
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={
-                isInView
-                  ? {
-                      opacity: [0, 1, 1],
-                      y: [20, 0, 0],
-                      filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                    }
-                  : {}
-              }
-              transition={{
-                duration: 1.5,
-                delay: 0.45 + i * 0.1,
-                ease: EASE_OUT,
-              }}
               className="group border border-[#111A4A]/[0.06] bg-white p-8"
             >
               {/* Tag */}
@@ -189,23 +142,12 @@ export function HistoryStory() {
               <p className="text-sm leading-7 text-[#7C7F88]">
                 {chapter.text}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* ── Heritage banner ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView
-              ? {
-                  opacity: [0, 1, 1],
-                  y: [20, 0, 0],
-                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                }
-              : {}
-          }
-          transition={{ duration: 1.5, delay: 0.7, ease: EASE_OUT }}
+        <div
           className="mt-5 border border-[#111A4A]/[0.06] bg-white"
         >
           <div className="flex flex-col items-start gap-6 px-8 py-7 md:flex-row md:items-center md:justify-between md:px-10">
@@ -219,7 +161,7 @@ export function HistoryStory() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

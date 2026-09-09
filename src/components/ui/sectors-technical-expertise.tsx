@@ -2,16 +2,8 @@
 "use client"
 
 import Link from "next/link"
-import {
-  ArrowRight,
-  Globe2,
-  ShieldCheck,
-  Landmark,
-  Scale,
-  BookOpen,
-  FileCheck2,
-  type LucideIcon,
-} from "lucide-react"
+import { ArrowRight, Globe2, ShieldCheck, Scale, Landmark, BookOpen } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 type ExpertiseItem = {
   title: string
@@ -23,22 +15,19 @@ type ExpertiseItem = {
 const EXPERTISE_ITEMS: ExpertiseItem[] = [
   {
     title: "Conformité régionale",
-    description:
-      "Navigation experte des normes comptables OHADA et des codes fiscaux locaux (DGI/DGRAD) pour les multinationales et les groupes opérant en RDC.",
+    description: "Navigation experte des normes OHADA et des codes fiscaux locaux (DGI/DGRAD) pour les multinationales et groupes opérant en RDC.",
     icon: Globe2,
     tags: ["OHADA", "DGI", "DGRAD"],
   },
   {
     title: "Maîtrise des risques",
-    description:
-      "Fonctions d'audit interne spécialisées, conçues pour identifier et neutraliser les risques opérationnels dans les marchés frontières.",
+    description: "Fonctions d'audit interne spécialisées pour identifier et neutraliser les risques opérationnels dans les marchés frontières.",
     icon: ShieldCheck,
     tags: ["Audit interne", "Cartographie", "Remédiation"],
   },
   {
     title: "Intégration IFAC",
-    description:
-      "Alignement complet avec les normes de la Fédération Internationale des Comptables, garantissant que vos rapports locaux sont de niveau international.",
+    description: "Alignement complet avec les normes IFAC, garantissant que vos rapports locaux sont de niveau international.",
     icon: Scale,
     tags: ["ISA", "IFRS", "IFAC"],
   },
@@ -46,164 +35,60 @@ const EXPERTISE_ITEMS: ExpertiseItem[] = [
 
 export function SectorsTechnicalExpertise() {
   return (
-    <section className="border-t border-hairline bg-surface-soft/30 px-10 py-section">
-      <div className="w-full">
-        {/* Header */}
-        <div className="mb-14 grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="h-px w-10 bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                Expertise technique
-              </span>
-            </div>
-
-            <h2 className="font-serif text-4xl leading-tight text-brand-navy md:text-5xl">
-              Les fondamentaux
-              <br />
-              <span className="text-ink/40">de notre rigueur technique.</span>
-            </h2>
+    <section className="bg-[#f8fafc] border-t border-slate-200/60 px-6 sm:px-10 py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 max-w-3xl">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="h-px w-10 bg-primary" />
+            <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Expertise technique</span>
           </div>
-
-          <p className="max-w-xl text-base leading-relaxed text-ink/60">
-            Au-delà de la lecture sectorielle, notre équipe s&apos;appuie sur
-            une maîtrise technique approfondie des référentiels comptables,
-            réglementaires et d&apos;audit applicables en RDC et dans la région.
+          <h2 className="font-serif text-4xl leading-tight text-slate-900 md:text-5xl">
+            Les fondamentaux <br />
+            <span className="text-slate-400">de notre rigueur technique.</span>
+          </h2>
+          <p className="mt-6 max-w-2xl font-sans text-base leading-7 text-slate-500">
+            Au-delà de la lecture sectorielle, notre équipe s&apos;appuie sur une maîtrise approfondie des référentiels comptables et d&apos;audit applicables en RDC.
           </p>
         </div>
 
-        {/* Expertise Grid */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {EXPERTISE_ITEMS.map((item, index) => (
-            <article
-              key={item.title}
-              className={
-                index === 1
-                  ? "group border border-white/10 bg-surface-dark p-8 md:p-10"
-                  : "group border border-hairline bg-white p-8 md:p-10"
-              }
-            >
-              {/* Icon */}
-              <div
-                className={
-                  index === 1
-                    ? "mb-6 flex h-12 w-12 items-center justify-center border border-white/10 bg-white/5"
-                    : "mb-6 flex h-12 w-12 items-center justify-center border border-primary/20 bg-primary/5"
-                }
-              >
-                <item.icon
-                  className="h-6 w-6 text-primary"
-                  strokeWidth={1.7}
-                />
+          {EXPERTISE_ITEMS.map((item) => (
+            <article key={item.title} className="border border-slate-200 bg-white p-8">
+              <div className="mb-6 flex h-10 w-10 items-center justify-center border border-slate-200 bg-slate-50">
+                <item.icon className="h-5 w-5 text-primary" strokeWidth={1.7} />
               </div>
-
-              {/* Title */}
-              <h3
-                className={
-                  index === 1
-                    ? "font-serif text-2xl text-white"
-                    : "font-serif text-2xl text-brand-navy"
-                }
-              >
-                {item.title}
-              </h3>
-
-              {/* Description */}
-              <p
-                className={
-                  index === 1
-                    ? "mt-4 text-sm leading-7 text-white/55"
-                    : "mt-4 text-sm leading-7 text-ink/55"
-                }
-              >
-                {item.description}
-              </p>
-
-              {/* Tags */}
+              <h3 className="font-serif text-xl text-slate-900">{item.title}</h3>
+              <p className="mt-3 font-sans text-sm leading-7 text-slate-500">{item.description}</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={
-                      index === 1
-                        ? "border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-white/40"
-                        : "border border-hairline bg-canvas px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-ink/40"
-                    }
-                  >
-                    {tag}
-                  </span>
+                  <span key={tag} className="border border-slate-200 bg-slate-50 px-2.5 py-1 font-sans text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500">{tag}</span>
                 ))}
               </div>
-
-              {/* Bottom accent on hover */}
-              <div className="mt-6 h-[2px] w-0 bg-primary/40 transition-all duration-300 group-hover:w-full" />
             </article>
           ))}
         </div>
 
-        {/* Certifications strip */}
-        <div className="mt-10 border border-hairline bg-white p-8 md:p-10">
-          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1fr_auto]">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center">
+        <div className="mt-10 border border-slate-200 bg-white p-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-wrap items-center gap-8">
               {[
-                {
-                  badge: "Certifié",
-                  title: "IFAC",
-                  description: "Standards internationaux d'audit",
-                  icon: Globe2,
-                },
-                {
-                  badge: "Accrédité",
-                  title: "ONEC",
-                  description: "Ordre National des Experts-Comptables",
-                  icon: Landmark,
-                },
-                {
-                  badge: "Conforme",
-                  title: "OHADA",
-                  description: "Référentiel comptable régional",
-                  icon: BookOpen,
-                },
-              ].map((cert, i) => (
-                <div
-                  key={cert.title}
-                  className="flex items-center gap-4"
-                >
-                  {i > 0 && (
-                    <div className="hidden h-10 w-px bg-hairline md:block" />
-                  )}
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center border border-primary/20 bg-primary/5">
-                      <cert.icon
-                        className="h-5 w-5 text-primary"
-                        strokeWidth={1.7}
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
-                          {cert.badge}
-                        </span>
-                        <span className="font-serif text-lg text-brand-navy">
-                          {cert.title}
-                        </span>
-                      </div>
-                      <p className="text-xs text-ink/40">{cert.description}</p>
-                    </div>
+                { badge: "Certifié", title: "IFAC", desc: "Standards internationaux", icon: Globe2 },
+                { badge: "Accrédité", title: "ONEC", desc: "Ordre National des Experts-Comptables", icon: Landmark },
+                { badge: "Conforme", title: "OHADA", desc: "Référentiel comptable régional", icon: BookOpen },
+              ].map((cert) => (
+                <div key={cert.title} className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center border border-slate-200 bg-slate-50">
+                    <cert.icon className="h-5 w-5 text-primary" strokeWidth={1.7} />
+                  </div>
+                  <div>
+                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">{cert.badge} <span className="font-serif text-base normal-case tracking-normal text-slate-900">{cert.title}</span></p>
+                    <p className="font-sans text-xs text-slate-500">{cert.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-
-            <Link
-              href="#contact"
-              className="group inline-flex shrink-0 items-center gap-2 text-sm font-medium text-primary transition-all hover:gap-3"
-            >
-              En savoir plus
-              <ArrowRight
-                size={15}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
+            <Link href="/contact" className="inline-flex items-center gap-2 font-sans text-sm font-medium text-primary hover:gap-3 transition-all">
+              En savoir plus <ArrowRight size={15} />
             </Link>
           </div>
         </div>

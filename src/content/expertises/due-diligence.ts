@@ -354,7 +354,7 @@ export const dueDiligenceConfig: ExpertisePageConfig = {
       "Support jusqu'au closing",
     ],
     primaryCta: { label: "Lancer une due diligence", href: "/contact" },
-    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243999309901" },
     watermarkIcon: "Search",
     contactOptions: [
       {
@@ -368,8 +368,8 @@ export const dueDiligenceConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Appeler directement",
-        description: "+243 XX XXX XXXX — disponible pour les sujets urgents.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — disponible pour les sujets urgents.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },

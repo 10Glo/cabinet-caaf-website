@@ -22,8 +22,8 @@ const CONTACT_OPTIONS = [
   {
     icon: Phone,
     title: "Appeler l'associé senior",
-    description: "+243 XX XXX XXXX — disponible pour un échange direct.",
-    href: "tel:+243XXXXXXXX",
+    description: "+243 999 309 901 / +243 810 372 645 — disponible pour un échange direct.",
+    href: "tel:+243999309901",
     cta: "Appeler maintenant",
     primary: false,
   },
@@ -85,7 +85,7 @@ export function AuditInterneCta() {
                 <Link href="/contact" className="group/btn inline-flex items-center justify-center gap-3 bg-primary px-8 py-4 text-[14px] font-semibold text-white transition-colors hover:bg-primary-active">
                   Diagnostiquer mon organisation <ArrowRight size={16} className="transition-transform group-hover/btn:translate-x-1" />
                 </Link>
-                <Link href="tel:+243XXXXXXXX" className="inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-[14px] font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white">
+                <Link href="tel:+243999309901" className="inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-[14px] font-semibold text-white/80 transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white">
                   <Phone size={15} strokeWidth={1.7} /> Appeler directement
                 </Link>
               </div>

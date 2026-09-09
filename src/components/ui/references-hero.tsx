@@ -7,7 +7,7 @@ import subHeroBg from "@/assets/6.jpg"
 
 export function ReferencesHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-brand-navy">
+    <section className="relative w-full min-h-[540px] md:min-h-[640px] overflow-hidden bg-brand-navy">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -16,15 +16,16 @@ export function ReferencesHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-20"
+          className="object-cover opacity-25"
           quality={80}
         />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full">
-        <div className="px-6 pb-16 pt-36 sm:px-10 md:pt-44 lg:pb-20">
-          <div className="max-w-3xl">
+        <div className="px-6 pb-24 pt-36 sm:px-10 md:pt-44 lg:pb-28">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl">
             {/* Breadcrumb */}
             <nav
               aria-label="Fil d'Ariane"
@@ -38,7 +39,7 @@ export function ReferencesHero() {
               </Link>
               <span className="text-white/15">/</span>
               <Link
-                href="/a-propos"
+                href="/about"
                 className="transition-colors duration-200 hover:text-white/50"
               >
                 À Propos
@@ -57,16 +58,20 @@ export function ReferencesHero() {
               La confiance des acteurs
               <br />
               <span className="text-white/35">
-                qui comptent en RDC.
+                majeurs qui façonnent la RDC.
               </span>
             </h1>
 
             {/* Description */}
             <p className="mt-7 max-w-lg text-[16px] leading-[1.8] text-white/45">
-              Depuis plus de 30 ans, des institutions financières, des groupes
-              miniers, des opérateurs industriels et des organisations
-              internationales nous confient leurs missions les plus sensibles.
+              Depuis plus de 30 ans, des institutions financières, 
+              des opérateurs industriels et 
+              des organisations internationales nous confient leurs 
+              missions les plus sensibles, témoignant de la confiance accordée 
+              à notre expertise, notre rigueur et notre engagement.
+
             </p>
+            </div>
           </div>
         </div>
       </div>

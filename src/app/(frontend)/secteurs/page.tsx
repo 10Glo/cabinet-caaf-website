@@ -1,24 +1,19 @@
 // src/app/(frontend)/secteurs/page.tsx
-import { SectorApproachDifference } from "@/components/ui/sector-approach-difference";
-import { SectorCaseStudies } from "@/components/ui/sector-case-studies";
+import { ProofBanner } from "@/components/ui/proof-banner";
 import { SectorsBentoGrid } from "@/components/ui/sectors-bento-grid";
-import { SectorsFinalCta } from "@/components/ui/sectors-final-cta";
 import { SectorsHero } from "@/components/ui/sectors-hero";
-import { SectorsQuote } from "@/components/ui/sectors-quote";
 import { SectorsTechnicalExpertise } from "@/components/ui/sectors-technical-expertise";
-import UnderConstruction from "../underConstruction";
+import { SectorsFinalCta } from "@/components/ui/sectors-final-cta";
 
 export default function SectorsPage() {
   return (
     <>
       <SectorsHero />
-      <UnderConstruction />
-      {/* <SectorsBentoGrid />
-      <SectorsQuote />
+      <ProofBanner />
+      {/* Détail sectoriel — construit à partir des 6 secteurs du Home (sectors-overview) */}
+      <SectorsBentoGrid />
       <SectorsTechnicalExpertise />
-      <SectorApproachDifference />
-      <SectorCaseStudies />
-      <SectorsFinalCta /> */}
+      <SectorsFinalCta />
     </>
   )
 }

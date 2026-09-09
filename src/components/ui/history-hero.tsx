@@ -7,7 +7,7 @@ import subHeroBg from "@/assets/6.jpg"
 
 export function HistoryHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-brand-navy">
+    <section className="relative w-full min-h-[540px] md:min-h-[640px] overflow-hidden bg-brand-navy">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -16,15 +16,16 @@ export function HistoryHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-40"
+          className="object-cover opacity-25"
           quality={80}
         />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full">
-        <div className="px-6 pb-16 pt-36 sm:px-10 md:pt-44 lg:pb-20">
-          <div className="max-w-3xl">
+        <div className="px-6 pb-24 pt-36 sm:px-10 md:pt-44 lg:pb-28">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl">
             {/* Breadcrumb */}
             <nav
               aria-label="Fil d'Ariane"
@@ -38,7 +39,7 @@ export function HistoryHero() {
               </Link>
               <span className="text-white/15">/</span>
               <Link
-                href="/a-propos"
+                href="/about"
                 className="transition-colors duration-200 hover:text-white/50"
               >
                 À Propos
@@ -57,16 +58,18 @@ export function HistoryHero() {
               Heritage congolais.
               <br />
               <span className="text-white/35">
-                Standards mondiaux.
+                Rigeur et Standards mondiaux.
               </span>
             </h1>
 
             {/* Description */}
             <p className="mt-7 max-w-lg text-[16px] leading-[1.8] text-white/45">
-              Depuis plus de 30 ans, CAAF SAS accompagne les entreprises,
-              institutions et groupes stratégiques en RDC. Retour sur trois
-              décennies d&apos;engagement, de rigueur et de croissance.
+              Depuis plus de 30 ans, CAAF SAS accompagne les entreprises, 
+              institutions et groupes stratégiques en RDC. Trois décennies 
+              d&apos;engagement, de rigueur et d’expertise au service de la performance
+               et d&apos;une croissance durable.
             </p>
+            </div>
           </div>
         </div>
       </div>

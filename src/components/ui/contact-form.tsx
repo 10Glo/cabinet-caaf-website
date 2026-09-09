@@ -1,8 +1,7 @@
 // src/components/ui/contact-form.tsx
 "use client"
 
-import React, { useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import React, { useState } from "react"
 import {
   Send,
   ShieldCheck,
@@ -78,8 +77,6 @@ function FormField({
 // ═══════════════════════════════════════════════════════════
 
 export function ContactForm() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
   const [submitted, setSubmitted] = useState(false)
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
@@ -93,10 +90,7 @@ export function ContactForm() {
     return (
       <section className="bg-canvas px-10 py-section">
         <div className="mx-auto max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1.5, ease: EASE_OUT }}
+          <div
             className="relative overflow-hidden border border-[#111A4A]/[0.06] bg-white p-16 text-center"
           >
             {/* Decorative glow */}
@@ -132,7 +126,7 @@ export function ContactForm() {
 
             {/* Bottom accent */}
             <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary/20" />
-          </motion.div>
+          </div>
         </div>
       </section>
     )
@@ -141,7 +135,6 @@ export function ContactForm() {
   // ── Form state ──
   return (
     <section
-      ref={sectionRef}
       id="formulaire-contact"
       className="bg-canvas px-10 py-section"
     >
@@ -150,37 +143,19 @@ export function ContactForm() {
           {/* ═══════════════════════════════════════════════
               LEFT — Form
               ═══════════════════════════════════════════════ */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView
-                ? {
-                    opacity: [0, 1, 1],
-                    y: [20, 0, 0],
-                    filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                  }
-                : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+          <div
             className="lg:col-span-7"
           >
             <div className="group relative overflow-hidden border border-[#111A4A]/[0.06] bg-white p-8 md:p-10 lg:p-12">
               {/* Header */}
               <div className="mb-10">
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{
-                    duration: 0.8,
-                    delay: 0.1,
-                    ease: EASE_OUT,
-                  }}
+                <div
                   className="mb-5 inline-flex items-center"
                 >
                   <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
                     Formulaire
                   </span>
-                </motion.div>
+                </div>
 
                 <h2 className="mb-4 font-serif text-3xl text-[#111A4A] md:text-4xl">
                   Demander une consultation
@@ -313,25 +288,14 @@ export function ContactForm() {
               {/* Bottom accent bar */}
               <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary/30 transition-all duration-700 group-hover:w-full" />
             </div>
-          </motion.div>
+          </div>
 
           {/* ═══════════════════════════════════════════════
               RIGHT — Side info
               ═══════════════════════════════════════════════ */}
           <div className="space-y-5 lg:col-span-5">
             {/* Timeline card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={
-                isInView
-                  ? {
-                      opacity: [0, 1, 1],
-                      y: [20, 0, 0],
-                      filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                    }
-                  : {}
-              }
-              transition={{ duration: 1.5, delay: 0.35, ease: EASE_OUT }}
+            <div
               className="group relative overflow-hidden border border-[#111A4A]/[0.06] bg-white p-8"
             >
               {/* Eyebrow */}
@@ -372,21 +336,10 @@ export function ContactForm() {
 
               {/* Bottom accent bar */}
               <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary/30 transition-all duration-700 group-hover:w-full" />
-            </motion.div>
+            </div>
 
             {/* Direct contact card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={
-                isInView
-                  ? {
-                      opacity: [0, 1, 1],
-                      y: [20, 0, 0],
-                      filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                    }
-                  : {}
-              }
-              transition={{ duration: 1.5, delay: 0.5, ease: EASE_OUT }}
+            <div
               className="group relative overflow-hidden border border-white/[0.08] bg-brand-navy p-8"
             >
               {/* Eyebrow */}
@@ -404,7 +357,7 @@ export function ContactForm() {
               {/* Contact links */}
               <div className="space-y-3">
                 <a
-                  href="mailto:contact@caaf-sas.com"
+                  href="mailto:contact@caaf.cd"
                   className="group/link flex items-center gap-4 border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-all duration-200 hover:border-primary/20 hover:bg-white/[0.04]"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/[0.08] bg-white/[0.04] transition-colors group-hover/link:border-primary/20 group-hover/link:bg-primary/10">
@@ -418,7 +371,7 @@ export function ContactForm() {
                       Email
                     </p>
                     <p className="mt-0.5 text-sm text-white/60 transition-colors group-hover/link:text-white/90">
-                      contact@caaf-sas.com
+                      contact@caaf.cd
                     </p>
                   </div>
                 </a>
@@ -446,7 +399,7 @@ export function ContactForm() {
 
               {/* Bottom accent bar */}
               <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary/30 transition-all duration-700 group-hover:w-full" />
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>

@@ -5,7 +5,6 @@ import React, { useState, useRef, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { createPortal } from "react-dom"
-import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown, ArrowRight } from "lucide-react"
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon"
 import { cn } from "@/lib/utils"
@@ -86,12 +85,12 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Audit Financier",
-            href: "/expertise/audit-financier",
+            href: "/expertises/audit-financier",
             description: "Certification selon les normes ISA",
           },
           {
             title: "Commissariat aux Comptes",
-            href: "/services#commissariat",
+            href: "/expertises/commissariat-aux-comptes",
             description: "Mission légale de contrôle et attestation",
           },
         ],
@@ -101,27 +100,27 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Audit Interne",
-            href: "/services#audit-interne",
+            href: "/expertises/audit-interne",
             description: "Évaluation périodique du contrôle interne",
           },
           {
             title: "Contrôle Interne",
-            href: "/services#controle-interne",
+            href: "/expertises/controle-interne",
             description: "Conception et optimisation des processus",
           },
           {
             title: "Gestion des Risques",
-            href: "/services#gestion-risques",
+            href: "/expertises/gestion-des-risques",
             description: "Cartographie et atténuation des risques",
           },
           {
             title: "Maîtrise des Risques",
-            href: "/services#maitrise-risques",
+            href: "/expertises/maitrise-des-risques",
             description: "Conformité et contrôle permanent",
           },
           {
             title: "Audit Informatique",
-            href: "/services#audit-informatique",
+            href: "/expertises/audit-informatique",
             description: "Sécurité et gouvernance des SI",
           },
         ],
@@ -131,17 +130,17 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Conseil Fiscal",
-            href: "/services#conseil-fiscal",
+            href: "/expertises/conseil-fiscal",
             description: "Optimisation et conformité réglementaire",
           },
           {
             title: "Due Diligence",
-            href: "/services#due-diligence",
+            href: "/expertises/due-diligence",
             description: "Analyse pour opérations M&A",
           },
           {
             title: "Restructuration",
-            href: "/services#restructuration",
+            href: "/expertises/restructuration",
             description: "Transformations structurelles",
           },
         ],
@@ -151,17 +150,17 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Assistance Comptable",
-            href: "/services#assistance-comptable",
+            href: "/expertises/assistance-comptable",
             description: "Tenue, révision et supervision",
           },
           {
             title: "Gestion de Paie",
-            href: "/services#gestion-paie",
+            href: "/expertises/gestion-de-paie",
             description: "Administration et conformité salariale",
           },
           {
             title: "Gestion Commerciale",
-            href: "/services#gestion-commerciale",
+            href: "/expertises/gestion-commerciale",
             description: "Facturation, suivi client et reporting",
           },
         ],
@@ -171,12 +170,12 @@ const MENU_ITEMS: MenuItem[] = [
         links: [
           {
             title: "Manuels de Procédure",
-            href: "/services#manuels-procedure",
+            href: "/expertises/manuels-de-procedure",
             description: "Formalisation des processus internes",
           },
           {
             title: "Support aux Logiciels",
-            href: "/services#support-logiciels",
+            href: "/expertises/support-logiciels",
             description: "Paramétrage et accompagnement ERP",
           },
         ],
@@ -268,23 +267,9 @@ function MegaDropdown({
   const colCount = item.columns.length
 
   return (
-    <div className="relative w-full overflow-hidden border-t border-stone-200/80">
-      {/* ── Background stack ─────────────────────── */}
-      {/* 1. Base warm gradient */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background:
-            "linear-gradient(168deg, #faf9f7 0%, #f7f5f2 40%, #f5f3ef 100%)",
-        }}
-      />
-      {/* 2. Dot grid */}
-      <DotGrid opacity={0.032} />
-      {/* 3. Grain on top */}
-      <GrainOverlay opacity={0.025} />
-
-      {/* Top accent glow */}
-      <div className="absolute inset-x-0 top-0 z-0 h-px bg-linear-to-r from-transparent via-primary/15 to-transparent" />
+    <div className="relative w-full overflow-hidden border-t border-slate-200/80 bg-white">
+      {/* ── Background stack ── */}
+      <div className="absolute inset-0 z-0 bg-white" />
 
       {/* ── Content ──────────────────────────────── */}
       <div className="relative z-10 px-10 pb-10 pt-8">
@@ -303,7 +288,7 @@ function MegaDropdown({
               key={ci}
               className={cn(
                 "py-1",
-                ci > 0 && "border-l border-stone-200/60 pl-8",
+                ci > 0 && "border-l border-slate-200/60 pl-8",
                 ci === 0 ? "pr-8" : ci < colCount - 1 ? "px-8" : "pl-8"
               )}
             >
@@ -346,9 +331,9 @@ function MegaDropdown({
                           </p>
                         )}
                       </div>
-                      <ArrowRight
+                       <ArrowRight
                         size={13}
-                        className="shrink-0 text-ink/0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary"
+                        className="shrink-0 text-ink/0 transition-all duration-200 group-hover:text-primary"
                       />
                     </div>
 
@@ -369,12 +354,11 @@ function MegaDropdown({
           <Link
             href="/contact"
             onClick={onClose}
-            className="group inline-flex items-center gap-2.5 bg-primary px-6 py-2.5 text-[13px] font-semibold tracking-wide text-white transition-all hover:bg-primary-active hover:shadow-sm"
+            className="group inline-flex items-center gap-2.5 bg-primary px-6 py-2.5 text-[13px] font-semibold tracking-wide text-white transition-colors hover:bg-primary-active"
           >
             Contactez-nous
             <ArrowRight
               size={14}
-              className="transition-transform group-hover:translate-x-0.5"
             />
           </Link>
         </div>
@@ -398,27 +382,16 @@ function MobileMenu({ open, children, className, ...props }: MobileMenuProps) {
   if (!mounted) return null
 
   return createPortal(
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="mobile-menu"
-          id="mobile-navigation"
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: "100%" }}
-          transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          className="fixed inset-0 z-40 flex flex-col md:hidden top-16"
-        >
+      open && (
+          <div
+            key="mobile-menu"
+            id="mobile-navigation"
+            className="fixed inset-0 z-40 flex flex-col md:hidden top-16"
+          >
           {/* ── Background stack ─────────────────── */}
           <div
-            className="absolute inset-0 z-0"
-            style={{
-              background: "linear-gradient(180deg, #faf9f7 0%, #f6f4f0 100%)",
-            }}
+            className="absolute inset-0 z-0 bg-[#faf9f7]"
           />
-          <DotGrid opacity={0.03} />
-          <GrainOverlay opacity={0.022} />
-
           <div
             className={cn(
               "relative z-10 size-full overflow-y-auto px-10 py-8",
@@ -428,9 +401,8 @@ function MobileMenu({ open, children, className, ...props }: MobileMenuProps) {
           >
             {children}
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
+        </div>
+    ),
     document.body
   )
 }
@@ -494,6 +466,8 @@ export const Navigation = () => {
     setActiveIndex(null)
   }, [])
 
+  const [lang, setLang] = React.useState<"fr" | "en">("fr")
+
   const navBtnClass =
     "inline-flex items-center justify-center gap-2.5 px-6 py-2.5 text-[13px] font-semibold tracking-wide transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
 
@@ -502,27 +476,16 @@ export const Navigation = () => {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 w-full transition-all duration-300",
-          scrolled
-            ? "border-b border-stone-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+            scrolled
+            ? "border-b border-slate-200/80 bg-white/95"
             : "border-b border-white/10 bg-transparent"
         )}
         onMouseLeave={scheduleClose}
       >
-        {/* ── Scrolled header background stack ── */}
+        {/* ── Scrolled header background stack — same as footer light ── */}
         {scrolled && (
           <>
-            {/* 1. Base */}
-            <div
-              className="absolute inset-0 z-0"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(250,249,247,0.97) 0%, rgba(247,245,242,0.97) 100%)",
-              }}
-            />
-            {/* 2. Dot grid */}
-            <DotGrid opacity={0.028} />
-            {/* 3. Grain */}
-            <GrainOverlay opacity={0.016} />
+            <div className="absolute inset-0 z-0 bg-white/95" />
           </>
         )}
 
@@ -550,7 +513,7 @@ export const Navigation = () => {
             <div
               className={cn(
                 "hidden h-5 w-px md:block",
-                scrolled ? "bg-stone-300/50" : "bg-white/15"
+                scrolled ? "bg-slate-200" : "bg-white/15"
               )}
             />
 
@@ -569,13 +532,12 @@ export const Navigation = () => {
                     }}
                     className={cn(
                       "relative flex h-full items-center px-4 text-[14px] font-medium tracking-[-0.01em] transition-colors",
-                      // underline indicator
                       "after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200",
                       activeIndex === index && "after:scale-x-100",
                       scrolled
                         ? activeIndex === index
-                          ? "text-primary"       // ← active = primary green
-                          : "text-ink/50 hover:text-ink"
+                          ? "text-primary"
+                          : "text-slate-600 hover:text-slate-900"
                         : activeIndex === index
                           ? "text-white"
                           : "text-white/50 hover:text-white"
@@ -597,23 +559,24 @@ export const Navigation = () => {
             </ul>
           </div>
 
-          {/* ── Right ── */}
+          {/* ── Right — Language toggle (no radius, no border) ── */}
           <div className="hidden items-center md:flex">
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={() => setLang((p) => (p === "fr" ? "en" : "fr"))}
               className={cn(
-                navBtnClass,
+                "inline-flex items-center gap-1.5 bg-transparent px-2 py-1 text-[13px] font-medium tracking-wide transition-colors",
                 scrolled
-                  ? "bg-primary text-white hover:bg-primary-active hover:shadow-sm"
-                  : "bg-white text-ink hover:bg-white/90"
+                  ? "text-slate-500 hover:text-slate-900"
+                  : "text-white/60 hover:text-white"
               )}
+              aria-label="Changer de langue"
             >
-              Contactez-nous
-              <ArrowRight
-                size={14}
-                className="transition-transform duration-200 group-hover:translate-x-0.5"
-              />
-            </Link>
+              <span className="text-[15px] leading-none" aria-hidden>
+                {lang === "fr" ? "🇫🇷" : "🇬🇧"}
+              </span>
+              <span>{lang === "fr" ? "Français" : "English"}</span>
+            </button>
           </div>
 
           {/* ── Mobile Toggle ── */}
@@ -624,7 +587,7 @@ export const Navigation = () => {
               "inline-flex h-10 w-10 items-center justify-center border transition-colors md:hidden",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
               scrolled
-                ? "border-stone-200/80 bg-canvas text-ink hover:bg-primary/5 hover:border-primary/20"
+                ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300"
                 : "border-white/15 bg-white/5 text-white hover:bg-white/10"
             )}
             aria-expanded={open}
@@ -636,24 +599,18 @@ export const Navigation = () => {
         </nav>
 
         {/* ── Dropdown ── */}
-        <AnimatePresence mode="wait">
-          {activeIndex !== null && MENU_ITEMS[activeIndex]?.columns && (
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              onMouseEnter={cancelClose}
-              onMouseLeave={scheduleClose}
-            >
-              <MegaDropdown
-                item={MENU_ITEMS[activeIndex]}
-                onClose={closeDropdown}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {activeIndex !== null && MENU_ITEMS[activeIndex]?.columns && (
+          <div
+            key={activeIndex}
+            onMouseEnter={cancelClose}
+            onMouseLeave={scheduleClose}
+          >
+            <MegaDropdown
+              item={MENU_ITEMS[activeIndex]}
+              onClose={closeDropdown}
+            />
+          </div>
+        )}
       </header>
 
       {/* ── Mobile Menu ── */}
@@ -681,15 +638,8 @@ export const Navigation = () => {
                     />
                   </button>
 
-                  <AnimatePresence>
                     {mobileExpandedIndex === index && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
+                      <div className="overflow-hidden">
                         <div className="border-l-2 border-primary/20 pb-6 pl-5 pt-1">
                           {item.columns.map((col, ci) => (
                             <div key={ci} className="mb-5 last:mb-0">
@@ -706,9 +656,9 @@ export const Navigation = () => {
                                     className="group flex items-center justify-between rounded-sm px-2 py-2.5 text-[14px] text-ink/55 transition-colors hover:bg-primary/6 hover:text-primary"
                                   >
                                     <span>{link.title}</span>
-                                    <ArrowRight
+                                     <ArrowRight
                                       size={13}
-                                      className="text-ink/0 transition-all group-hover:text-primary group-hover:translate-x-0.5"
+                                      className="text-ink/0 transition-all group-hover:text-primary"
                                     />
                                   </Link>
                                 ))}
@@ -716,9 +666,8 @@ export const Navigation = () => {
                             </div>
                           ))}
                         </div>
-                      </motion.div>
+                      </div>
                     )}
-                  </AnimatePresence>
 
                   <div className="h-px w-full bg-stone-200/50" />
                 </div>

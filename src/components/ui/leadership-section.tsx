@@ -1,27 +1,31 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Image from "next/image"
+import leaderMukula from "@/assets/5.png"
+import leaderMfuamba from "@/assets/7.png"
 
-// ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
-
+// ─── Data — localisé (fr/en) ─────────────────────────────────
 const LEADERS = [
   {
-    name: "Jean-Pierre Kabongo",
+    name: "Jean Jacques Mukula",
     role: "Managing Partner",
+    roleFr: "Associé Gérant",
     bio: "Avec plus de deux décennies d'expérience dans l'audit, la fiscalité stratégique et l'accompagnement des groupes opérant en RDC, il pilote la vision du cabinet avec une exigence constante de qualité, d'indépendance et de fiabilité.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop&crop=face",
+    bioEn:
+      "With over two decades of experience in audit, strategic taxation and support for groups operating in the DRC, he drives the firm's vision with a constant demand for quality, independence and reliability.",
+    image: leaderMukula,
     location: "Kinshasa",
     highlights: ["Audit stratégique", "Fiscalité minière", "Gouvernance"],
     badge: "Leadership",
   },
   {
-    name: "Patrick Mutombo",
+    name: "Désiré Mfuamba",
     role: "Directeur",
+    roleEn: "Director",
     bio: "Il supervise l'exécution des missions, le suivi méthodologique et la coordination des équipes, avec une forte expertise en conformité réglementaire, structuration financière et accompagnement opérationnel.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop&crop=face",
+    bioEn:
+      "He supervises mission execution, methodological monitoring and team coordination, with strong expertise in regulatory compliance, financial structuring and operational support.",
+    image: leaderMfuamba,
     location: "Lubumbashi",
     highlights: ["Conformité", "OHADA / IFRS", "Pilotage mission"],
     badge: "Direction",
@@ -33,29 +37,12 @@ const LEADERS = [
 function LeaderCard({
   leader,
   index,
-  isInView,
 }: {
   leader: (typeof LEADERS)[number]
   index: number
-  isInView: boolean
 }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-      animate={
-        isInView
-          ? {
-              opacity: [0, 1, 1],
-              y: [20, 0, 0],
-              filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-            }
-          : {}
-      }
-      transition={{
-        duration: 1.5,
-        delay: 0.3 + index * 0.15,
-        ease: EASE_OUT,
-      }}
+    <article
       className="group border border-[#111A4A]/[0.06] bg-white w-full"
     >
       {/* Modification de la proportion de la grille pour allonger l'espace du texte (40% photo / 60% contenu) */}
@@ -76,7 +63,7 @@ function LeaderCard({
         <div className="flex flex-col justify-between p-8 md:p-10">
           <div>
             {/* Badge */}
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
                 {leader.badge}
               </span>
@@ -84,7 +71,7 @@ function LeaderCard({
               <span className="text-[10px] uppercase tracking-[0.15em] text-[#7C7F88]">
                 {leader.location}
               </span>
-            </div>
+            </div> */}
 
             {/* Name + Role */}
             <h3 className="font-serif text-2xl text-[#111A4A] md:text-3xl">
@@ -122,7 +109,7 @@ function LeaderCard({
           </div>
         </div>
       </div>
-    </motion.article>
+    </article>
   )
 }
 
@@ -131,48 +118,32 @@ function LeaderCard({
 // ═══════════════════════════════════════════════════════════
 
 export function LeadershipSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
-    <section ref={sectionRef} className="bg-canvas px-10 py-section">
+    <section className="bg-canvas px-10 py-section">
       <div className="w-full">
         {/* ── Header ── */}
         <div className="mb-14 max-w-3xl lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+          <div
             className="mb-5 inline-flex items-center"
           >
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Direction
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+          <h2
             className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
           >
             Une direction engagée,{" "}
             <span className="opacity-40">proche de vos enjeux.</span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          <p
             className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
           >
             Notre gouvernance s&apos;appuie sur la compétence technique, la
             discrétion professionnelle et la continuité dans la relation client.
-          </motion.p>
+          </p>
         </div>
 
         {/* ── Two cards — layout étiré à 100% ── */}
@@ -182,18 +153,12 @@ export function LeadershipSection() {
               key={leader.name}
               leader={leader}
               index={i}
-              isInView={isInView}
             />
           ))}
         </div>
 
         {/* ── Team quote — italic ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.6, ease: EASE_OUT }}
+        <div
           className="mt-10 flex justify-left lg:mt-14"
         >
           <p className="max-w-2xl text-left text-sm italic leading-relaxed text-[#7C7F88]/70">
@@ -201,7 +166,7 @@ export function LeadershipSection() {
             partagent la même exigence : celle de servir nos clients avec
             rigueur, indépendance et constance dans la durée.
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

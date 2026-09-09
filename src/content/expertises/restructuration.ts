@@ -355,7 +355,7 @@ export const restructurationConfig: ExpertisePageConfig = {
       "Accompagnement jusqu'au retournement effectif",
     ],
     primaryCta: { label: "Demander un diagnostic d'urgence", href: "/contact" },
-    secondaryCta: { label: "Appeler maintenant", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler maintenant", href: "tel:+243999309901" },
     watermarkIcon: "RefreshCcw",
     contactOptions: [
       {
@@ -369,8 +369,8 @@ export const restructurationConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Ligne directe associé",
-        description: "+243 XX XXX XXXX — disponible y compris le week-end.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — disponible y compris le week-end.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },

@@ -69,7 +69,27 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    pages: Page;
+    expertises: Expertise;
+    articles: Article;
+    'article-categories': ArticleCategory;
+    authors: Author;
+    tags: Tag;
+    sectors: Sector;
+    clients: Client;
+    certifications: Certification;
+    publications: Publication;
+    'publication-categories': PublicationCategory;
+    jobs: Job;
+    roles: Role;
+    offices: Office;
+    faqs: Faq;
+    testimonials: Testimonial;
+    milestones: Milestone;
+    redirects: Redirect;
+    messages: Message;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -78,7 +98,27 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    expertises: ExpertisesSelect<false> | ExpertisesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    sectors: SectorsSelect<false> | SectorsSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
+    certifications: CertificationsSelect<false> | CertificationsSelect<true>;
+    publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    'publication-categories': PublicationCategoriesSelect<false> | PublicationCategoriesSelect<true>;
+    jobs: JobsSelect<false> | JobsSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
+    offices: OfficesSelect<false> | OfficesSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    milestones: MilestonesSelect<false> | MilestonesSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -86,16 +126,32 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fr' | 'en') | ('fr' | 'en')[];
+  globals: {
+    'site-settings': SiteSetting;
+    header: Header;
+    footer: Footer;
+    'seo-defaults': SeoDefault;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    'seo-defaults': SeoDefaultsSelect<false> | SeoDefaultsSelect<true>;
+  };
+  locale: 'fr' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      schedulePublish: TaskSchedulePublish;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -118,11 +174,17 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Utilisateurs back-office — RBAC admin/editor
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  /**
+   * Rôle — admin (full) / editor (rédaction)
+   */
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -143,12 +205,34 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Médias — bibliothèque centralisée (images, PDF)
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Texte alternatif — localisé, requis (a11y / SEO, ex: Bureau CAAF Kinshasa)
+   */
   alt: string;
+  /**
+   * Légende — localisé, optionnel (affichée sous l’image)
+   */
+  caption?: string | null;
+  /**
+   * Point focal — recadrage object-position (0-100)
+   */
+  focalPoint?: {
+    /**
+     * X — 0 (gauche) → 100 (droite)
+     */
+    x?: number | null;
+    /**
+     * Y — 0 (haut) → 100 (bas)
+     */
+    y?: number | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -160,6 +244,2288 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Pages génériques — page-builder à blocks (hero, secteurs, FAQ, contact...)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * Titre H1 — localisé (FR/EN)
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: a-propos / en/about) — alimente generateStaticParams + H1 anglais
+   */
+  slug: string;
+  /**
+   * Gabarit de mise en page — conditionne header/nav et styles
+   */
+  template:
+    | 'default'
+    | 'home'
+    | 'about'
+    | 'services'
+    | 'secteurs'
+    | 'references'
+    | 'history'
+    | 'certifications'
+    | 'publications'
+    | 'carrieres'
+    | 'contact'
+    | 'actualites';
+  /**
+   * Blocs de contenu — ordre libre, rendu via RenderBlocks côté frontend
+   */
+  sections?:
+    | (
+        | HeroBlock
+        | StatsSectionBlock
+        | ActivitiesBlock
+        | SectorsOverviewBlock
+        | BentoServicesBlock
+        | BentoSecteursBlock
+        | ClientsGridBlock
+        | TestimonialsBlock
+        | TimelineBlock
+        | ValuesBlock
+        | LeadershipBlock
+        | QuoteBlock
+        | CertificationsDetailBlock
+        | QualityProcessBlock
+        | OfficesMapBlock
+        | FaqBlock
+        | ContactFormBlock
+        | ProofBannerBlock
+        | RichTextBlock
+        | NewsletterBlock
+        | FinalCtaBlock
+      )[]
+    | null;
+  /**
+   * Optimisation SEO — surcharge les valeurs globales SeoDefaults
+   */
+  seo?: {
+    /**
+     * 60 caractères max
+     */
+    title?: string | null;
+    /**
+     * 155 caractères max
+     */
+    description?: string | null;
+    /**
+     * Mots-clés séparés par virgules (optionnel)
+     */
+    keywords?: string | null;
+    /**
+     * Image OG fallback si ogImage vide
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL canonique complète, ex: https://caaf-sas.com/expertises/audit-financier
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+    twitterImage?: (number | null) | Media;
+    /**
+     * JSON-LD additionnel. Laisse vide pour génération auto (Article→BlogPosting, Service, FAQPage).
+     */
+    structuredData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Date de publication — alimente sitemap / tri actualités
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  /**
+   * Sur-titre au-dessus du titre principal
+   */
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Portion accentuée du titre (couleur primaire)
+   */
+  titleAccent?: string | null;
+  description?: string | null;
+  ctaPrimary: {
+    type?: ('internal' | 'external') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  ctaSecondary: {
+    type?: ('internal' | 'external') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  /**
+   * Chiffres clés affichés sous les CTA
+   */
+  stats?:
+    | {
+        /**
+         * Ex: "20+", "500+"
+         */
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Badges certifications affichés en bas du Hero
+   */
+  certs?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Image de fond plein écran
+   */
+  backgroundImage?: (number | null) | Media;
+  /**
+   * Opacité de l’overlay sur l’image (0-100)
+   */
+  overlayOpacity?: number | null;
+  /**
+   * Label catégorie (ex: Expertise Comptable)
+   */
+  category?: string | null;
+  /**
+   * Lien de la catégorie
+   */
+  categoryHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * Fiches expertises — structure fixe hero + 6 sections métier
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertises".
+ */
+export interface Expertise {
+  id: number;
+  /**
+   * Titre H1 de l’expertise — localisé
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: audit-financier / en/financial-audit) — H1 anglais
+   */
+  slug: string;
+  /**
+   * En-tête expertise — catégorie, H1, CTA, stats, visuel
+   */
+  hero: {
+    /**
+     * Sur-titre catégorie (ex: Expertise Comptable)
+     */
+    category?: string | null;
+    /**
+     * Lien de la catégorie
+     */
+    categoryHref?: string | null;
+    /**
+     * Titre principal hero — localisé, alimente H1
+     */
+    title: string;
+    /**
+     * Portion accentuée du titre (couleur primaire)
+     */
+    titleAccent?: string | null;
+    description?: string | null;
+    ctaPrimary: {
+      type?: ('internal' | 'external') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'expertises';
+            value: number | Expertise;
+          } | null)
+        | ({
+            relationTo: 'articles';
+            value: number | Article;
+          } | null)
+        | ({
+            relationTo: 'publications';
+            value: number | Publication;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+    ctaSecondary: {
+      type?: ('internal' | 'external') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'expertises';
+            value: number | Expertise;
+          } | null)
+        | ({
+            relationTo: 'articles';
+            value: number | Article;
+          } | null)
+        | ({
+            relationTo: 'publications';
+            value: number | Publication;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+    /**
+     * Chiffres clés hero (value + label)
+     */
+    stats?:
+      | {
+          /**
+           * Ex: "20+", "500+"
+           */
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Visuel hero (optionnel, fallback couleur unie)
+     */
+    image?: (number | null) | Media;
+  };
+  /**
+   * Sous-services — grille détaillée (copie ExpertiseSousServicesBlock)
+   */
+  sousServices: {
+    eyebrow?: string | null;
+    title: string;
+    /**
+     * Portion accentuée du titre (couleur primaire)
+     */
+    titleAccent?: string | null;
+    description?: string | null;
+    /**
+     * Ancre HTML de la section (ex: sous-services)
+     */
+    sectionId?: string | null;
+    /**
+     * Label d’en-tête de la grille
+     */
+    headerLabel?: string | null;
+    /**
+     * Sous-services (icône + titre + livrables)
+     */
+    items: {
+      /**
+       * Identifiant unique (slug court)
+       */
+      id: string;
+      /**
+       * Clé d’icône lucide-react
+       */
+      icon?: string | null;
+      title: string;
+      subtitle?: string | null;
+      description: string;
+      /**
+       * Liste des livrables
+       */
+      deliverables?:
+        | {
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+    }[];
+  };
+  /**
+   * Approche méthodologique — stepper (copie ExpertiseApprocheBlock)
+   */
+  approche: {
+    eyebrow?: string | null;
+    title: string;
+    /**
+     * Portion accentuée du titre (couleur primaire)
+     */
+    titleAccent?: string | null;
+    description?: string | null;
+    /**
+     * Nombre total d’étapes affiché (ex: "05")
+     */
+    totalSteps?: string | null;
+    /**
+     * Label générique pour "Étape" / "Step"
+     */
+    stepLabel?: string | null;
+    /**
+     * Étapes de la méthodologie
+     */
+    steps?:
+      | {
+          /**
+           * Numéro d’étape (ex: "01")
+           */
+          number: string;
+          /**
+           * Identifiant unique de l’étape (slug court)
+           */
+          id: string;
+          /**
+           * Clé d’icône lucide-react
+           */
+          icon?: string | null;
+          title: string;
+          description: string;
+          /**
+           * Points de détail de l’étape
+           */
+          details?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+        }[]
+      | null;
+  };
+  /**
+   * Pourquoi nous choisir — arguments (copie ExpertisePourquoiBlock)
+   */
+  pourquoi: {
+    eyebrow?: string | null;
+    title: string;
+    description?: string | null;
+    /**
+     * Arguments différenciants (icône + titre + description)
+     */
+    items: {
+      /**
+       * Clé d’icône lucide-react
+       */
+      icon?: string | null;
+      title: string;
+      description: string;
+      id?: string | null;
+    }[];
+  };
+  /**
+   * Secteurs adressés — bandeau + cartes (copie ExpertiseSecteursBlock)
+   */
+  secteurs: {
+    eyebrow?: string | null;
+    title: string;
+    description?: string | null;
+    /**
+     * Texte du bandeau défilant
+     */
+    stripText?: string | null;
+    /**
+     * Portion mise en évidence dans le bandeau
+     */
+    stripHighlight?: string | null;
+    /**
+     * CTA du bandeau
+     */
+    stripCta?: string | null;
+    /**
+     * Secteurs (icône + titre + tags + featured)
+     */
+    items: {
+      /**
+       * Clé d’icône lucide-react
+       */
+      icon?: string | null;
+      title: string;
+      description: string;
+      /**
+       * Tags du secteur
+       */
+      tags?:
+        | {
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+      /**
+       * Mise en avant du secteur
+       */
+      featured?: boolean | null;
+      id?: string | null;
+    }[];
+  };
+  /**
+   * Études de cas — contexte/approche/résultats (copie ExpertiseCasBlock)
+   */
+  cas: {
+    eyebrow?: string | null;
+    title: string;
+    description?: string | null;
+    /**
+     * CTA de section (ex: Voir tous les cas)
+     */
+    sectionCta?: string | null;
+    /**
+     * Études de cas
+     */
+    items: {
+      /**
+       * Identifiant unique du cas (slug court)
+       */
+      id: string;
+      sector: string;
+      /**
+       * Clé d’icône lucide-react du secteur
+       */
+      sectorIcon?: string | null;
+      title: string;
+      /**
+       * Localisation du cas
+       */
+      location?: string | null;
+      context: string;
+      /**
+       * Étapes d’approche
+       */
+      approach?:
+        | {
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+      /**
+       * Résultats obtenus (icône + label)
+       */
+      results?:
+        | {
+            /**
+             * Clé d’icône lucide-react
+             */
+            icon?: string | null;
+            label: string;
+            id?: string | null;
+          }[]
+        | null;
+      quote?: string | null;
+      /**
+       * Auteur de la citation
+       */
+      quoteAuthor?: string | null;
+    }[];
+  };
+  /**
+   * CTA final expertise — trustPoints + contacts + stats (copie ExpertiseCtaBlock)
+   */
+  cta: {
+    eyebrow?: string | null;
+    title: string;
+    /**
+     * Portion accentuée du titre (couleur primaire)
+     */
+    titleAccent?: string | null;
+    description?: string | null;
+    /**
+     * Points de réassurance
+     */
+    trustPoints?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    primaryCta: {
+      type?: ('internal' | 'external') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'expertises';
+            value: number | Expertise;
+          } | null)
+        | ({
+            relationTo: 'articles';
+            value: number | Article;
+          } | null)
+        | ({
+            relationTo: 'publications';
+            value: number | Publication;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+    secondaryCta: {
+      type?: ('internal' | 'external') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'expertises';
+            value: number | Expertise;
+          } | null)
+        | ({
+            relationTo: 'articles';
+            value: number | Article;
+          } | null)
+        | ({
+            relationTo: 'publications';
+            value: number | Publication;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+    /**
+     * Clé d’icône lucide-react en filigrane
+     */
+    watermarkIcon?: string | null;
+    /**
+     * Options de contact (icône + titre + lien + CTA)
+     */
+    contactOptions?:
+      | {
+          /**
+           * Clé d’icône lucide-react
+           */
+          icon?: string | null;
+          title: string;
+          description?: string | null;
+          /**
+           * Lien de l’option de contact (tel:, mailto: ou URL)
+           */
+          href?: string | null;
+          cta: {
+            type?: ('internal' | 'external') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null)
+              | ({
+                  relationTo: 'expertises';
+                  value: number | Expertise;
+                } | null)
+              | ({
+                  relationTo: 'articles';
+                  value: number | Article;
+                } | null)
+              | ({
+                  relationTo: 'publications';
+                  value: number | Publication;
+                } | null);
+            url?: string | null;
+            label: string;
+          };
+          /**
+           * Mise en avant de l’option
+           */
+          primary?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Chiffres clés
+     */
+    stats?:
+      | {
+          /**
+           * Valeur affichée (ex: "15+", "98%")
+           */
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Optimisation SEO — surcharge les valeurs globales SeoDefaults
+   */
+  seo?: {
+    /**
+     * 60 caractères max
+     */
+    title?: string | null;
+    /**
+     * 155 caractères max
+     */
+    description?: string | null;
+    /**
+     * Mots-clés séparés par virgules (optionnel)
+     */
+    keywords?: string | null;
+    /**
+     * Image OG fallback si ogImage vide
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL canonique complète, ex: https://caaf-sas.com/expertises/audit-financier
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+    twitterImage?: (number | null) | Media;
+    /**
+     * JSON-LD additionnel. Laisse vide pour génération auto (Article→BlogPosting, Service, FAQPage).
+     */
+    structuredData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Date de publication
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Articles / actualités — Lexical + taxonomies
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  /**
+   * Titre H1 — localisé, useAsTitle admin
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: reforme-fiscale-2024 / en/tax-reform-2024)
+   */
+  slug: string;
+  /**
+   * Chapeau / extrait — cartes + meta description fallback (155c max)
+   */
+  excerpt: string;
+  /**
+   * Catégorie principale — filtre actualités + breadcrumb
+   */
+  category: number | ArticleCategory;
+  /**
+   * Auteur — byline + page auteur
+   */
+  author: number | Author;
+  /**
+   * Date de parution — tri + sitemap
+   */
+  date: string;
+  /**
+   * Temps de lecture affiché (ex: "5 min") — sinon calcul auto côté frontend
+   */
+  readTime?: string | null;
+  /**
+   * Image principale — hero article + OG fallback + cartes
+   */
+  image: number | Media;
+  /**
+   * Mise en avant — homepage / tête de liste
+   */
+  featured?: boolean | null;
+  /**
+   * Tags — filtrage multi-critères + SEO mots-clés
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Corps d’article — éditeur Lexical (H2/H3/H4, Bold, Italic, Link, UL/OL, Quote, Upload)
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optimisation SEO — surcharge les valeurs globales SeoDefaults
+   */
+  seo?: {
+    /**
+     * 60 caractères max
+     */
+    title?: string | null;
+    /**
+     * 155 caractères max
+     */
+    description?: string | null;
+    /**
+     * Mots-clés séparés par virgules (optionnel)
+     */
+    keywords?: string | null;
+    /**
+     * Image OG fallback si ogImage vide
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL canonique complète, ex: https://caaf-sas.com/expertises/audit-financier
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+    twitterImage?: (number | null) | Media;
+    /**
+     * JSON-LD additionnel. Laisse vide pour génération auto (Article→BlogPosting, Service, FAQPage).
+     */
+    structuredData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Date de publication effective (distinct de date calendaire)
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Catégories d’articles — taxonomie actualités
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories".
+ */
+export interface ArticleCategory {
+  id: number;
+  /**
+   * Libellé affiché — localisé (FR/EN)
+   */
+  label: string;
+  /**
+   * Slug URL localisé — filtre /actualites/categorie/[slug]
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Auteurs — experts signant les articles
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  /**
+   * Nom complet — useAsTitle (non localisé)
+   */
+  name: string;
+  /**
+   * Fonction / titre — localisé (ex: Expert-comptable / Chartered Accountant)
+   */
+  role: string;
+  /**
+   * Biographie courte — page auteur + tooltip byline
+   */
+  bio?: string | null;
+  /**
+   * Photo / avatar — byline article (rond)
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Slug URL localisé — page /auteurs/[slug]
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Tags — mots-clés transverses (articles)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  /**
+   * Libellé du tag — localisé (FR/EN)
+   */
+  label: string;
+  /**
+   * Slug URL localisé — filtre /actualites?tag=[slug]
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Publications — rapports & guides (Lexical + PDF)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications".
+ */
+export interface Publication {
+  id: number;
+  /**
+   * Titre — localisé, useAsTitle
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: guide-fiscal-2024 / en/tax-guide-2024)
+   */
+  slug: string;
+  /**
+   * Extrait / chapeau — cartes + meta description fallback
+   */
+  excerpt?: string | null;
+  /**
+   * Catégorie — filtre principal publications
+   */
+  category: number | PublicationCategory;
+  /**
+   * Date de parution — tri + sitemap
+   */
+  date: string;
+  /**
+   * Secteur lié — filtre secondaire (optionnel)
+   */
+  sector?: (number | null) | Sector;
+  /**
+   * Mise en avant — homepage / tête de liste
+   */
+  featured?: boolean | null;
+  /**
+   * Fichier PDF — téléchargement principal
+   */
+  pdf?: (number | null) | Media;
+  /**
+   * Couverture — vignette carte + OG fallback
+   */
+  cover?: (number | null) | Media;
+  /**
+   * Corps — éditeur Lexical (H2/H3, Bold, Link, UL/OL, Quote, Upload)
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optimisation SEO — surcharge les valeurs globales SeoDefaults
+   */
+  seo?: {
+    /**
+     * 60 caractères max
+     */
+    title?: string | null;
+    /**
+     * 155 caractères max
+     */
+    description?: string | null;
+    /**
+     * Mots-clés séparés par virgules (optionnel)
+     */
+    keywords?: string | null;
+    /**
+     * Image OG fallback si ogImage vide
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL canonique complète, ex: https://caaf-sas.com/expertises/audit-financier
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+    twitterImage?: (number | null) | Media;
+    /**
+     * JSON-LD additionnel. Laisse vide pour génération auto (Article→BlogPosting, Service, FAQPage).
+     */
+    structuredData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Date de publication effective
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Catégories de publications — taxonomie rapports & guides
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publication-categories".
+ */
+export interface PublicationCategory {
+  id: number;
+  /**
+   * Libellé affiché — localisé (FR/EN)
+   */
+  label: string;
+  /**
+   * Slug URL localisé — filtre /publications?categorie=[slug]
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Secteurs d’activité — grilles secteurs + filtrage références
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sectors".
+ */
+export interface Sector {
+  id: number;
+  /**
+   * Nom du secteur — localisé, useAsTitle (ex: Mines & Carrières)
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: mines-carrieres / en/mining)
+   */
+  slug: string;
+  /**
+   * Description courte — cartes secteurs + meta fallback
+   */
+  description?: string | null;
+  /**
+   * Nom icône Lucide (ex: factory, landmark, pickaxe) — rendu frontend <Icon />
+   */
+  icon?: string | null;
+  /**
+   * Chips / mots-clés du secteur — affichage sous carte
+   */
+  tags?:
+    | {
+        /**
+         * Libellé tag — localisé
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Mise en avant visuelle — style bento accentué
+   */
+  accent?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsSectionBlock".
+ */
+export interface StatsSectionBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Liste des statistiques value + label
+   */
+  items: {
+    /**
+     * Valeur affichée (ex: "15+", "98%")
+     */
+    value: string;
+    label: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'statsSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ActivitiesBlock".
+ */
+export interface ActivitiesBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Cartes activités (numéro + visuel + lien)
+   */
+  items: {
+    /**
+     * Ex: "01", "02"
+     */
+    number: string;
+    title: string;
+    description: string;
+    /**
+     * Lien vers la page détail (ex: /expertises/audit)
+     */
+    href?: string | null;
+    /**
+     * Label du lien (ex: Découvrir)
+     */
+    linkLabel?: string | null;
+    /**
+     * Variante visuelle / illustration
+     */
+    visual?: ('audit' | 'fiscal' | 'advisory' | 'diligence') | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'activities';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectorsOverviewBlock".
+ */
+export interface SectorsOverviewBlock {
+  title: string;
+  description?: string | null;
+  /**
+   * Cartes secteurs (nom + highlights + lien + icône)
+   */
+  items: {
+    name: string;
+    description: string;
+    /**
+     * Points clés du secteur
+     */
+    highlights?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Lien vers la page secteur
+     */
+    href?: string | null;
+    /**
+     * Nom lucide-react ou clé d’icône (ex: building-2)
+     */
+    icon?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sectorsOverview';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BentoServicesBlock".
+ */
+export interface BentoServicesBlock {
+  /**
+   * Catégories bento (numéro + tag + taille + liens)
+   */
+  categories: {
+    /**
+     * Ex: "01"
+     */
+    number: string;
+    title: string;
+    /**
+     * Tag court au-dessus du titre
+     */
+    tag?: string | null;
+    description: string;
+    /**
+     * Taille de la carte dans la grille bento
+     */
+    size: 'large' | 'medium' | 'small';
+    /**
+     * Liens / sous-services de la catégorie
+     */
+    links?:
+      | {
+          title: string;
+          /**
+           * URL ou chemin interne
+           */
+          href?: string | null;
+          /**
+           * Description courte du lien
+           */
+          desc?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bentoServices';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BentoSecteursBlock".
+ */
+export interface BentoSecteursBlock {
+  /**
+   * Cartes secteurs bento (icône + tags + accent)
+   */
+  items: {
+    title: string;
+    description: string;
+    /**
+     * Lien vers la page secteur
+     */
+    href?: string | null;
+    /**
+     * Clé d’icône lucide-react
+     */
+    icon?: string | null;
+    /**
+     * Tags affichés en footer de carte
+     */
+    tags?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Met en avant la carte (style accentué)
+     */
+    accent?: boolean | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bentoSecteurs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClientsGridBlock".
+ */
+export interface ClientsGridBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Logos clients (featured mis en avant)
+   */
+  clients: {
+    name: string;
+    /**
+     * Secteur d’activité affiché
+     */
+    sector?: string | null;
+    /**
+     * Type/catégorie de secteur (filtre éventuel)
+     */
+    sectorType?: string | null;
+    /**
+     * Logo du client (svg/png)
+     */
+    logo?: (number | null) | Media;
+    /**
+     * Mise en avant dans la grille
+     */
+    featured?: boolean | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'clientsGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Témoignages clients (citation + auteur + avatar)
+   */
+  items: {
+    quote: string;
+    author: string;
+    role?: string | null;
+    company?: string | null;
+    /**
+     * Photo de l’auteur
+     */
+    avatar?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Étapes de la frise (année + titre + texte + visuel)
+   */
+  items: {
+    /**
+     * Ex: "2005", "2018"
+     */
+    year: string;
+    title: string;
+    text: string;
+    /**
+     * Visuel illustrant l’étape (optionnel)
+     */
+    image?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ValuesBlock".
+ */
+export interface ValuesBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Valeurs (numéro + icône + titre + description)
+   */
+  items: {
+    /**
+     * Ex: "01", "02"
+     */
+    number: string;
+    /**
+     * Clé d’icône lucide-react (ex: shield, heart)
+     */
+    icon?: string | null;
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'values';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LeadershipBlock".
+ */
+export interface LeadershipBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Membres de l’équipe dirigeante
+   */
+  members: {
+    /**
+     * Nom complet (non localisé)
+     */
+    name: string;
+    /**
+     * Fonction / titre
+     */
+    role: string;
+    /**
+     * Biographie courte
+     */
+    bio?: string | null;
+    /**
+     * Photo du membre
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL profil LinkedIn
+     */
+    linkedin?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'leadership';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuoteBlock".
+ */
+export interface QuoteBlock {
+  quote: string;
+  author: string;
+  role?: string | null;
+  /**
+   * Portrait ou visuel associé à la citation (optionnel)
+   */
+  image?: (number | null) | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'quote';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CertificationsDetailBlock".
+ */
+export interface CertificationsDetailBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Certifications détaillées (code + intitulé + portée + implications)
+   */
+  items: {
+    /**
+     * Code court (ex: "ISO 9001", "QUALIOPI")
+     */
+    code: string;
+    /**
+     * Intitulé complet de la certification
+     */
+    fullName: string;
+    description: string;
+    /**
+     * Périmètre / portée de la certification
+     */
+    scope?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Implications opérationnelles pour le client
+     */
+    implications?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Clé d’icône lucide-react
+     */
+    icon?: string | null;
+    /**
+     * Document justificatif (optionnel)
+     */
+    doc?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'certificationsDetail';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QualityProcessBlock".
+ */
+export interface QualityProcessBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Description introductive de la démarche qualité
+   */
+  description?: string | null;
+  /**
+   * Étapes du processus qualité
+   */
+  steps: {
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'qualityProcess';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OfficesMapBlock".
+ */
+export interface OfficesMapBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Centre de la carte
+   */
+  mapCenter: {
+    lng: number;
+    lat: number;
+  };
+  /**
+   * Niveau de zoom de la carte
+   */
+  zoom?: number | null;
+  /**
+   * Liste des bureaux (ville + adresse + contact + horaires + coords)
+   */
+  officeDetails?:
+    | {
+        city: string;
+        /**
+         * Type de bureau (ex: Bureau Kinshasa, Bureau Lubumbashi)
+         */
+        type?: string | null;
+        /**
+         * Lignes d’adresse
+         */
+        address?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Numéro de téléphone
+         */
+        phone?: string | null;
+        /**
+         * Adresse email
+         */
+        email?: string | null;
+        /**
+         * Horaires d’ouverture
+         */
+        hours?: string | null;
+        /**
+         * Coordonnées du bureau
+         */
+        coords: {
+          lng: number;
+          lat: number;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'officesMap';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock".
+ */
+export interface FaqBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Questions / réponses (catégorie + question + réponse Lexical)
+   */
+  items: {
+    /**
+     * Catégorie de la question (ex: Comptabilité)
+     */
+    category?: string | null;
+    question: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock".
+ */
+export interface ContactFormBlock {
+  eyebrow?: string | null;
+  title: string;
+  description?: string | null;
+  /**
+   * Texte RGPD / consentement affiché près du bouton
+   */
+  rgpdText?: string | null;
+  /**
+   * Label du bouton d’envoi
+   */
+  submitLabel?: string | null;
+  /**
+   * Message affiché après envoi réussi
+   */
+  successMessage?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProofBannerBlock".
+ */
+export interface ProofBannerBlock {
+  /**
+   * Statistiques value + label
+   */
+  stats: {
+    /**
+     * Valeur affichée (ex: "500+", "98%")
+     */
+    value: string;
+    label: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'proofBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock".
+ */
+export interface NewsletterBlock {
+  eyebrow?: string | null;
+  title: string;
+  description?: string | null;
+  /**
+   * Placeholder du champ email
+   */
+  placeholder?: string | null;
+  /**
+   * Label du bouton d’inscription
+   */
+  buttonLabel?: string | null;
+  /**
+   * Texte légal / RGPD sous le formulaire
+   */
+  disclaimer?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsletter';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FinalCtaBlock".
+ */
+export interface FinalCtaBlock {
+  eyebrow?: string | null;
+  title: string;
+  /**
+   * Portion accentuée du titre (couleur primaire)
+   */
+  titleAccent?: string | null;
+  description?: string | null;
+  /**
+   * Points de réassurance
+   */
+  trustPoints?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  primaryCta: {
+    type?: ('internal' | 'external') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  secondaryCta: {
+    type?: ('internal' | 'external') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  /**
+   * Chiffres clés
+   */
+  stats?:
+    | {
+        /**
+         * Valeur affichée (ex: "15+", "98%")
+         */
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'finalCta';
+}
+/**
+ * Clients / références — logos + filtrage par secteur
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients".
+ */
+export interface Client {
+  id: number;
+  /**
+   * Nom du client — localisé, useAsTitle
+   */
+  name: string;
+  /**
+   * Slug URL localisé (ex: rawbank / en/rawbank)
+   */
+  slug: string;
+  /**
+   * Secteur d’activité — filtre références + cross-link
+   */
+  sector: number | Sector;
+  /**
+   * Sous-type secteur affiché (ex: Banque commerciale / ONG internationale)
+   */
+  sectorType?: string | null;
+  /**
+   * Logo client — grille références (SVG/PNG, fond transparent recommandé)
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Mise en avant — homepage / tête de liste
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Certifications & agréments — normes, périmètre, implications
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certifications".
+ */
+export interface Certification {
+  id: number;
+  /**
+   * Code court — useAsTitle, unique non localisé (ex: OHADA, ISO 9001)
+   */
+  code: string;
+  /**
+   * Intitulé complet — localisé (ex: Organisation pour l’Harmonisation...)
+   */
+  fullName: string;
+  /**
+   * Description — cartes + page détail
+   */
+  description?: string | null;
+  /**
+   * Périmètre d’intervention — puces
+   */
+  scope?:
+    | {
+        /**
+         * Item périmètre — localisé
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Implications / obligations — puces
+   */
+  implications?:
+    | {
+        /**
+         * Item implication — localisé
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Nom icône Lucide (ex: award, shield-check)
+   */
+  icon?: string | null;
+  /**
+   * Document justificatif — PDF agrément / certificat (optionnel)
+   */
+  doc?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Offres d’emploi — carrières CAAF
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs".
+ */
+export interface Job {
+  id: number;
+  /**
+   * Intitulé du poste — localisé, useAsTitle
+   */
+  title: string;
+  /**
+   * Slug URL localisé (ex: auditeur-senior / en/senior-auditor)
+   */
+  slug: string;
+  /**
+   * Département — filtre carrières
+   */
+  department: 'Audit' | 'Advisory' | 'Fiscalité' | 'Support';
+  /**
+   * Ville — filtre carrières
+   */
+  location: 'Kinshasa' | 'Lubumbashi';
+  /**
+   * Type de contrat — filtre + badge carte
+   */
+  contract: 'CDI' | 'Stage' | 'CDD';
+  /**
+   * Expérience requise — localisé (ex: 3-5 ans, Débutant accepté)
+   */
+  experience?: string | null;
+  /**
+   * Description courte — cartes offres + chapeau page détail
+   */
+  description?: string | null;
+  /**
+   * Mise en avant — tête de liste carrières
+   */
+  featured?: boolean | null;
+  /**
+   * Optimisation SEO — surcharge les valeurs globales SeoDefaults
+   */
+  seo?: {
+    /**
+     * 60 caractères max
+     */
+    title?: string | null;
+    /**
+     * 155 caractères max
+     */
+    description?: string | null;
+    /**
+     * Mots-clés séparés par virgules (optionnel)
+     */
+    keywords?: string | null;
+    /**
+     * Image OG fallback si ogImage vide
+     */
+    image?: (number | null) | Media;
+    /**
+     * URL canonique complète, ex: https://caaf-sas.com/expertises/audit-financier
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+    twitterImage?: (number | null) | Media;
+    /**
+     * JSON-LD additionnel. Laisse vide pour génération auto (Article→BlogPosting, Service, FAQPage).
+     */
+    structuredData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  /**
+   * Date de publication
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Rôles / fiches métiers — niveaux, missions, profil, évolution
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: number;
+  /**
+   * Intitulé du rôle — localisé, useAsTitle (ex: Auditeur Junior)
+   */
+  title: string;
+  /**
+   * Sous-titre catégorie — localisé (ex: Audit, Advisory, Support)
+   */
+  subtitle?: string | null;
+  /**
+   * Niveau d’expérience — localisé (ex: 0-2 ans, 3-5 ans, Senior)
+   */
+  level?: string | null;
+  /**
+   * Accroche courte — cartes rôles + chapeau page détail
+   */
+  description?: string | null;
+  /**
+   * Missions principales — puces
+   */
+  missions?:
+    | {
+        /**
+         * Item mission — localisé
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Profil recherché — formation / prérequis (localisé)
+   */
+  profil?: string | null;
+  /**
+   * Qualités attendues — soft skills (puces)
+   */
+  qualites?:
+    | {
+        /**
+         * Item qualité — localisé (ex: Rigueur, Curiosité)
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Perspectives d’évolution — localisé
+   */
+  evolution?: string | null;
+  /**
+   * Pourquoi nous rejoindre — localisé (culture, avantages)
+   */
+  pourquoi?: string | null;
+  /**
+   * Slug URL localisé — unique (ex: auditeur-junior / en/junior-auditor)
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Bureaux — implantations + carte contact
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offices".
+ */
+export interface Office {
+  id: number;
+  /**
+   * Ville — localisé, useAsTitle (ex: Kinshasa)
+   */
+  city: string;
+  /**
+   * Type d’implantation — localisé (ex: Bureau Kinshasa / Bureau Lubumbashi)
+   */
+  type?: string | null;
+  /**
+   * Lignes d’adresse — affichage fiche + tooltip carte
+   */
+  address?:
+    | {
+        /**
+         * Ligne d’adresse — localisé
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Téléphone principal (ex: +243 123 456 789) — lien tel:
+   */
+  phone?: string | null;
+  /**
+   * Téléphone secondaire (optionnel)
+   */
+  phone2?: string | null;
+  /**
+   * Email du bureau (ex: kin@caaf-sas.com) — lien mailto:
+   */
+  email?: string | null;
+  /**
+   * Horaires — localisé (ex: Lun-Ven 08:00-17:00)
+   */
+  hours?: string | null;
+  /**
+   * Coordonnées — marqueur carte (ex: lng 15.3136, lat -4.3270 Kinshasa)
+   */
+  location: {
+    /**
+     * Longitude
+     */
+    lng: number;
+    /**
+     * Latitude
+     */
+    lat: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * FAQ — questions fréquentes (accordéon + FAQPage json-ld)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: number;
+  /**
+   * Catégorie — localisé (ex: Général, Audit, Fiscalité)
+   */
+  category?: string | null;
+  /**
+   * Question — localisé, useAsTitle (ex: Qu’est-ce que... ?)
+   */
+  question: string;
+  /**
+   * Réponse — Lexical (Bold, Link, UL/OL, Quote)
+   */
+  answer: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Ordre d’affichage — tri ascendant intra-catégorie
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Témoignages — carrousels + preuve sociale
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  /**
+   * Citation — localisé, requis (texte du témoignage)
+   */
+  quote: string;
+  /**
+   * Auteur — nom complet, useAsTitle (non localisé)
+   */
+  author: string;
+  /**
+   * Fonction — localisé (ex: Directeur Financier / CFO)
+   */
+  role?: string | null;
+  /**
+   * Entreprise — localisé (ex: Rawbank)
+   */
+  company?: string | null;
+  /**
+   * Secteur — localisé (ex: Banque, Mines, ONG)
+   */
+  sector?: string | null;
+  /**
+   * Avatar — photo ronde (optionnel, fallback initiales)
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Mise en avant — homepage / carrousel
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Jalons historiques — frise chronologique CAAF
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "milestones".
+ */
+export interface Milestone {
+  id: number;
+  /**
+   * Année — étiquette timeline (ex: 2010, 2024)
+   */
+  year: string;
+  /**
+   * Titre du jalon — localisé, useAsTitle
+   */
+  title: string;
+  /**
+   * Description — 1 à 2 phrases localisées
+   */
+  text?: string | null;
+  /**
+   * Visuel d’archive — optionnel (timeline)
+   */
+  image?: (number | null) | Media;
+  /**
+   * Ordre d’affichage — tri ascendant (1,2,3...)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Redirections — 301/302 sans redéploiement
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  /**
+   * Chemin source — useAsTitle, unique (ex: /ancien-slug, doit commencer par /)
+   */
+  from: string;
+  /**
+   * Destination — chemin interne (/nouveau) ou URL externe (https://...)
+   */
+  to: string;
+  /**
+   * Type — 301 permanent (SEO) / 302 temporaire
+   */
+  type: '301' | '302';
+  /**
+   * Actif — désactiver sans supprimer
+   */
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Messages — inbox formulaire de contact (public create, admin read)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  /**
+   * Nom complet — useAsTitle, requis
+   */
+  name: string;
+  /**
+   * Email — requis, replyTo notification
+   */
+  email: string;
+  /**
+   * Téléphone — optionnel (ex: +243...)
+   */
+  phone?: string | null;
+  /**
+   * Entreprise / organisation — optionnel
+   */
+  company?: string | null;
+  /**
+   * Message — corps de la demande, requis
+   */
+  message: string;
+  /**
+   * Consentement RGPD — requis (case à cocher)
+   */
+  rgpd: boolean;
+  /**
+   * Statut — workflow inbox
+   */
+  status: 'new' | 'read' | 'archived';
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -180,6 +2546,98 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'schedulePublish';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'schedulePublish') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -192,6 +2650,82 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'expertises';
+        value: number | Expertise;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'article-categories';
+        value: number | ArticleCategory;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'sectors';
+        value: number | Sector;
+      } | null)
+    | ({
+        relationTo: 'clients';
+        value: number | Client;
+      } | null)
+    | ({
+        relationTo: 'certifications';
+        value: number | Certification;
+      } | null)
+    | ({
+        relationTo: 'publications';
+        value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'publication-categories';
+        value: number | PublicationCategory;
+      } | null)
+    | ({
+        relationTo: 'jobs';
+        value: number | Job;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'offices';
+        value: number | Office;
+      } | null)
+    | ({
+        relationTo: 'faqs';
+        value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'milestones';
+        value: number | Milestone;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -240,6 +2774,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -263,6 +2798,13 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
+  focalPoint?:
+    | T
+    | {
+        x?: T;
+        y?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -274,6 +2816,1140 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  template?: T;
+  sections?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        statsSection?: T | StatsSectionBlockSelect<T>;
+        activities?: T | ActivitiesBlockSelect<T>;
+        sectorsOverview?: T | SectorsOverviewBlockSelect<T>;
+        bentoServices?: T | BentoServicesBlockSelect<T>;
+        bentoSecteurs?: T | BentoSecteursBlockSelect<T>;
+        clientsGrid?: T | ClientsGridBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
+        values?: T | ValuesBlockSelect<T>;
+        leadership?: T | LeadershipBlockSelect<T>;
+        quote?: T | QuoteBlockSelect<T>;
+        certificationsDetail?: T | CertificationsDetailBlockSelect<T>;
+        qualityProcess?: T | QualityProcessBlockSelect<T>;
+        officesMap?: T | OfficesMapBlockSelect<T>;
+        faq?: T | FaqBlockSelect<T>;
+        contactForm?: T | ContactFormBlockSelect<T>;
+        proofBanner?: T | ProofBannerBlockSelect<T>;
+        richText?: T | RichTextBlockSelect<T>;
+        newsletter?: T | NewsletterBlockSelect<T>;
+        finalCta?: T | FinalCtaBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+        twitterImage?: T;
+        structuredData?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  titleAccent?: T;
+  description?: T;
+  ctaPrimary?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  ctaSecondary?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  certs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  backgroundImage?: T;
+  overlayOpacity?: T;
+  category?: T;
+  categoryHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsSectionBlock_select".
+ */
+export interface StatsSectionBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ActivitiesBlock_select".
+ */
+export interface ActivitiesBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        number?: T;
+        title?: T;
+        description?: T;
+        href?: T;
+        linkLabel?: T;
+        visual?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectorsOverviewBlock_select".
+ */
+export interface SectorsOverviewBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        highlights?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        href?: T;
+        icon?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BentoServicesBlock_select".
+ */
+export interface BentoServicesBlockSelect<T extends boolean = true> {
+  categories?:
+    | T
+    | {
+        number?: T;
+        title?: T;
+        tag?: T;
+        description?: T;
+        size?: T;
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              desc?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BentoSecteursBlock_select".
+ */
+export interface BentoSecteursBlockSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        href?: T;
+        icon?: T;
+        tags?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        accent?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClientsGridBlock_select".
+ */
+export interface ClientsGridBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  clients?:
+    | T
+    | {
+        name?: T;
+        sector?: T;
+        sectorType?: T;
+        logo?: T;
+        featured?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        quote?: T;
+        author?: T;
+        role?: T;
+        company?: T;
+        avatar?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        year?: T;
+        title?: T;
+        text?: T;
+        image?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ValuesBlock_select".
+ */
+export interface ValuesBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        number?: T;
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LeadershipBlock_select".
+ */
+export interface LeadershipBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  members?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        bio?: T;
+        image?: T;
+        linkedin?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuoteBlock_select".
+ */
+export interface QuoteBlockSelect<T extends boolean = true> {
+  quote?: T;
+  author?: T;
+  role?: T;
+  image?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CertificationsDetailBlock_select".
+ */
+export interface CertificationsDetailBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        code?: T;
+        fullName?: T;
+        description?: T;
+        scope?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        implications?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        icon?: T;
+        doc?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QualityProcessBlock_select".
+ */
+export interface QualityProcessBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  steps?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OfficesMapBlock_select".
+ */
+export interface OfficesMapBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  mapCenter?:
+    | T
+    | {
+        lng?: T;
+        lat?: T;
+      };
+  zoom?: T;
+  officeDetails?:
+    | T
+    | {
+        city?: T;
+        type?: T;
+        address?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        phone?: T;
+        email?: T;
+        hours?: T;
+        coords?:
+          | T
+          | {
+              lng?: T;
+              lat?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock_select".
+ */
+export interface FaqBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        category?: T;
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock_select".
+ */
+export interface ContactFormBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  rgpdText?: T;
+  submitLabel?: T;
+  successMessage?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProofBannerBlock_select".
+ */
+export interface ProofBannerBlockSelect<T extends boolean = true> {
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock_select".
+ */
+export interface RichTextBlockSelect<T extends boolean = true> {
+  content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock_select".
+ */
+export interface NewsletterBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  placeholder?: T;
+  buttonLabel?: T;
+  disclaimer?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FinalCtaBlock_select".
+ */
+export interface FinalCtaBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  titleAccent?: T;
+  description?: T;
+  trustPoints?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  primaryCta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  secondaryCta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertises_select".
+ */
+export interface ExpertisesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  hero?:
+    | T
+    | {
+        category?: T;
+        categoryHref?: T;
+        title?: T;
+        titleAccent?: T;
+        description?: T;
+        ctaPrimary?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        ctaSecondary?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+        image?: T;
+      };
+  sousServices?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        titleAccent?: T;
+        description?: T;
+        sectionId?: T;
+        headerLabel?: T;
+        items?:
+          | T
+          | {
+              id?: T;
+              icon?: T;
+              title?: T;
+              subtitle?: T;
+              description?: T;
+              deliverables?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+            };
+      };
+  approche?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        titleAccent?: T;
+        description?: T;
+        totalSteps?: T;
+        stepLabel?: T;
+        steps?:
+          | T
+          | {
+              number?: T;
+              id?: T;
+              icon?: T;
+              title?: T;
+              description?: T;
+              details?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+            };
+      };
+  pourquoi?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        description?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  secteurs?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        description?: T;
+        stripText?: T;
+        stripHighlight?: T;
+        stripCta?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              tags?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              featured?: T;
+              id?: T;
+            };
+      };
+  cas?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        description?: T;
+        sectionCta?: T;
+        items?:
+          | T
+          | {
+              id?: T;
+              sector?: T;
+              sectorIcon?: T;
+              title?: T;
+              location?: T;
+              context?: T;
+              approach?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              results?:
+                | T
+                | {
+                    icon?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              quote?: T;
+              quoteAuthor?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        titleAccent?: T;
+        description?: T;
+        trustPoints?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        primaryCta?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        secondaryCta?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        watermarkIcon?: T;
+        contactOptions?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              href?: T;
+              cta?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              primary?: T;
+              id?: T;
+            };
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+        twitterImage?: T;
+        structuredData?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  category?: T;
+  author?: T;
+  date?: T;
+  readTime?: T;
+  image?: T;
+  featured?: T;
+  tags?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+        twitterImage?: T;
+        structuredData?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories_select".
+ */
+export interface ArticleCategoriesSelect<T extends boolean = true> {
+  label?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  bio?: T;
+  avatar?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  label?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sectors_select".
+ */
+export interface SectorsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  icon?: T;
+  tags?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  accent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  sector?: T;
+  sectorType?: T;
+  logo?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certifications_select".
+ */
+export interface CertificationsSelect<T extends boolean = true> {
+  code?: T;
+  fullName?: T;
+  description?: T;
+  scope?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  implications?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  icon?: T;
+  doc?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications_select".
+ */
+export interface PublicationsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  category?: T;
+  date?: T;
+  sector?: T;
+  featured?: T;
+  pdf?: T;
+  cover?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+        twitterImage?: T;
+        structuredData?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publication-categories_select".
+ */
+export interface PublicationCategoriesSelect<T extends boolean = true> {
+  label?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs_select".
+ */
+export interface JobsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  department?: T;
+  location?: T;
+  contract?: T;
+  experience?: T;
+  description?: T;
+  featured?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+        twitterImage?: T;
+        structuredData?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  level?: T;
+  description?: T;
+  missions?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  profil?: T;
+  qualites?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  evolution?: T;
+  pourquoi?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offices_select".
+ */
+export interface OfficesSelect<T extends boolean = true> {
+  city?: T;
+  type?: T;
+  address?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  phone?: T;
+  phone2?: T;
+  email?: T;
+  hours?: T;
+  location?:
+    | T
+    | {
+        lng?: T;
+        lat?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  category?: T;
+  question?: T;
+  answer?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  quote?: T;
+  author?: T;
+  role?: T;
+  company?: T;
+  sector?: T;
+  avatar?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "milestones_select".
+ */
+export interface MilestonesSelect<T extends boolean = true> {
+  year?: T;
+  title?: T;
+  text?: T;
+  image?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  type?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  company?: T;
+  message?: T;
+  rgpd?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -282,6 +3958,37 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -316,6 +4023,557 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Identité du site — infos globales (nom, logo, adresse, contacts)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Nom du site — localisé, requis (ex: CAAF SAS)
+   */
+  siteName: string;
+  /**
+   * Nom alternatif / abréviation — localisé (ex: CAAF)
+   */
+  alternateName?: string | null;
+  /**
+   * URL canonique du site (ex: https://caaf-sas.com)
+   */
+  siteUrl: string;
+  /**
+   * Description courte — localisée, requise (meta description fallback)
+   */
+  description: string;
+  /**
+   * Logo principal (clair) — header / OG fallback
+   */
+  logo: number | Media;
+  /**
+   * Logo variante sombre — footer / header dark (optionnel)
+   */
+  logoDark?: (number | null) | Media;
+  /**
+   * Favicon — icône onglet / manifest (optionnel)
+   */
+  favicon?: (number | null) | Media;
+  /**
+   * Adresse — affichée footer + schema.org PostalAddress
+   */
+  address?: {
+    /**
+     * Rue / avenue — localisé (ex: Av. Colonel Mondjiba, 123)
+     */
+    street?: string | null;
+    /**
+     * Quartier / commune — localisé (ex: Ngaliema)
+     */
+    district?: string | null;
+    /**
+     * Ville — localisé (ex: Kinshasa)
+     */
+    city?: string | null;
+    /**
+     * Pays — code localisé, défaut CD (RDC)
+     */
+    country?: string | null;
+  };
+  /**
+   * Téléphone principal Kinshasa (ex: +243 999 999 999) — lien tel:
+   */
+  phone?: string | null;
+  /**
+   * Téléphone secondaire Kinshasa (optionnel)
+   */
+  phone2?: string | null;
+  /**
+   * Téléphone principal Lubumbashi (ex: +243 999 999 998)
+   */
+  lubPhone?: string | null;
+  /**
+   * Téléphone secondaire Lubumbashi (optionnel)
+   */
+  lubPhone2?: string | null;
+  /**
+   * Année de création — défaut 1968 (footer, timeline)
+   */
+  foundingYear?: string | null;
+  /**
+   * Email principal — requis (ex: contact@caaf.cd) — lien mailto:
+   */
+  email: string;
+  /**
+   * Liens externes — jsonld sameAs + footer (ex: LinkedIn)
+   */
+  sameAs?:
+    | {
+        /**
+         * URL — ex: https://linkedin.com/company/caaf
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * En-tête — navigation + CTA + sélecteur de langue
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  /**
+   * Logo header — surcharge SiteSettings.logo si défini (optionnel)
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Navigation principale — liens simples ou méga-menus à colonnes
+   */
+  menu?:
+    | {
+        /**
+         * Libellé — localisé, requis (ex: Services)
+         */
+        label: string;
+        /**
+         * URL — requis si type=link (ex: /contact), ignoré si dropdown
+         */
+        href?: string | null;
+        /**
+         * Lien simple vs méga-menu à colonnes
+         */
+        type: 'link' | 'dropdown';
+        /**
+         * Colonnes du méga-menu — uniquement si type=dropdown
+         */
+        columns?:
+          | {
+              /**
+               * Titre de colonne — localisé (ex: Audit & Conseil)
+               */
+              heading?: string | null;
+              /**
+               * Liens de la colonne
+               */
+              links?:
+                | {
+                    /**
+                     * Titre du lien — localisé, requis
+                     */
+                    title: string;
+                    /**
+                     * URL — requis (ex: /expertises/audit-financier)
+                     */
+                    href: string;
+                    /**
+                     * Description courte — localisée, optionnelle (sous-titre méga-menu)
+                     */
+                    description?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Bouton d’action header (ex: Planifier un échange)
+   */
+  cta: {
+    type?: ('internal' | 'external') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  /**
+   * Affichage du switcher FR/EN
+   */
+  langSwitcher?: {
+    /**
+     * Afficher le sélecteur de langue — défaut activé
+     */
+    showSwitcher?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Pied de page — colonnes, réseaux, bureaux, newsletter
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  /**
+   * Texte sous logo — localisé (tagline footer)
+   */
+  description?: string | null;
+  /**
+   * Colonnes de navigation — 2 à 4 colonnes (ex: Services, Secteurs)
+   */
+  columns?:
+    | {
+        /**
+         * Titre de colonne — localisé, requis
+         */
+        title: string;
+        /**
+         * Liens de la colonne
+         */
+        links?:
+          | {
+              /**
+               * Libellé — localisé, requis
+               */
+              label: string;
+              /**
+               * URL — requis (ex: /expertises/audit-financier)
+               */
+              href: string;
+              /**
+               * Description courte — localisée, optionnelle
+               */
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Liens sociaux — footer + schema.org sameAs
+   */
+  social?:
+    | {
+        /**
+         * Nom — a11y (ex: LinkedIn)
+         */
+        label?: string | null;
+        /**
+         * URL — requis (ex: https://linkedin.com/company/caaf)
+         */
+        href: string;
+        /**
+         * Icône — nom Lucide/SimpleIcons (ex: linkedin, twitter)
+         */
+        icon?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Bureaux affichés dans le footer — relation hasMany → offices
+   */
+  offices?: (number | Office)[] | null;
+  /**
+   * Texte bandeau bas — localisé (ex: © 2026 CAAF SAS — Tous droits réservés)
+   */
+  bottomText?: string | null;
+  /**
+   * Badges conformité — défaut OHADA / ISA / IFRS
+   */
+  credentials?:
+    | {
+        /**
+         * Texte badge — localisé (ex: OHADA)
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Bloc abonnement footer
+   */
+  newsletter?: {
+    /**
+     * Titre — localisé (ex: Restez informé)
+     */
+    title?: string | null;
+    /**
+     * Description — localisée
+     */
+    description?: string | null;
+    /**
+     * Placeholder input — localisé (ex: Votre email)
+     */
+    placeholder?: string | null;
+    /**
+     * Libellé bouton — localisé (ex: S’abonner)
+     */
+    buttonLabel?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * SEO par défaut — fallback generateMetadata (titre, description, robots, hreflang)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-defaults".
+ */
+export interface SeoDefault {
+  id: number;
+  /**
+   * Titre par défaut — localisé, requis (fallback si page sans titre SEO)
+   */
+  defaultTitle: string;
+  /**
+   * Suffixe titre — concaténé après chaque page title (défaut " | CAAF SAS")
+   */
+  titleSuffix?: string | null;
+  /**
+   * Description par défaut — localisée, requise (155 caractères max)
+   */
+  defaultDescription: string;
+  /**
+   * Image OG par défaut — og:image / twitter:image fallback (1200x630)
+   */
+  defaultOgImage?: (number | null) | Media;
+  /**
+   * Handle Twitter/X — défaut @caaf_sas (meta twitter:site)
+   */
+  twitterHandle?: string | null;
+  /**
+   * URL du site — requise, base canonical/og:url/sitemap (ex: https://caaf-sas.com)
+   */
+  siteUrl: string;
+  /**
+   * Directives robots globales
+   */
+  robots?: {
+    /**
+     * Index — défaut activé (noindex si décoché)
+     */
+    index?: boolean | null;
+    /**
+     * Follow — défaut activé (nofollow si décoché)
+     */
+    follow?: boolean | null;
+    /**
+     * Chemins interdits — robots.txt Disallow (ex: /admin)
+     */
+    disallow?:
+      | {
+          /**
+           * Chemin — ex: /admin, /api
+           */
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Base canonique — préfixe si page sans canonicalURL (ex: https://caaf-sas.com)
+   */
+  canonicalBase?: string | null;
+  /**
+   * Alternatives linguistiques — <link rel="alternate" hreflang>
+   */
+  hreflang?:
+    | {
+        /**
+         * Locale — ex: fr, en, fr-CD
+         */
+        locale: string;
+        /**
+         * URL — ex: https://caaf-sas.com/fr
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  alternateName?: T;
+  siteUrl?: T;
+  description?: T;
+  logo?: T;
+  logoDark?: T;
+  favicon?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        district?: T;
+        city?: T;
+        country?: T;
+      };
+  phone?: T;
+  phone2?: T;
+  lubPhone?: T;
+  lubPhone2?: T;
+  foundingYear?: T;
+  email?: T;
+  sameAs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  logo?: T;
+  menu?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        type?: T;
+        columns?:
+          | T
+          | {
+              heading?: T;
+              links?:
+                | T
+                | {
+                    title?: T;
+                    href?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  langSwitcher?:
+    | T
+    | {
+        showSwitcher?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  description?: T;
+  columns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  social?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        icon?: T;
+        id?: T;
+      };
+  offices?: T;
+  bottomText?: T;
+  credentials?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        placeholder?: T;
+        buttonLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-defaults_select".
+ */
+export interface SeoDefaultsSelect<T extends boolean = true> {
+  defaultTitle?: T;
+  titleSuffix?: T;
+  defaultDescription?: T;
+  defaultOgImage?: T;
+  twitterHandle?: T;
+  siteUrl?: T;
+  robots?:
+    | T
+    | {
+        index?: T;
+        follow?: T;
+        disallow?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  canonicalBase?: T;
+  hreflang?:
+    | T
+    | {
+        locale?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
@@ -324,6 +4582,40 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSchedulePublish".
+ */
+export interface TaskSchedulePublish {
+  input: {
+    type?: ('publish' | 'unpublish') | null;
+    locale?: string | null;
+    doc?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'expertises';
+          value: number | Expertise;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
+      | ({
+          relationTo: 'publications';
+          value: number | Publication;
+        } | null)
+      | ({
+          relationTo: 'jobs';
+          value: number | Job;
+        } | null);
+    global?: string | null;
+    user?: (number | null) | User;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

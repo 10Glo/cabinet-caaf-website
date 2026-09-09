@@ -355,7 +355,7 @@ export const auditInformatiqueConfig: ExpertisePageConfig = {
       "Recommandations priorisées par risque",
     ],
     primaryCta: { label: "Demander un audit IT", href: "/contact" },
-    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243999309901" },
     watermarkIcon: "Server",
     contactOptions: [
       {
@@ -369,8 +369,8 @@ export const auditInformatiqueConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Appeler directement",
-        description: "+243 XX XXX XXXX — du lundi au vendredi, 8h–17h.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — du lundi au vendredi, 8h–17h.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },

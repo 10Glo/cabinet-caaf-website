@@ -1,0 +1,266 @@
+/* ============================================================
+   CAAF SAS — Animation & Design Tokens
+   ============================================================ */
+
+/* CSS Custom Properties */
+:root {
+  /* Colors */
+  --color-canvas: #faf9f5;
+  --color-ink: #141413;
+  --color-primary: #259E01;
+  --color-primary-active: #1d7d01;
+  --color-brand-navy: #014065;
+  --color-hairline: #e6dfd8;
+  --color-surface-card: #efe9de;
+  --color-surface-soft: #f5f0e8;
+  --color-surface-dark: #014065;
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Timing Scale */
+  --duration-micro: 100ms;
+  --duration-small: 200ms;
+  --duration-medium: 350ms;
+  --duration-choreographed: 500ms;
+
+  /* Spacing */
+  --spacing-compact: 1.5rem;
+  --spacing-standard: 3rem;
+  --spacing-section: 4rem;
+
+  /* Border Radius */
+  --radius-lg: 12px;
+  --radius-md: 8px;
+}
+
+/* ============================================================
+   Reduced Motion Support
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Animation Keyframes
+   ============================================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+.animate-fadeIn {
+  animation: fadeIn var(--duration-medium) var(--ease-out) both;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp var(--duration-medium) var(--ease-out) both;
+}
+
+.animate-slideInRight {
+  animation: slideInRight var(--duration-medium) var(--ease-out) both;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-card) 25%,
+    var(--color-surface-soft) 50%,
+    var(--color-surface-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   Stagger Delays
+   ============================================================ */
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 60ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 180ms; }
+.stagger-5 { animation-delay: 240ms; }
+.stagger-6 { animation-delay: 300ms; }
+
+/* ============================================================
+   Transition Utilities
+   ============================================================ */
+.transition-spring {
+  transition: transform var(--duration-small) var(--spring);
+}
+
+.transition-ease-out {
+  transition: transform var(--duration-small) var(--ease-out);
+}
+
+.transition-opacity {
+  transition: opacity var(--duration-small) var(--ease-out);
+}
+
+/* ============================================================
+   Focus States (Accessibility)
+   ============================================================ */
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Skeleton Loading
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-card) 25%,
+    var(--color-surface-soft) 50%,
+    var(--color-surface-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-text:last-child {
+  width: 75%;
+}
+
+.skeleton-heading {
+  height: 2rem;
+  width: 50%;
+  margin-bottom: 1rem;
+}
+
+.skeleton-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   Scroll Reveal (Data Attributes for GSAP)
+   ============================================================ */
+[data-anim] {
+  opacity: 0;
+}
+
+[data-anim].is-visible {
+  opacity: 1;
+}
+
+/* ============================================================
+   Touch & Interaction
+   ============================================================ */
+@media (hover: hover) {
+  .hover-lift {
+    transition: transform var(--duration-small) var(--ease-out),
+                box-shadow var(--duration-small) var(--ease-out);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ============================================================
+   Safe Area (Mobile)
+   ============================================================ */
+.safe-area-inset {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================================
+   Typography Helpers
+   ============================================================ */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

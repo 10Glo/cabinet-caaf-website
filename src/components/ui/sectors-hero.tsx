@@ -7,7 +7,7 @@ import subHeroBg from "@/assets/6.jpg"
 
 export function SectorsHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-brand-navy">
+    <section className="relative w-full min-h-[540px] md:min-h-[640px] overflow-hidden bg-brand-navy">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -16,15 +16,16 @@ export function SectorsHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-20"
+          className="object-cover opacity-25"
           quality={80}
         />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full">
-        <div className="px-6 pb-16 pt-36 sm:px-10 md:pt-44 lg:pb-20">
-          <div className="max-w-3xl">
+        <div className="px-6 pb-24 pt-36 sm:px-10 md:pt-44 lg:pb-28">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl">
             {/* Breadcrumb */}
             <nav
               aria-label="Fil d'Ariane"
@@ -63,10 +64,12 @@ export function SectorsHero() {
 
             {/* Description */}
             <p className="mt-7 max-w-lg text-[16px] leading-[1.8] text-white/45">
-              CAAF SAS intervient auprès d&apos;acteurs stratégiques opérant
-              dans des secteurs à forte intensité réglementaire, financière et
-              opérationnelle.
+              CAAF SAS intervient auprès d’acteurs stratégiques opérant 
+              dans des secteurs à forte intensité réglementaire, financière 
+              et opérationnelle, en leur apportant une expertise adaptée à 
+              leurs enjeux, leurs exigences et leurs objectifs de performance.
             </p>
+            </div>
           </div>
         </div>
       </div>

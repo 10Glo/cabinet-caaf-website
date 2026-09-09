@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       },
     ],
     // useful if you want to render svg files with next/image
+    qualities: [75, 85],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

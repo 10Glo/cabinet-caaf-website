@@ -102,7 +102,7 @@ const NavigationMenuViewport = React.forwardRef<
       className={cn(
         "origin-top-center relative mt-2",
         "h-[var(--radix-navigation-menu-viewport-height)]",
-        "w-full overflow-hidden rounded-xl",
+        "w-full overflow-hidden rounded-sm",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90",
         "data-[state=open]:fade-in data-[state=closed]:fade-out",

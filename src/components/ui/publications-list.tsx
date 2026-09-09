@@ -1,12 +1,10 @@
 // src/components/ui/publications-list.tsx
 "use client"
 
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback, useState } from "react"
 import Link from "next/link"
-import { motion, useInView, AnimatePresence } from "framer-motion"
 
 // ─── Constants ───────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
 const ITEMS_PER_PAGE = 6
 
 type PublicationCategory = "Tous" | "Rapport" | "Analyse" | "Guide"
@@ -107,19 +105,12 @@ const CATEGORIES: PublicationCategory[] = [
 
 function FeaturedPublicationCard({
   pub,
-  index,
 }: {
   pub: Publication
   index: number
 }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: EASE_OUT }}
-      className="group border border-[#111A4A]/[0.06] bg-white p-8 transition-all duration-300 hover:border-[#111A4A]/12 md:p-10"
-    >
+    <article className="group border border-[#111A4A]/[0.06] bg-white p-8 transition-all duration-300 hover:border-[#111A4A]/12 md:p-10">
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex-1">
           {/* Meta row */}
@@ -173,7 +164,7 @@ function FeaturedPublicationCard({
 
       {/* Bottom accent */}
       <div className="mt-8 h-[2px] w-0 bg-primary/30 transition-all duration-700 group-hover:w-full" />
-    </motion.article>
+    </article>
   )
 }
 
@@ -181,19 +172,12 @@ function FeaturedPublicationCard({
 
 function PublicationCard({
   pub,
-  index,
 }: {
   pub: Publication
   index: number
 }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-      transition={{ duration: 0.6, delay: index * 0.06, ease: EASE_OUT }}
-      className="group flex h-full flex-col justify-between border border-[#111A4A]/[0.06] bg-white p-6 transition-all duration-300 hover:border-[#111A4A]/12 md:p-8"
-    >
+    <article className="group flex h-full flex-col justify-between border border-[#111A4A]/[0.06] bg-white p-6 transition-all duration-300 hover:border-[#111A4A]/12 md:p-8">
       <div>
         {/* Meta row */}
         <div className="mb-3 flex items-center gap-3">
@@ -246,7 +230,7 @@ function PublicationCard({
 
       {/* Bottom accent */}
       <div className="mt-4 h-[2px] w-0 bg-primary/30 transition-all duration-700 group-hover:w-full" />
-    </motion.article>
+    </article>
   )
 }
 
@@ -326,12 +310,9 @@ function Pagination({
 // ═══════════════════════════════════════════════════════════
 
 export function PublicationsList() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
   const [activeCategory, setActiveCategory] =
     useState<PublicationCategory>("Tous")
   const [currentPage, setCurrentPage] = useState(1)
-  const [animationKey, setAnimationKey] = useState(0)
 
   const featuredPubs =
     activeCategory === "Tous"
@@ -355,20 +336,16 @@ export function PublicationsList() {
 
   const totalFiltered = featuredPubs.length + regularPubs.length
 
-  // Reset page and trigger re-animation when filter changes
   const handleCategoryChange = useCallback(
     (category: PublicationCategory) => {
       setActiveCategory(category)
       setCurrentPage(1)
-      setAnimationKey((k) => k + 1)
     },
     []
   )
 
-  // Page change with scroll and re-animation
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page)
-    setAnimationKey((k) => k + 1)
     const el = document.getElementById("publications-list")
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -377,7 +354,6 @@ export function PublicationsList() {
 
   return (
     <section
-      ref={sectionRef}
       id="publications-list"
       className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
     >
@@ -385,36 +361,19 @@ export function PublicationsList() {
         {/* ── Header ── */}
         <div className="mb-10 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
-              className="mb-5 inline-flex items-center"
-            >
+            <div className="mb-5 inline-flex items-center">
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
                 Bibliothèque
               </span>
-            </motion.div>
+            </div>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={
-                isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-              }
-              transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-              className="max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
-            >
+            <h2 className="max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]">
               Nos publications
-            </motion.h2>
+            </h2>
           </div>
 
           {/* Live count badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3, ease: EASE_OUT }}
-            className="inline-flex shrink-0 items-center gap-3 self-start border border-[#111A4A]/[0.06] bg-white px-5 py-3 lg:self-auto"
-          >
+          <div className="inline-flex shrink-0 items-center gap-3 self-start border border-[#111A4A]/[0.06] bg-white px-5 py-3 lg:self-auto">
             <span className="font-serif text-2xl text-[#111A4A]">
               {totalFiltered}
             </span>
@@ -423,18 +382,11 @@ export function PublicationsList() {
                 ? "publications"
                 : `${activeCategory.toLowerCase()}s`}
             </span>
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Category filters ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.2, delay: 0.25, ease: EASE_OUT }}
-          className="mb-8 flex flex-wrap items-center gap-3"
-        >
+        <div className="mb-8 flex flex-wrap items-center gap-3">
           {CATEGORIES.map((cat) => {
             const isActive = cat === activeCategory
             const count =
@@ -463,62 +415,52 @@ export function PublicationsList() {
               </button>
             )
           })}
-        </motion.div>
+        </div>
 
         {/* ── Divider ── */}
         <div className="mb-8 h-px bg-[#111A4A]/[0.06]" />
 
-        {/* ── Content with AnimatePresence ── */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`content-${animationKey}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Featured publications */}
-            {featuredPubs.length > 0 && (
-              <div className="mb-5 space-y-5">
-                {featuredPubs.map((pub, i) => (
-                  <FeaturedPublicationCard
-                    key={pub.title}
-                    pub={pub}
-                    index={i}
-                  />
-                ))}
-              </div>
-            )}
+        {/* ── Content ── */}
+        {/* Featured publications */}
+        {featuredPubs.length > 0 && (
+          <div className="mb-5 space-y-5">
+            {featuredPubs.map((pub, i) => (
+              <FeaturedPublicationCard
+                key={pub.title}
+                pub={pub}
+                index={i}
+              />
+            ))}
+          </div>
+        )}
 
-            {/* Regular publications grid */}
-            {paginatedPubs.length > 0 && (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {paginatedPubs.map((pub, i) => (
-                  <PublicationCard key={pub.title} pub={pub} index={i} />
-                ))}
-              </div>
-            )}
+        {/* Regular publications grid */}
+        {paginatedPubs.length > 0 && (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {paginatedPubs.map((pub, i) => (
+              <PublicationCard key={pub.title} pub={pub} index={i} />
+            ))}
+          </div>
+        )}
 
-            {/* Empty state */}
-            {totalFiltered === 0 && (
-              <div className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.02] py-20 text-center">
-                <p className="font-serif text-xl text-[#111A4A]/40">
-                  Aucune publication dans cette catégorie
-                </p>
-                <p className="mt-2 text-sm text-[#7C7F88]/50">
-                  Essayez un autre filtre ou consultez toutes nos publications.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleCategoryChange("Tous")}
-                  className="mt-6 inline-flex items-center gap-2 border border-[#111A4A]/[0.06] bg-white px-5 py-2.5 text-[12px] font-medium text-[#7C7F88] transition-all duration-200 hover:border-primary/20 hover:text-primary"
-                >
-                  Voir toutes les publications
-                </button>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+        {/* Empty state */}
+        {totalFiltered === 0 && (
+          <div className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.02] py-20 text-center">
+            <p className="font-serif text-xl text-[#111A4A]/40">
+              Aucune publication dans cette catégorie
+            </p>
+            <p className="mt-2 text-sm text-[#7C7F88]/50">
+              Essayez un autre filtre ou consultez toutes nos publications.
+            </p>
+            <button
+              type="button"
+              onClick={() => handleCategoryChange("Tous")}
+              className="mt-6 inline-flex items-center gap-2 border border-[#111A4A]/[0.06] bg-white px-5 py-2.5 text-[12px] font-medium text-[#7C7F88] transition-all duration-200 hover:border-primary/20 hover:text-primary"
+            >
+              Voir toutes les publications
+            </button>
+          </div>
+        )}
 
         {/* ── Pagination ── */}
         <Pagination

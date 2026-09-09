@@ -1,8 +1,6 @@
 // src/components/ui/activities-overview.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
@@ -19,8 +17,6 @@ type ActivityItem = {
 }
 
 // ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
-
 const ACTIVITIES: ActivityItem[] = [
   {
     number: "01",
@@ -434,26 +430,10 @@ function AnimatedVisual({ type }: { type: VisualType }) {
 
 // ─── Activity Row ────────────────────────────────────────
 
-function ActivityRow({ item, index }: { item: ActivityItem; index: number }) {
-  const rowRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(rowRef, { once: true, amount: 0.2 })
-
+function ActivityRow({ item }: { item: ActivityItem }) {
   return (
-    <div ref={rowRef} className="group">
-      <motion.div
-        initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-        animate={
-          isInView
-            ? {
-                opacity: [0, 1, 1],
-                y: [20, 0, 0],
-                filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-              }
-            : {}
-        }
-        transition={{ duration: 1.5, delay: index * 0.08, ease: EASE_OUT }}
-        className="flex flex-col gap-6 border-b border-[#111A4A]/[0.06] py-8 lg:flex-row lg:items-center lg:gap-10 lg:py-10"
-      >
+    <div className="group">
+      <div className="flex flex-col gap-6 border-b border-[#111A4A]/[0.06] py-8 lg:flex-row lg:items-center lg:gap-10 lg:py-10">
         {/* Number */}
         <div className="shrink-0">
           <span className="font-mono text-xs text-[#7C7F88]">
@@ -489,7 +469,7 @@ function ActivityRow({ item, index }: { item: ActivityItem; index: number }) {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -499,67 +479,38 @@ function ActivityRow({ item, index }: { item: ActivityItem; index: number }) {
 // ═══════════════════════════════════════════════════════════
 
 export function ActivitiesOverview() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
-    <section ref={sectionRef} className="w-full overflow-hidden bg-canvas">
+    <section className="w-full overflow-hidden bg-canvas">
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20">
         {/* ── Header ── */}
         <div className="mb-10 max-w-3xl lg:mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
-            className="mb-5 inline-flex items-center"
-          >
+          <div className="mb-5 inline-flex items-center">
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Expertises
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
-          >
+          <h2 className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]">
             Des expertises structurées{" "}
             <span className="opacity-40">pour des décisions plus sûres.</span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
-            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
-          >
+          <p className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60">
             CAAF SAS accompagne les entreprises, institutions et groupes dans
             leurs enjeux d&apos;audit, de conformité, de fiscalité et de
             transformation financière.
-          </motion.p>
+          </p>
         </div>
 
         {/* ── Activities List ── */}
         <div>
-          {ACTIVITIES.map((item, index) => (
-            <ActivityRow key={item.number} item={item} index={index} />
+          {ACTIVITIES.map((item) => (
+            <ActivityRow key={item.number} item={item} />
           ))}
         </div>
 
         {/* ── CTA — left-aligned ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.6, ease: EASE_OUT }}
-          className="mt-10 flex items-start lg:mt-14"
-        >
+        <div className="mt-10 flex items-start lg:mt-14">
           <Link
             href="/expertises"
             className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
@@ -569,7 +520,7 @@ export function ActivitiesOverview() {
             </span>
             <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

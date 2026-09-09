@@ -1,9 +1,6 @@
 // src/components/ui/certifications-quality.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
-
 // ─── Constants ───────────────────────────────────────────
 const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
@@ -39,12 +36,8 @@ const QUALITY_PILLARS = [
 // ═══════════════════════════════════════════════════════════
 
 export function CertificationsQuality() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
     <section
-      ref={sectionRef}
       className="bg-white px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
     >
       <div className="mx-auto max-w-7xl">
@@ -54,23 +47,15 @@ export function CertificationsQuality() {
               ═══════════════════════════════════════════════ */}
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-24">
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+              <div
                 className="mb-5 inline-flex items-center"
               >
                 <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
                   Engagement qualité
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-                animate={
-                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-                }
-                transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+              <h2
                 className="mb-6 max-w-lg text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.05] tracking-tight text-[#111A4A]"
               >
                 Au-delà des labels,
@@ -78,37 +63,24 @@ export function CertificationsQuality() {
                 <span className="opacity-40">
                   une discipline quotidienne.
                 </span>
-              </motion.h2>
+              </h2>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-                animate={
-                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-                }
-                transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+              <p
                 className="mb-10 max-w-sm text-sm leading-7 text-[#7C7F88]"
               >
                 Nos certifications ne sont pas des acquis statiques. Elles
                 s&apos;accompagnent de mécanismes internes de contrôle, de
                 formation et de supervision qui garantissent leur application
                 effective à chaque mission.
-              </motion.p>
+              </p>
 
               {/* Divider */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ duration: 1, delay: 0.4 }}
+              <div
                 className="mb-8 h-px w-16 bg-[#111A4A]/[0.06]"
               />
 
               {/* Quote card */}
-              <motion.div
-                initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
-                animate={
-                  isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-                }
-                transition={{ duration: 1.5, delay: 0.45, ease: EASE_OUT }}
+              <div
                 className="border border-[#111A4A]/[0.06] bg-[#111A4A]/[0.01] p-8"
               >
                 <span className="mb-4 block font-serif text-[48px] leading-none text-primary/20">
@@ -125,7 +97,7 @@ export function CertificationsQuality() {
                     Politique qualité CAAF SAS
                   </p>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
 
@@ -133,25 +105,8 @@ export function CertificationsQuality() {
               RIGHT — Pillar cards
               ═══════════════════════════════════════════════ */}
           <div className="space-y-5 lg:col-span-7">
-            {QUALITY_PILLARS.map((pillar, index) => (
-              <motion.div
-                key={pillar.title}
-                initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
-                animate={
-                  isInView
-                    ? {
-                        opacity: [0, 1, 1],
-                        y: [16, 0, 0],
-                        filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                      }
-                    : {}
-                }
-                transition={{
-                  duration: 1.2,
-                  delay: 0.25 + index * 0.08,
-                  ease: EASE_OUT,
-                }}
-              >
+            {QUALITY_PILLARS.map((pillar) => (
+              <div key={pillar.title}>
                 <article className="group border border-[#111A4A]/[0.06] bg-white p-8 transition-all duration-300 hover:border-[#111A4A]/12 md:p-10">
                   <div className="flex items-start gap-5">
                     {/* Number */}
@@ -172,7 +127,7 @@ export function CertificationsQuality() {
                   {/* Bottom accent */}
                   <div className="mt-6 h-[2px] w-0 bg-primary/40 transition-all duration-700 group-hover:w-full" />
                 </article>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

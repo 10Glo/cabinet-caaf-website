@@ -1,8 +1,7 @@
 // src/components/ui/client-mandates-section.tsx
 "use client"
 
-import { useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { StaticImageData } from "next/image"
@@ -30,7 +29,6 @@ type ClientItem = {
 }
 
 // ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
 const ITEMS_PER_PAGE = 8
 
 const CLIENTS: ClientItem[] = [
@@ -148,8 +146,6 @@ function ClientCard({
 // ═══════════════════════════════════════════════════════════
 
 export function ClientMandatesSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
   const [page, setPage] = useState(0)
 
   const totalPages = Math.ceil(CLIENTS.length / ITEMS_PER_PAGE)
@@ -158,45 +154,32 @@ export function ClientMandatesSection() {
   const hasMore = totalPages > 1
 
   return (
-    <section ref={sectionRef} className="bg-white px-10 py-section">
+    <section className="bg-white px-10 py-section">
       <div className="w-full">
         {/* ── Header — left-aligned ── */}
         <div className="mb-14 max-w-3xl lg:mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
+          <div
             className="mb-5 inline-flex items-center"
           >
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Références
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
+          <h2
             className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
           >
             Des missions conduites auprès d&apos;acteurs{" "}
             <span className="opacity-40">de premier plan.</span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
+          <p
             className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
           >
             Nos équipes interviennent auprès d&apos;institutions financières,
             de groupes miniers, d&apos;acteurs industriels et de sociétés
             stratégiques opérant en RDC et dans la région.
-          </motion.p>
+          </p>
         </div>
 
         {/* ── Client Grid ── */}
@@ -206,25 +189,17 @@ export function ClientMandatesSection() {
               key={`${client.name}-${start + i}`}
               client={client}
               index={i}
-              isVisible={isInView}
+              isVisible={true}
             />
           ))}
         </div>
 
         {/* ── Bottom row: stats + pagination ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.6 }}
+        <div
           className="h-px bg-[#111A4A]/[0.06]"
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.7, ease: EASE_OUT }}
+        <div
           className="flex flex-wrap items-center justify-between gap-8 pt-10"
         >
           {/* Stats */}
@@ -281,15 +256,10 @@ export function ClientMandatesSection() {
               </button>
             </div>
           )}
-        </motion.div>
+        </div>
 
         {/* ── CTAs — left-aligned ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.8, ease: EASE_OUT }}
+        <div
           className="mt-12 flex flex-col items-start gap-6"
         >
           <Link
@@ -313,7 +283,7 @@ export function ClientMandatesSection() {
               />
             </Link>
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

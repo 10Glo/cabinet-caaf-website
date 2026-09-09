@@ -6,39 +6,55 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ─────────────────────────────────────────────
-   THEME VARIABLES - REFACTORED
-   Base: Vert (#259E01) + Bleu nuit (#014065)
-   Backgrounds: Blanc cassé / Gris perle (neutres modernes)
+   THEME - CORPORATE BIG 4 DESIGN SYSTEM
+   Vert (#259E01) + Bleu nuit (#014065)
+   Small radius, minimal shadows, strict spacing
 ───────────────────────────────────────────── */
 @theme inline {
   /* --- Core colors --- */
-  --color-primary: #259E01;        /* Vert signature */
-  --color-primary-active: #1d7d01; /* Vert foncé (hover) */
-  --color-primary-soft: #E8F3E3;   /* Vert très pâle (survol léger, alternance) */
+  --color-primary: #259E01;
+  --color-primary-active: #1d7d01;
+  --color-primary-soft: #E8F3E3;
 
-  --color-brand-navy: #014065;     /* Bleu nuit corporate */
-  --color-brand-navy-soft: #E6EDF2; /* Bleu très pâle */
-  --color-brand-navy-deep: #002B47; /* Version plus foncée */
+  --color-brand-navy: #014065;
+  --color-brand-navy-soft: #E6EDF2;
+  --color-brand-navy-deep: #002B47;
 
-  /* --- Backgrounds (modernisés) --- */
-  --color-canvas: #FBFCF8;         /* Blanc cassé premium - fond principal */
-  --color-canvas-alt: #F0F2ED;     /* Gris perle - sections secondaires */
-  --color-surface-card: #FFFFFF;   /* Blanc pur - cartes */
-  --color-surface-soft: #F8F9F6;   /* Presque blanc - alternance douce */
+  /* --- Backgrounds --- */
+  --color-canvas: #FBFCF8;
+  --color-canvas-alt: #F0F2ED;
+  --color-surface-card: #FFFFFF;
+  --color-surface-soft: #F8F9F6;
 
-  /* --- Text colors --- */
-  --color-ink: #1A1C19;            /* Gris anthracite (soft black) */
-  --color-ink-light: #5A6354;      /* Gris sage (texte secondaire) */
-  --color-ink-lighter: #8F9A88;    /* Gris très sage (placeholder, désactivé) */
+  /* --- Text --- */
+  --color-ink: #1A1C19;
+  --color-ink-light: #5A6354;
+  --color-ink-lighter: #8F9A88;
 
-  /* --- Borders & Hairlines --- */
-  --color-hairline: #E2E6DF;       /* Gris doux - bordures */
-  --color-hairline-strong: #CDD4C7; /* Gris plus marqué */
+  /* --- Borders --- */
+  --color-hairline: #E2E6DF;
+  --color-hairline-strong: #CDD4C7;
 
-  /* --- Spacing & Radius --- */
-  --spacing-section: 96px;
-  --radius-lg: 12px;
-  --radius-md: 8px;
+  /* --- Spacing scale (4px base) --- */
+  --spacing-section: 80px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* --- Radius (small, corporate) --- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 
   /* --- Shadcn mapping --- */
   --color-background: var(--color-canvas);
@@ -73,11 +89,6 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* ─────────────────────────────────────────────
@@ -85,7 +96,7 @@
 ───────────────────────────────────────────── */
 :root {
   --primary: oklch(0.205 0 0);
-  --radius: 0.625rem;
+  --radius: 0.25rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -133,12 +144,35 @@
 
   h1, h2, h3, h4 {
     @apply font-serif font-normal tracking-[-0.02em] text-brand-navy;
-    /* Titres en bleu nuit pour le caractère corporate */
+  }
+
+  /* Skip link */
+  .skip-link {
+    @apply absolute -top-full left-4 z-[9999] bg-brand-navy text-white px-4 py-2 text-sm font-medium transition-all duration-200;
+  }
+  .skip-link:focus {
+    @apply top-4;
+  }
+
+  /* Focus visible - WCAG compliant */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Remove default focus ring for mouse users */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
   }
 
   p {
     @apply font-sans leading-relaxed text-ink-light;
   }
+
   .maplibregl-popup-content {
     @apply bg-transparent! shadow-none! p-0! rounded-none!;
   }
@@ -156,224 +190,25 @@
 @layer components {
   .btn-primary {
     @apply bg-primary text-white font-sans font-medium px-5 py-2.5
-           rounded-md transition-all duration-200
-           hover:bg-primary-active hover:shadow-md
-           active:scale-[0.98];
+           rounded-sm transition-colors duration-200
+           hover:bg-primary-active
+           active:bg-primary-active;
   }
 
   .btn-secondary {
     @apply bg-white border border-hairline text-brand-navy font-medium px-5 py-2.5
-           rounded-md transition-all duration-200
-           hover:border-brand-navy/30 hover:shadow-sm
-           active:scale-[0.98];
+           rounded-sm transition-colors duration-200
+           hover:border-slate-300 hover:bg-slate-50;
   }
 
   .audit-card {
-    @apply bg-surface-card border border-hairline rounded-lg p-8
-           transition-shadow duration-300;
+    @apply bg-surface-card border border-hairline rounded-sm p-8
+           transition-colors duration-200;
   }
 
-  /* Hero override (intentional design choice) */
-  .hero-section * {
-    border-radius: 0 !important;
+  .section-alt {
+    @apply bg-canvas-alt;
   }
-
-   .section-alt {
-    @apply bg-canvas-alt; /* Pour alterner les sections */
-  }
-}
-
-/* ─────────────────────────────────────────────
-   UTILITIES - NOUVEAUX
-───────────────────────────────────────────── */
-@layer utilities {
-  .py-section {
-    padding-block: var(--spacing-section);
-  }
-
-  /* Version modernisée des dots */
-  .bg-grid-navy {
-    background-image: radial-gradient(
-      rgba(1, 64, 101, 0.04) 1px,
-      transparent 1px
-    );
-    background-size: 24px 24px;
-  }
-
-  .bg-grid-green {
-    background-image: radial-gradient(
-      rgba(37, 158, 1, 0.04) 1px,
-      transparent 1px
-    );
-    background-size: 24px 24px;
-  }
-
-  /* Texture douce moderne */
-  .bg-texture-dots {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgba(0, 0, 0, 0.02) 1px,
-      transparent 0
-    );
-    background-size: 24px 24px;
-  }
-
-  /* Highlight vert pour lignes alternées ou survols */
-  .bg-highlight-green {
-    background-color: var(--color-primary-soft);
-  }
-
-  .bg-highlight-navy {
-    background-color: var(--color-brand-navy-soft);
-  }
-}
-
-/* ─────────────────────────────────────────────
-   HERO STYLES
-   Extracted from hero.tsx
-───────────────────────────────────────────── */
-
-/* ── Keyframes ── */
-@keyframes heroFadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes heroFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes heroMarquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-@keyframes heroGlow {
-  0%, 100% { opacity: 0.15; transform: scale(1); }
-  50%      { opacity: 0.25; transform: scale(1.03); }
-}
-
-@keyframes heroLine {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-@keyframes heroImageReveal {
-  from { opacity: 0; transform: scale(1.04); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-@keyframes heroTagLine {
-  from { opacity: 0; transform: translateX(-6px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes badgeShimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* ── Animation Classes ── */
-.hero-up {
-  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  opacity: 0;
-}
-
-.hero-in {
-  animation: heroFadeIn 1s ease-out forwards;
-  opacity: 0;
-}
-
-.hero-marquee {
-  animation: heroMarquee 55s linear infinite;
-  will-change: transform;
-}
-
-.hero-glow {
-  animation: heroGlow 10s ease-in-out infinite;
-}
-
-.hero-line {
-  animation: heroLine 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-.hero-image-reveal {
-  animation: heroImageReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  opacity: 0;
-}
-
-.hero-tag-line {
-  animation: heroTagLine 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  opacity: 0;
-}
-
-.badge-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  background-size: 200% 100%;
-  animation: badgeShimmer 3s ease-in-out infinite;
-}
-
-/* ── Animation Delays ── */
-.d1 { animation-delay: 0.05s; }
-.d2 { animation-delay: 0.15s; }
-.d3 { animation-delay: 0.28s; }
-.d4 { animation-delay: 0.42s; }
-.d5 { animation-delay: 0.55s; }
-.d6 { animation-delay: 0.68s; }
-.d7 { animation-delay: 0.82s; }
-.d8 { animation-delay: 0.95s; }
-.d9 { animation-delay: 1.08s; }
-
-/* ── Hero Buttons ── */
-.btn-primary-hero {
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.btn-primary-hero:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 40px rgba(23, 162, 184, 0.35);
-}
-
-.btn-secondary-hero {
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.btn-secondary-hero:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255,255,255,0.35);
-}
-
-/* ── Hero Background Elements ── */
-.hero-radial-accent {
-  background: radial-gradient(ellipse 60% 50% at 20% 40%, rgba(23,162,184,0.08) 0%, transparent 70%);
-}
-
-.hero-glow-secondary {
-  animation-delay: 5s;
-}
-
-.hero-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 200px 200px;
-  opacity: 0.02;
-  mix-blend-mode: overlay;
-}
-
-.hero-grid {
-  opacity: 0.012;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
-  background-size: 100px 100px;
-}
-
-.hero-marquee-mask {
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
 /* ─────────────────────────────────────────────
@@ -384,46 +219,43 @@
     padding-block: var(--spacing-section);
   }
 
-  /* Navy dot grid — used in hero sections */
   .bg-grid-navy {
     background-image: radial-gradient(
-      rgba(1, 64, 101, 0.05) 1px,
+      rgba(1, 64, 101, 0.04) 1px,
       transparent 1px
     );
     background-size: 24px 24px;
   }
 
-  /* Subtle dot texture — used in dropdown, mobile menu, cards */
   .bg-texture-dots {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgba(0, 0, 0, 0.025) 1px,
-      transparent 0
-    );
-    background-size: 24px 24px;
-  }
-
-  /* Lighter variant — for white backgrounds */
-  .bg-texture-dots-light {
     background-image: radial-gradient(
       circle at 1px 1px,
       rgba(0, 0, 0, 0.02) 1px,
       transparent 0
     );
-    background-size: 20px 20px;
+    background-size: 24px 24px;
   }
 
-  /* Warm variant — aligns with canvas color (#faf9f5) */
-  .bg-texture-dots-warm {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgba(20, 20, 19, 0.04) 1px,
-      transparent 0
-    );
-    background-size: 24px 24px;
+  .bg-highlight-green {
+    background-color: var(--color-primary-soft);
+  }
+
+  .bg-highlight-navy {
+    background-color: var(--color-brand-navy-soft);
   }
 }
 
+/* ─────────────────────────────────────────────
+   MARQUEE
+───────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─────────────────────────────────────────────
+   DARK MODE
+───────────────────────────────────────────── */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

@@ -354,7 +354,7 @@ export const assistanceComptableConfig: ExpertisePageConfig = {
       "Conformité OHADA garantie",
     ],
     primaryCta: { label: "Demander une proposition", href: "/contact" },
-    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243999309901" },
     watermarkIcon: "BookOpen",
     contactOptions: [
       {
@@ -368,8 +368,8 @@ export const assistanceComptableConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Appeler directement",
-        description: "+243 XX XXX XXXX — du lundi au vendredi, 8h–17h.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — du lundi au vendredi, 8h–17h.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },

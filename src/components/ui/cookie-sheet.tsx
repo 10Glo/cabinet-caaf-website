@@ -2,7 +2,6 @@
 "use client"
 
 import React, { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
@@ -70,126 +69,115 @@ export const CookieSheet = ({
     setPreferences((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
+  if (!isOpen) return null
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+    <>
+      {/* Overlay */}
+      <div
+        onClick={onClose}
+        className="fixed inset-0 z-[60] bg-black/20"
+      />
+
+      {/* Side Sheet */}
+      <div className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-canvas shadow-2xl transition-transform duration-300">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-hairline bg-white p-6">
+          <div className="flex items-center gap-2">
+            <Image
+                            src={logo}
+                            alt="CAAF SAS"
+                            height={36}
+                            width={140}
+                            style={{ width: "auto", height: "36px" }}
+                            className={cn(
+                              "transition-all duration-300 group-hover:scale-[1.02]"
+                            )}
+                            priority
+                          />
+          </div>
+
+          <button
             onClick={onClose}
-            className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm"
-          />
-
-          {/* Side Sheet */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-canvas shadow-2xl"
+            className="rounded-full p-2 transition-colors hover:bg-canvas"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-hairline bg-white p-6">
-              <div className="flex items-center gap-2">
-                <Image
-                                src={logo}
-                                alt="CAAF SAS"
-                                height={36}
-                                width={140}
-                                style={{ width: "auto", height: "36px" }}
-                                className={cn(
-                                  "transition-all duration-300 group-hover:scale-[1.02]"
-                                )}
-                                priority
-                              />
-              </div>
+            <X size={20} className="text-ink/50" />
+          </button>
+        </div>
 
-              <button
-                onClick={onClose}
-                className="rounded-full p-2 transition-colors hover:bg-canvas"
-              >
-                <X size={20} className="text-ink/50" />
-              </button>
-            </div>
+        {/* Content */}
+        <div className="flex-1 space-y-8 overflow-y-auto p-8">
+          <section>
+            <h2 className="mb-4 font-serif text-2xl text-ink">
+              Votre confidentialité
+            </h2>
+            <p className="text-sm leading-relaxed text-ink/60">
+              Lorsque vous visitez notre site, des informations peuvent être
+              stockées ou récupérées via votre navigateur, principalement
+              sous forme de cookies.
+            </p>
+            <button className="mt-4 text-xs font-bold uppercase tracking-widest text-primary hover:underline">
+              Plus d'informations
+            </button>
+          </section>
 
-            {/* Content */}
-            <div className="flex-1 space-y-8 overflow-y-auto p-8">
-              <section>
-                <h2 className="mb-4 font-serif text-2xl text-ink">
-                  Votre confidentialité
-                </h2>
-                <p className="text-sm leading-relaxed text-ink/60">
-                  Lorsque vous visitez notre site, des informations peuvent être
-                  stockées ou récupérées via votre navigateur, principalement
-                  sous forme de cookies.
+          <div className="space-y-4">
+            <h3 className="border-b border-hairline pb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink/40">
+              Gérer vos préférences
+            </h3>
+
+            {CATEGORIES.map((cat) => (
+              <div key={cat.id} className="space-y-3 py-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-semibold text-ink">
+                    {cat.title}
+                  </span>
+
+                  {cat.required ? (
+                    <span className="text-[10px] font-bold uppercase tracking-tight text-primary">
+                      Toujours actif
+                    </span>
+                  ) : (
+                    <Switch
+                      checked={preferences[cat.id]}
+                      onChange={() => togglePreference(cat.id)}
+                    />
+                  )}
+                </div>
+
+                <p className="text-xs leading-relaxed text-ink/50">
+                  {cat.description}
                 </p>
-                <button className="mt-4 text-xs font-bold uppercase tracking-widest text-primary hover:underline">
-                  Plus d’informations
-                </button>
-              </section>
-
-              <div className="space-y-4">
-                <h3 className="border-b border-hairline pb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink/40">
-                  Gérer vos préférences
-                </h3>
-
-                {CATEGORIES.map((cat) => (
-                  <div key={cat.id} className="space-y-3 py-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[15px] font-semibold text-ink">
-                        {cat.title}
-                      </span>
-
-                      {cat.required ? (
-                        <span className="text-[10px] font-bold uppercase tracking-tight text-primary">
-                          Toujours actif
-                        </span>
-                      ) : (
-                        <Switch
-                          checked={preferences[cat.id]}
-                          onChange={() => togglePreference(cat.id)}
-                        />
-                      )}
-                    </div>
-
-                    <p className="text-xs leading-relaxed text-ink/50">
-                      {cat.description}
-                    </p>
-                  </div>
-                ))}
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
 
-            {/* Footer */}
-            <div className="flex flex-col gap-3 border-t border-hairline bg-white p-8">
-              <button
-                onClick={onAccept}
-                className="h-12 w-full bg-primary text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-active"
-              >
-                Tout accepter
-              </button>
+        {/* Footer */}
+        <div className="flex flex-col gap-3 border-t border-hairline bg-white p-8">
+          <button
+            onClick={onAccept}
+            className="h-12 w-full bg-primary text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-active"
+          >
+            Tout accepter
+          </button>
 
-              <button
-                onClick={onSave}
-                className="h-12 w-full border border-hairline text-[12px] font-bold uppercase tracking-widest text-ink transition-colors hover:bg-canvas"
-              >
-                Enregistrer mes choix
-              </button>
+          <button
+            onClick={onSave}
+            className="h-12 w-full border border-hairline text-[12px] font-bold uppercase tracking-widest text-ink transition-colors hover:bg-canvas"
+          >
+            Enregistrer mes choix
+          </button>
 
-              <button
-                onClick={onReject}
-                className="h-12 w-full border border-hairline text-[12px] font-bold uppercase tracking-widest text-ink transition-colors hover:bg-canvas"
-              >
-                Tout refuser
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          <button
+            onClick={onReject}
+            className="h-12 w-full border border-hairline text-[12px] font-bold uppercase tracking-widest text-ink transition-colors hover:bg-canvas"
+          >
+            Tout refuser
+          </button>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -207,9 +195,11 @@ const Switch = ({
       checked ? "bg-primary" : "bg-ink/20"
     )}
   >
-    <motion.div
-      animate={{ x: checked ? 20 : 0 }}
-      className="h-3 w-3 rounded-full bg-white shadow-sm"
+    <div
+      className={cn(
+        "h-3 w-3 rounded-full bg-white shadow-sm transition-transform duration-200",
+        checked ? "translate-x-[20px]" : "translate-x-0"
+      )}
     />
   </button>
 )

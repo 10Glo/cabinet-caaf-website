@@ -1,9 +1,7 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Link from "next/link"
-import Image from "next/image" // 1. Importation du composant Image de Next.js
+import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import big4 from "@/assets/17.png"
 
@@ -21,8 +19,6 @@ type Differentiator = {
 // DATA
 // ─────────────────────────────────────────────────────────
 
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
-
 const DIFFERENTIATORS: Differentiator[] = [
   {
     number: "01",
@@ -34,7 +30,7 @@ const DIFFERENTIATORS: Differentiator[] = [
     number: "02",
     title: "Conseil multilingue",
     description:
-      "Des échanges fluides en français et en anglais, avec une forte capacité d’adaptation aux réalités opérationnelles locales.",
+      "Des échanges fluides en français et en anglais, avec une forte capacité d'adaptation aux réalités opérationnelles locales.",
   },
   {
     number: "03",
@@ -49,16 +45,8 @@ const DIFFERENTIATORS: Differentiator[] = [
 // ═══════════════════════════════════════════════════════════
 
 export function Big4LocalExpertiseSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-
-  const isInView = useInView(sectionRef, {
-    once: true,
-    amount: 0.1,
-  })
-
   return (
     <section
-      ref={sectionRef}
       className="relative overflow-hidden bg-brand-navy px-6 py-28 sm:px-10 lg:px-16"
     >
       {/* Subtle Background Texture */}
@@ -93,101 +81,39 @@ export function Big4LocalExpertiseSection() {
           {/* LEFT CONTENT */}
           <div className="lg:col-span-5">
             {/* Eyebrow */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.8,
-                delay: 0.1,
-                ease: EASE_OUT,
-              }}
+            <div
               className="mb-5"
             >
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                 Notre différence
               </span>
-            </motion.div>
+            </div>
 
             {/* Title */}
-            <motion.h2
-              initial={{
-                opacity: 0,
-                y: 24,
-                filter: "blur(4px)",
-              }}
-              animate={
-                isInView
-                  ? {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                    }
-                  : {}
-              }
-              transition={{
-                duration: 1.2,
-                delay: 0.15,
-                ease: EASE_OUT,
-              }}
+            <h2
               className="max-w-xl font-serif text-5xl leading-[1.02] tracking-tight text-white lg:text-6xl"
             >
               Standards internationaux,{" "}
               <span className="text-white/30">
                 compréhension locale.
               </span>
-            </motion.h2>
+            </h2>
 
             {/* Description */}
-            <motion.p
-              initial={{
-                opacity: 0,
-                y: 24,
-                filter: "blur(4px)",
-              }}
-              animate={
-                isInView
-                  ? {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                    }
-                  : {}
-              }
-              transition={{
-                duration: 1.2,
-                delay: 0.25,
-                ease: EASE_OUT,
-              }}
+            <p
               className="mt-8 max-w-lg text-[16px] leading-[1.9] text-white/45"
             >
               CAAF SAS associe les standards méthodologiques des grands
               cabinets internationaux à une compréhension nuancée du
               contexte réglementaire, économique et opérationnel de la
               RDC.
-            </motion.p>
+            </p>
 
             {/* Differentiators */}
             <div className="mt-14">
-              {DIFFERENTIATORS.map((item, i) => (
-                <motion.div
+              {DIFFERENTIATORS.map((item) => (
+                <div
                   key={item.number}
-                  initial={{
-                    opacity: 0,
-                    y: 24,
-                  }}
-                  animate={
-                    isInView
-                      ? {
-                          opacity: 1,
-                          y: 0,
-                        }
-                      : {}
-                  }
-                  transition={{
-                    duration: 1,
-                    delay: 0.35 + i * 0.12,
-                    ease: EASE_OUT,
-                  }}
                   className="flex gap-5 border-t border-white/[0.08] py-6"
                 >
                   <span className="font-mono text-sm text-white/25">
@@ -203,30 +129,12 @@ export function Big4LocalExpertiseSection() {
                       {item.description}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
             {/* CTA */}
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={
-                isInView
-                  ? {
-                      opacity: 1,
-                      y: 0,
-                    }
-                  : {}
-              }
-              transition={{
-                duration: 1,
-                delay: 0.8,
-                ease: EASE_OUT,
-              }}
-            >
+            <div>
               <Link
                 href="#contact"
                 className="group mt-10 inline-flex items-center gap-2 text-sm font-medium text-primary transition-all hover:gap-3"
@@ -238,37 +146,17 @@ export function Big4LocalExpertiseSection() {
                   className="transition-transform group-hover:translate-x-1"
                 />
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           {/* RIGHT IMAGE ZONE */}
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-              scale: 0.98,
-            }}
-            animate={
-              isInView
-                ? {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }
-                : {}
-            }
-            transition={{
-              duration: 1.4,
-              delay: 0.25,
-              ease: EASE_OUT,
-            }}
+          <div
             className="relative lg:col-span-7"
           >
             {/* Frame */}
             <div className="relative overflow-hidden border border-white/[0.08] bg-white/[0.02]">
               {/* Image Container */}
               <div className="relative aspect-[4/5] w-full overflow-hidden lg:aspect-[5/4]">
-                {/* 2. Remplacement par le composant Next.js <Image /> */}
                 <Image
                   src={big4}
                   alt="Professionnels en réunion"
@@ -278,7 +166,7 @@ export function Big4LocalExpertiseSection() {
                 />
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

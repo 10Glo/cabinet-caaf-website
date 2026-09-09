@@ -87,7 +87,7 @@ export function AuditFinancierHero() {
 
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-[14px] font-semibold text-white/80 backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+              className="inline-flex items-center justify-center gap-3 border border-white/15 bg-white/[0.03] px-8 py-4 text-[14px] font-semibold text-white/80 transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
             >
               Demander un échange
             </Link>

@@ -419,7 +419,7 @@ export const commissariatAuxComptesConfig: ExpertisePageConfig = {
       "Confidentialité totale garantie",
     ],
     primaryCta: { label: "Planifier un échange", href: "/contact" },
-    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler le cabinet", href: "tel:+243999309901" },
     watermarkIcon: "Scale",
     contactOptions: [
       {
@@ -433,16 +433,16 @@ export const commissariatAuxComptesConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Appeler directement",
-        description: "+243 XX XXX XXXX — du lundi au vendredi, 8h–17h.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — du lundi au vendredi, 8h–17h.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },
       {
         icon: "Mail",
         title: "Écrire au cabinet",
-        description: "contact@caaf-rdc.com — réponse sous 24h ouvrées.",
-        href: "mailto:contact@caaf-rdc.com",
+        description: "contact@caaf.cd — réponse sous 24h ouvrées.",
+        href: "mailto:contact@caaf.cd",
         cta: "Envoyer un email",
         primary: false,
       },

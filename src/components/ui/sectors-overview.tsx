@@ -1,21 +1,15 @@
 // src/components/ui/sectors-overview.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
-// ─── Types ───────────────────────────────────────────────
 type Sector = {
   name: string
   description: string
   highlights: string[]
   href: string
 }
-
-// ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
 
 const SECTORS: Sector[] = [
   {
@@ -62,38 +56,14 @@ const SECTORS: Sector[] = [
   },
 ]
 
-// ─── Sector Item ─────────────────────────────────────────
 function SectorItem({
   sector,
-  index,
 }: {
   sector: Sector
-  index: number
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-      animate={
-        isInView
-          ? {
-              opacity: [0, 1, 1],
-              y: [20, 0, 0],
-              filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-            }
-          : {}
-      }
-      transition={{
-        duration: 1.5,
-        delay: index * 0.08,
-        ease: EASE_OUT,
-      }}
-      className="group py-8"
-    >
-      <h3 className="mb-2 text-lg font-medium text-[#111A4A] transition-transform duration-500 group-hover:translate-x-2">
+    <div className="group py-8">
+      <h3 className="mb-2 text-lg font-medium text-[#111A4A] transition-colors duration-200 group-hover:text-brand-navy">
         {sector.name}
       </h3>
       <p className="mb-3 text-sm leading-relaxed text-[#7C7F88]">
@@ -113,85 +83,50 @@ function SectorItem({
         ))}
       </div>
 
-      {/* En savoir plus */}
       <Link
         href={sector.href}
-        className="group/link inline-flex items-center gap-1.5 text-[13px] font-medium text-primary transition-all hover:gap-2.5"
+        className="group/link inline-flex items-center gap-1.5 text-[13px] font-medium text-primary transition-colors duration-200 hover:text-primary-active"
       >
         En savoir plus
         <ArrowRight
           size={13}
-          className="transition-transform group-hover/link:translate-x-0.5"
+          className="transition-transform duration-200 group-hover/link:translate-x-0.5"
         />
       </Link>
-    </motion.div>
+    </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════
-
 export function SectorsOverview() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   return (
-    <section
-      ref={sectionRef}
-      className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
-    >
+    <section className="bg-canvas px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20">
       <div className="mx-auto max-w-7xl">
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="mb-14 max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
-            className="mb-5 inline-flex items-center"
-          >
+          <div className="mb-5 inline-flex items-center">
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Secteurs
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
-          >
+          <h2 className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]">
             Une expertise multi-sectorielle{" "}
             <span className="opacity-40">
               pour des enjeux diversifiés.
             </span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
-            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
-          >
+          <p className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60">
             Notre équipe intervient dans les secteurs les plus exigeants de
             l&apos;économie congolaise et régionale, avec une lecture fine des
             contraintes propres à chaque environnement opérationnel.
-          </motion.p>
+          </p>
         </div>
 
-        {/* ── Divider ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.35 }}
-          className="h-px bg-[#111A4A]/[0.06]"
-        />
+        {/* Divider */}
+        <div className="h-px bg-[#111A4A]/[0.06]" />
 
-        {/* ── Sectors Grid — 2 columns, no cards ── */}
+        {/* Sectors Grid — 2 columns, no cards */}
         <div className="grid grid-cols-1 md:grid-cols-2">
           {SECTORS.map((sector, i) => (
             <div
@@ -209,32 +144,20 @@ export function SectorsOverview() {
                     : ""
                 }
               >
-                <SectorItem sector={sector} index={i} />
+                <SectorItem sector={sector} />
               </div>
             </div>
           ))}
         </div>
 
-        {/* ── Bottom divider ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="h-px bg-[#111A4A]/[0.06]"
-        />
+        {/* Bottom divider */}
+        <div className="h-px bg-[#111A4A]/[0.06]" />
 
-        {/* ── CTAs — left-aligned ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.9, ease: EASE_OUT }}
-          className="mt-14 flex flex-col items-start gap-6 lg:mt-16"
-        >
+        {/* CTAs — left-aligned */}
+        <div className="mt-14 flex flex-col items-start gap-6 lg:mt-16">
           <Link
             href="/secteurs"
-            className="btn-primary-hero group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
+            className="btn-primary group relative inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-9 py-4 text-[14px] font-semibold tracking-wide text-white"
           >
             <span className="relative z-10">
               Découvrir tous nos secteurs d&apos;intervention
@@ -246,16 +169,16 @@ export function SectorsOverview() {
             Votre secteur n&apos;est pas listé ?{" "}
             <Link
               href="#contact"
-              className="group/link inline-flex items-center gap-1.5 font-medium text-primary transition-all hover:gap-2.5"
+              className="group/link inline-flex items-center gap-1.5 font-medium text-primary transition-colors duration-200 hover:text-primary-active"
             >
               Contactez-nous pour une intervention sur mesure
               <ArrowRight
                 size={13}
-                className="transition-transform group-hover/link:translate-x-0.5"
+                className="transition-transform duration-200 group-hover/link:translate-x-0.5"
               />
             </Link>
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

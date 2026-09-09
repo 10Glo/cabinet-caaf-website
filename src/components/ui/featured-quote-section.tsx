@@ -1,37 +1,15 @@
 // src/components/ui/featured-quote-section.tsx
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
-
-// ─── Constants ───────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
-
 // ═══════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════
 
 export function FeaturedQuoteSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
-
   return (
-    <section ref={sectionRef} className="bg-brand-navy px-10 py-section">
+    <section className="bg-brand-navy px-10 py-section">
       <div className="w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView
-              ? {
-                  opacity: [0, 1, 1],
-                  y: [20, 0, 0],
-                  filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-                }
-              : {}
-          }
-          transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-          className="border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm"
-        >
+        <div className="border border-white/[0.08] bg-white/[0.03]">
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr]">
             {/* ── Left rail ── */}
             <div className="flex flex-col justify-between border-b border-white/[0.06] p-8 lg:border-b-0 lg:border-r lg:border-white/[0.06] lg:p-10">
@@ -76,7 +54,7 @@ export function FeaturedQuoteSection() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

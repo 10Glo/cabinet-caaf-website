@@ -396,5 +396,5 @@ export const DEFAULT_ARTICLE_CONTENT: string[] = [
   "> Abonnez-vous à notre newsletter pour être informé de la publication.",
   "## En attendant",
   "N'hésitez pas à nous contacter directement si vous avez des questions sur ce sujet. Nos associés et managers sont disponibles pour un échange personnalisé.",
-  "- Contactez-nous par email : contact@caaf-rdc.com\n- Appelez-nous : +243 XX XXX XXXX\n- Prenez rendez-vous en ligne",
+  "- Contactez-nous par email : contact@caaf.cd\n- Appelez-nous : +243 999 309 901 / +243 810 372 645\n- Prenez rendez-vous en ligne",
 ]

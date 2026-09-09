@@ -389,7 +389,7 @@ export const auditInterneConfig: ExpertisePageConfig = {
       "Garantie de confidentialité totale",
     ],
     primaryCta: { label: "Diagnostiquer mon organisation", href: "/contact" },
-    secondaryCta: { label: "Appeler directement", href: "tel:+243XXXXXXXX" },
+    secondaryCta: { label: "Appeler directement", href: "tel:+243999309901" },
     watermarkIcon: "ShieldCheck",
     contactOptions: [
       {
@@ -403,8 +403,8 @@ export const auditInterneConfig: ExpertisePageConfig = {
       {
         icon: "Phone",
         title: "Appeler l'associé senior",
-        description: "+243 XX XXX XXXX — disponible pour un échange direct.",
-        href: "tel:+243XXXXXXXX",
+        description: "+243 999 309 901 / +243 810 372 645 — disponible pour un échange direct.",
+        href: "tel:+243999309901",
         cta: "Appeler maintenant",
         primary: false,
       },

@@ -1,14 +1,11 @@
 // src/components/ui/services-bento-grid.tsx
 "use client"
 
-import { useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { useState } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 // ─── Data ────────────────────────────────────────────────
-const EASE_OUT = [0.1, 0, 0.1, 1] as const
-
 const SERVICE_CATEGORIES = [
   {
     number: "01",
@@ -81,12 +78,8 @@ const SERVICE_CATEGORIES = [
 
 function ServiceCard({
   category,
-  index,
-  isInView,
 }: {
   category: (typeof SERVICE_CATEGORIES)[number]
-  index: number
-  isInView: boolean
 }) {
   const [hoveredLink, setHoveredLink] = useState<number | null>(null)
 
@@ -98,22 +91,7 @@ function ServiceCard({
         : "md:col-span-1"
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-      animate={
-        isInView
-          ? {
-              opacity: [0, 1, 1],
-              y: [20, 0, 0],
-              filter: ["blur(4px)", "blur(0px)", "blur(0px)"],
-            }
-          : {}
-      }
-      transition={{
-        duration: 1.5,
-        delay: 0.3 + index * 0.1,
-        ease: EASE_OUT,
-      }}
+    <article
       className={`group flex flex-col border border-[#111A4A]/[0.06] bg-white ${colSpan}`}
     >
       {/* Top section */}
@@ -176,7 +154,7 @@ function ServiceCard({
 
       {/* Bottom accent bar */}
       <div className="h-px w-0 bg-primary/40 transition-all duration-700 group-hover:w-full" />
-    </motion.article>
+    </article>
   )
 }
 
@@ -185,9 +163,6 @@ function ServiceCard({
 // ═══════════════════════════════════════════════════════════
 
 export function ServicesBentoGrid() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 })
-
   const totalServices = SERVICE_CATEGORIES.reduce(
     (acc, cat) => acc + cat.links.length,
     0
@@ -195,74 +170,45 @@ export function ServicesBentoGrid() {
 
   return (
     <section
-      ref={sectionRef}
       id="services-grid"
       className="bg-white px-6 pb-20 pt-16 sm:px-10 lg:pb-28 lg:pt-20"
     >
       <div className="mx-auto max-w-7xl">
         {/* ── Header ── */}
         <div className="mb-14 max-w-3xl lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_OUT }}
-            className="mb-5 inline-flex items-center"
-          >
+          <div className="mb-5 inline-flex items-center">
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
               Vue d&apos;ensemble
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.2, ease: EASE_OUT }}
-            className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]"
-          >
+          <h2 className="mb-6 max-w-2xl text-[40px] font-normal leading-tight tracking-tight text-[#111A4A]">
             Une offre structurée{" "}
             <span className="opacity-40">
               autour des enjeux les plus critiques.
             </span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-            animate={
-              isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-            }
-            transition={{ duration: 1.5, delay: 0.3, ease: EASE_OUT }}
-            className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60"
-          >
+          <p className="max-w-xl text-lg leading-6 text-[#111A4A] opacity-60">
             Nos services couvrent les besoins essentiels des organisations :
             fiabilité de l&apos;information financière, maîtrise des risques,
             transformation des fonctions support et accompagnement des
             décisions stratégiques.
-          </motion.p>
+          </p>
         </div>
 
         {/* ── Bento Grid ── */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {SERVICE_CATEGORIES.map((category, i) => (
+          {SERVICE_CATEGORIES.map((category) => (
             <ServiceCard
               key={category.heading}
               category={category}
-              index={i}
-              isInView={isInView}
             />
           ))}
         </div>
 
         {/* ── Bottom strip ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-          animate={
-            isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-          }
-          transition={{ duration: 1.5, delay: 0.9, ease: EASE_OUT }}
-          className="mt-10 flex flex-col items-center justify-between gap-4 border border-[#111A4A]/[0.06] bg-white px-8 py-5 md:flex-row"
-        >
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border border-[#111A4A]/[0.06] bg-white px-8 py-5 md:flex-row">
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs text-[#7C7F88]/50">
               {totalServices}
@@ -285,7 +231,7 @@ export function ServicesBentoGrid() {
               className="transition-transform group-hover/link:translate-x-0.5"
             />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
